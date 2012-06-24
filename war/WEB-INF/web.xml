@@ -5,12 +5,12 @@ xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
-		<servlet-name>JugUser2</servlet-name>
-		<servlet-class>org.yajug.users.JugUser2Servlet</servlet-class>
+		<servlet-name>YajugServlet</servlet-name>
+		<servlet-class>org.yajug.users.servlet.YajugServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>JugUser2</servlet-name>
-		<url-pattern>/juguser2</url-pattern>
+		<servlet-name>YajugServlet</servlet-name>
+		<url-pattern>/yajug</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
