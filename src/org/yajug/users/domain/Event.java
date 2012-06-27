@@ -13,7 +13,7 @@ public class Event  extends DomainObject{
 	@Basic private String title;
 	@Basic private String description;
 	@Basic private Date date;
-	@Basic private List<User> participants;
+	@Basic private List<Member> participants;
 	
 	/**
 	 * @return the title
@@ -54,13 +54,13 @@ public class Event  extends DomainObject{
 	/**
 	 * @return the participants
 	 */
-	public List<User> getParticipants() {
+	public List<Member> getParticipants() {
 		return participants;
 	}
 	/**
 	 * @param participants the participants to set
 	 */
-	public void setParticipants(List<User> participants) {
+	public void setParticipants(List<Member> participants) {
 		this.participants = participants;
 	}
 	

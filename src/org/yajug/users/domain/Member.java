@@ -13,13 +13,14 @@ import javax.persistence.Entity;
  *
  */
 @Entity
-public class User extends DomainObject {
+public class Member extends DomainObject {
 
 	@Basic private String firstName;
 	@Basic private String lastName;
 	@Basic private String email;
 	@Basic private String company;
 	@Basic private List<Membership> memberships;
+	@Basic private List<Role> roles;
 	
 	/**
 	 * @return the firstName
@@ -80,6 +81,18 @@ public class User extends DomainObject {
 	 */
 	public void setMemberships(List<Membership> memberships) {
 		this.memberships = memberships;
+	}
+	/**
+	 * @return the role
+	 */
+	public List<Role> getRoles() {
+		return roles;
+	}
+	/**
+	 * @param role the role to set
+	 */
+	public void setRoles(List<Role> role) {
+		this.roles = role;
 	}
 
 }
