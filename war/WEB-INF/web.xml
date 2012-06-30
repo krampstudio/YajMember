@@ -8,9 +8,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>YajugServlet</servlet-name>
 		<servlet-class>org.yajug.users.servlets.YajugServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>UsersServlet</servlet-name>
+		<servlet-class>org.yajug.users.servlets.UsersServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>YajugServlet</servlet-name>
-		<url-pattern>/yajug</url-pattern>
+		<url-pattern>/yajug/login</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>UsersServlet</servlet-name>
+		<url-pattern>/yajug/users</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
