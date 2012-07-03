@@ -15,9 +15,7 @@ public class UsersServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		
-		Gson gson = new GsonBuilder().serializeNulls().create();
-		resp.setContentType("javascript/json");
-        resp.getWriter().print(gson.toJson("ok"));
+		
 	}
 	
 }
