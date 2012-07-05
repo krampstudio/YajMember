@@ -2,8 +2,8 @@
 <html>
 <head>
 	<title>Yajug Users</title>
-	<link rel="stylesheet" type="text/css" href="css/pepper-grinder/jquery-ui.css" />
-	<link rel="stylesheet" type="text/css" href="css/flexigrid/flexigrid.pack.css" />
+	<link rel="stylesheet" type="text/css" href="css/lib/pepper-grinder/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="css/lib/gridy/jquery.gridy.css" />
 	<link rel="stylesheet" type="text/css" href="css/layout.css" />
 	
 	<script type="text/javascript" data-main="js/app" src="js/lib/require.js" ></script>
@@ -18,5 +18,18 @@
 			</ul>
 		</div>
 	</div>
+	<script id="template" type="text/x-jquery-tmpl">
+			<tr>
+				<td>${valid}</td>
+				<td>${firstname}</td>
+				<td>${lastname}</td>
+				<td>${email}</td>
+<td>${company}</td>
+<td>${role}</td>
+<td class="gridy-button">
+					<a href="javascript:void(0);">edit</a>
+				</td>
+			</tr>
+		</script>
 </body>
 </html> 

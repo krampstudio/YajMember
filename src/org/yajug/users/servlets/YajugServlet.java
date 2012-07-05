@@ -14,8 +14,7 @@ public class YajugServlet extends HttpServlet {
 		UserService userService = UserServiceFactory.getUserService();
 		User user = userService.getCurrentUser();
 		if(user != null){
-			resp.setContentType("text/plain");
-            resp.getWriter().println("Hello, " + user.getNickname());
+			resp.sendRedirect("index.html");
 		} else {
 			resp.sendRedirect(userService.createLoginURL(req.getRequestURI()));
 		}

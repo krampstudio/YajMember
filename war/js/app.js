@@ -4,8 +4,16 @@ requirejs.config({
 		user: '../user'
 	}
 });
-requirejs(['jquery', 'jquery-ui'], function($){
+requirejs(['jquery', 'jquery-ui', 'jquery-tmpl'], function($){
 	$(function () {
-		$('#actions').tabs();
+		$('#actions').tabs({
+			load: function (event, ui) {
+                if (ui.index === 0) {
+                	requirejs(['gridy', 'user/list'], function () {
+                           initList();
+                    });
+                }
+			}
+		});
 	});
 });
