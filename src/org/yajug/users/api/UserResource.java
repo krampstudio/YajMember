@@ -1,16 +1,20 @@
 package org.yajug.users.api;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 @Path("user")
 public class UserResource {
 
 	@GET
 	@Path("list")
-	@Produces({"application/json"})
+	@Produces({MediaType.APPLICATION_JSON})
 	public String list(@QueryParam("callback") String callback){
 		
 		final String expected = callback+"({" +
@@ -35,4 +39,17 @@ public class UserResource {
 			"})";
 		return expected;
 	}
+	
+	@PUT
+	@Path("add")
+	@Produces({MediaType.APPLICATION_JSON})
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public String add(@FormParam("member") String member){
+		
+		System.out.print(member);
+		
+		return "{\"saved\" : true}";
+	}
+	
+	
 }
