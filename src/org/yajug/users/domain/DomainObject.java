@@ -16,6 +16,9 @@ public abstract class DomainObject {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic private Key key;
+	
+	public DomainObject(){
+	}
 
 	/**
 	 * @return the key

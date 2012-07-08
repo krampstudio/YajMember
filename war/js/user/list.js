@@ -16,7 +16,7 @@ function initList(){
 		dataType	: 'jsonp',
 		evenOdd		: true,
 		clickFx		: true,
-		resize: true
+		resize: true,
 		height: 600,
 		width: 1200
 		

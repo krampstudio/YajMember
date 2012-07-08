@@ -3,17 +3,27 @@ function initForm(){
 	$('#member-editor').submit(function(event){
 		event.preventDefault();
 		
-		var formData = $(this).serializeArray();
-		console.log(formData)
-		var formParam = JSON.stringify(formData)
-		console.log(formParam)
-		
-		$.post('/api/user/add', {member: formParam), function(data) {
-			
-			if(data && data.saved === true){
-				alert('user saved');
+		var member = {
+			'firstName' : $('#firstname').val(),
+			'lastName'  : $('#lastname').val(),
+			'email' 	: $('#email').val(),
+			'company'  	: $('#company').val(),
+			'roles' 	: $('#roles').val()
+		};
+		var validMemberShip = $('#membership').val() === 'true';
+				
+		$.ajax({
+			type 		: 'PUT',
+			url 		: '/api/user/add',
+			contentType : 'application/x-www-form-urlencoded',
+			dataType 	: 'json',
+			data 		: {
+				member : JSON.stringify(member),
+				validMembership : validMemberShip
 			}
-		}, 'json');
+		}).done(function(data) {
+			console.log(data);
+		});
 		
 		return false;
 	});

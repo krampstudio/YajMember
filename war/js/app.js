@@ -1,6 +1,3 @@
-(function () {
-    'use strict';
-    
 	requirejs.config({
 		baseUrl: 'js/lib',
 		paths: {
@@ -25,5 +22,3 @@
 			});
 		});
 	});
-
-});
