@@ -14,13 +14,18 @@ import javax.ws.rs.core.MediaType;
 
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
+import org.yajug.users.service.DataException;
+import org.yajug.users.service.MemberService;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 @Path("user")
 public class UserResource {
 
+	private MemberService memberService;
+	
 	@GET
 	@Path("list")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -55,7 +60,9 @@ public class UserResource {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public String add(@FormParam("member") String memberData, @FormParam("validMembership") boolean validMembership){
 		
-		System.out.print(memberData);
+		JsonObject response = new JsonObject();
+
+		boolean saved = false;
 		
 		Gson gson = new GsonBuilder()
 						.serializeNulls()
@@ -69,8 +76,18 @@ public class UserResource {
 			member.addMembership(membership);
 		}
 		
-		return "{\"saved\" : true}";
+		try {
+			saved = this.memberService.save(member);
+		} catch (DataException e) {
+			response.addProperty("error", e.getLocalizedMessage());
+		}
+		
+		response.addProperty("saved", saved);
+		
+		return gson.toJson(response);
 	}
 	
-	
+	public void setMemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
 }

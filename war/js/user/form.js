@@ -22,10 +22,13 @@ function initForm(){
 				validMembership : validMemberShip
 			}
 		}).done(function(data) {
-			console.log(data);
+			if(!data.saved || data.error){
+				alert("Error : " + data.error ? data.error : "unknown");
+			} else {
+				alert("Saved");
+			}
 		});
 		
 		return false;
 	});
-	
 }
