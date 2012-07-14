@@ -1,0 +1,42 @@
+<div>
+	<form id="member-editor">
+		<div>
+			<label for="firstname">First Name</label>
+			<input id="firstname" name="firstname" type="text" required="required" />
+		</div>
+		<div>
+			<label for="lastname">Last Name</label>
+			<input id="lastname" name="lastname" type="text" required="required" />
+		</div>
+		<div>
+			<label for="email">Email</label>
+			<input id="email" name="email" type="email" required="required" />
+		</div>
+		<div>
+			<label for="company">Company</label>
+			<input id="company" name="company" type="text" />
+		</div>
+		<div>
+			<label for="membership">Valid Membership ?</label>
+			<input id="membership" name="membership" type="checkbox" value="true" />
+		</div>
+		<div>
+			<label for="roles">Role</label>
+			<select id="roles" name="roles" multiple="multiple">
+				<option value="PRESIDENT">President</option>
+				<option value="SECRETARY">Secretary</option>
+				<option value="TREASURER">Treasurer</option>
+				<option value="BOARD">Board Member</option>
+				<option value="OLD_BOARD">Old Board Member</option>
+				<option value="MEMBER">Member</option>
+				<option value="OLD_MEMBER">Old Member</option>
+				<option value="SPONSOR">Sponsor</option>
+				<option value="VISITOR">Visitor</option>
+			</select>
+		</div>
+		<div>
+			<label for="submiter"></label>
+			<input type="submit" name="submiter" value="Save" />
+		</div>
+	</form>
+</div>
