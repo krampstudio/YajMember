@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.yajug</groupId>
+  <artifactId>yajmembers</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>YajMember</name>
+  <description>Yet Another Jug Member's management app</description>
+
+  <repositories>
+    <repository>
+      <id>google-maven-repo</id>
+      <name>Google Maven Repository</name>
+      <url>http://google-maven-repository.googlecode.com/svn/repository/</url>
+    </repository>
+   <repository>
+            <id>datanucleus</id>
+            <name>Datanucleus Repository</name>
+            <url>http://www.datanucleus.org/downloads/maven2</url>
+        </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>maven-gae-plugin-repo</id>
+      <name>Maven Google App Engine Repository</name>
+      <url>http://maven-gae-plugin.googlecode.com/svn/repository/</url>
+    </pluginRepository>
+  </pluginRepositories>
+  
+ <dependencies>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>datanucleus-jpa</artifactId>
+      <version>1.1.5</version>
+      <scope>runtime</scope>
+    </dependency>
+	
+	<dependency>
+	    <groupId>com.google.appengine</groupId>
+	    <artifactId>appengine-tools</artifactId>
+	    <version>${gae.version}</version>
+	    <scope>provided</scope>
+	</dependency>   
+	<dependency>
+	    <groupId>com.google.appengine</groupId>
+	    <artifactId>appengine-local-runtime-shared</artifactId>
+	    <version>${gae.version}</version>
+	    <scope>provided</scope>
+	</dependency>  
+	<dependency>
+	    <groupId>com.google.appengine</groupId>
+	    <artifactId>appengine-sdk-api</artifactId>
+	    <version>${gae.version}</version>
+	    <scope>compile</scope>
+	</dependency>  
+<!--	<dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-servlet_2.5_spec</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jpa_3.0_spec</artifactId>
+            <version>1.1.1</version>
+            <scope>compile</scope>
+        </dependency>
+-->
+	<dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-appengine</artifactId>
+            <version>1.0.10.final</version>
+            <scope>compile</scope>
+        </dependency>
+
+	<dependency>
+            <groupId>javax.jdo</groupId>
+            <artifactId>jdo2-api</artifactId>
+            <version>2.3-eb</version>
+            <scope>compile</scope>
+        </dependency>
+ 
+	<!-- These dependencies are here just for enabling logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>0.9.22</version>
+    </dependency>
+	
+	<!--  Gson: Java to Json conversion -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.2.2</version>
+      <scope>compile</scope>
+    </dependency>
+
+	<!-- Jersey -->
+<dependency>
+    <groupId>com.sun.jersey</groupId>
+    <artifactId>jersey-server</artifactId>
+    <version>1.12</version>
+</dependency>
+
+    <!-- Test scope -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.5</version>
+      <scope>test</scope>
+    </dependency>
+</dependencies>
+
+  <build>
+    <plugins>
+      <!-- This plug-in "enhances" your domain model objects (i.e. makes them persistent for 
+        datanucleus) -->
+      <plugin>
+        <groupId>org.datanucleus</groupId>
+        <artifactId>maven-datanucleus-plugin</artifactId>
+        <version>1.1.4</version>
+        <configuration>
+          <mappingIncludes>**/domain/*.class</mappingIncludes>
+          <verbose>true</verbose>
+          <enhancerName>ASM</enhancerName>
+          <api>JDO</api>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>enhance</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-core</artifactId>
+            <version>1.1.5</version>
+            <exclusions>
+              <exclusion>
+                <groupId>javax.transaction</groupId>
+                <artifactId>transaction-api</artifactId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+          <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-rdbms</artifactId>
+            <version>1.1.5</version>
+          </dependency>
+          <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-enhancer</artifactId>
+            <version>1.1.4</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.1-beta-1</version>
+        <configuration>
+          <webResources>
+            <resource>
+              <directory>src/main/webapp</directory>
+              <filtering>true</filtering>
+              <includes>
+                <include>**/appengine-web.xml</include>
+              </includes>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>net.kindleit</groupId>
+        <artifactId>maven-gae-plugin</artifactId>
+        <version>0.9.4</version>
+        <dependencies>
+          <dependency>
+            <groupId>net.kindleit</groupId>
+            <artifactId>gae-runtime</artifactId>
+            <version>${gae.version}</version>
+            <type>pom</type>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <goals>gae:deploy</goals>
+        </configuration>
+      </plugin>
+
+      <!-- Java compiler version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.0</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <properties>
+    <downloadSources>true</downloadSources>
+    <gae.version>1.7.0</gae.version>
+    <gae.application.version>test</gae.application.version>
+    <gae.port>8080</gae.port>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>integration-build</id>
+      <properties>
+        <gae.application.version>stage</gae.application.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>release-build</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <gae.application.version>release</gae.application.version>
+      </properties>
+    </profile>
+  </profiles>
+
+</project>
