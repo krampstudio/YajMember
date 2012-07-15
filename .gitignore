@@ -10,3 +10,7 @@
 .settings
 .classpath
 .metadata
+
+# gradle
+build
+.gradle
