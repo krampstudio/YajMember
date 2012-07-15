@@ -2,56 +2,53 @@ apply plugin: 'java'
 apply plugin: 'gae'
 
 buildscript {
-	repositories {
-		mavenCentral()
-		add(new org.apache.ivy.plugins.resolver.URLResolver()) {
-		    name = 'GitHub'
-		    addArtifactPattern 'http://cloud.github.com/downloads/[organisation]/[module]/[module]-[revision].[ext]'
-		}
-    	}
+	repositories { mavenCentral() }
 
-	dependencies {
-		classpath "org.gradle.api.plugins:gradle-gae-plugin:$gaePluginVersion"
-	}
+	dependencies { classpath "org.gradle.api.plugins:gradle-gae-plugin:$gaePluginVersion" }
 }
 
-repositories {
-	mavenCentral()
-}
+repositories { mavenCentral() }
 
 dependencies {
 	gaeSdk "com.google.appengine:appengine-java-sdk:$gaeVersion"
-	compile "com.google.code.gson:gson:2.2.2"
-	compile "com.sun.jersey:jersey-archive:1.1.5"
-	compile 'com.google.appengine:appengine:1.7.0'
+	compile "com.google.code.gson:gson:$gsonVersion"
+	compile "com.sun.jersey:jersey-archive:$jerseyVersion"
+	compile "com.google.appengine:appengine:$gaeVersion"
 	compile "com.google.appengine:appengine-api-labs:$gaeVersion"
-        compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion"
-	compile 'com.google.appengine:appengine-api-labs:1.7.0'
-	compile 'com.google.appengine.orm:datanucleus-appengine:2.0.1.1'
-	compile 'javax.persistence:persistence-api:1.0.2'
-	compile 'javax.servlet:servlet-api:2.5'
-	//compile 'javax.ws.rs:javax.ws.rs-api:2.0-m09'
-	testCompile 'junit:junit:4.5'
+	compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion"
+	compile "com.google.appengine:appengine-api-labs:$gaeVersion"
+	compile "com.google.appengine:appengine-remote-api:$gaeVersion"
+	compile "com.google.appengine.orm:datanucleus-appengine:$dataNucleusVersion"
+	compile "javax.persistence:persistence-api:$jpaVersion"
+	compile "javax.servlet:servlet-api:$servletVersion"
+	testCompile "junit:junit:$junitVersion"
 }
 
 gae {
-	httpPort = 8888
+	httpPort = port.toInteger()
 	downloadSdk = true
+	daemon = true
+	
+	appcfg {
+		host = "$host"
+		email = "$email"
+		logs { //4 for CRITICAL, 3 for ERROR, 2 for WARNING, 1 for INFO, 0 for DEBUG.
+			severity = 1 }
 
-    	appcfg {
-        	email = 'chevrier.bertrand@gmail.com'
-        	logs {
-			//4 for CRITICAL, 3 for ERROR, 2 for WARNING, 1 for INFO, 0 for DEBUG.
-        		severity = 1
-        	}
-
-        	app {
-        		id = 'yajmembers'
-        	}
-    	}
+		app { id = "$appid" }
+	}
 }
 
-task listJars << {
-	configurations.compile.each { File file -> println file.name + " " + file.path }
-	configurations.runtime.each { File file -> println file.name + " " + file.path }
+task bulkUpload(type:Exec) {
+	workingDir 'src/main/scripts'
+  
+	commandLine "appcfg.py upload_data --config_file=map.yaml \
+				--filename=events.csv --kind=Event \
+				--url=http://$host:$port/remote_api"
+ }
+
+task testCmd << {
+	println "appcfg.py upload_data --config_file=map.yaml \
+				--filename=events.csv --kind=Event \
+				--url=http://$host:$port/remote_api"
 }

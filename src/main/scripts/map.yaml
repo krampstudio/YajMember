@@ -1,0 +1,24 @@
+python_preamble:
+- import: base64
+- import: re
+- import: google.appengine.ext.bulkload.transform
+- import: google.appengine.ext.bulkload.bulkloader_wizard
+- import: google.appengine.api.datastore
+- import: google.appengine.api.users
+
+transformers:
+
+- kind: Event
+  connector: csv
+
+  property_map:
+
+    - property: title
+      external_name: title
+
+    - property: description
+      external_name: description
+    
+    - property: date
+      external_name: date
+
