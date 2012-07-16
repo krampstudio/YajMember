@@ -11,8 +11,7 @@ repositories { mavenCentral() }
 
 dependencies {
 	gaeSdk "com.google.appengine:appengine-java-sdk:$gaeVersion"
-	compile "com.google.code.gson:gson:$gsonVersion"
-	compile "com.sun.jersey:jersey-archive:$jerseyVersion"
+	
 	compile "com.google.appengine:appengine:$gaeVersion"
 	compile "com.google.appengine:appengine-api-labs:$gaeVersion"
 	compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion"
@@ -21,19 +20,26 @@ dependencies {
 	compile "com.google.appengine.orm:datanucleus-appengine:$dataNucleusVersion"
 	compile "javax.persistence:persistence-api:$jpaVersion"
 	compile "javax.servlet:servlet-api:$servletVersion"
+	compile "com.google.inject:guice:$guiceVersion"
+	compile "com.google.code.gson:gson:$gsonVersion"
+	compile "com.sun.jersey:jersey-bundle:$jerseyVersion"
+	compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
 	testCompile "junit:junit:$junitVersion"
 }
 
 gae {
 	httpPort = port.toInteger()
 	downloadSdk = true
-	daemon = true
+//	daemon = true
 	
 	appcfg {
 		host = "$host"
 		email = "$email"
-		logs { //4 for CRITICAL, 3 for ERROR, 2 for WARNING, 1 for INFO, 0 for DEBUG.
-			severity = 1 }
+		logs { 
+			//4 for CRITICAL, 3 for ERROR, 2 for WARNING, 1 for INFO, 0 for DEBUG.
+			severity = 0 
+			outputFile = file('mylogs.txt')
+		}
 
 		app { id = "$appid" }
 	}

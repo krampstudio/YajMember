@@ -20,10 +20,12 @@ import org.yajug.users.service.MemberService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.inject.Inject;
 
 @Path("user")
 public class UserResource {
 
+	@Inject
 	private MemberService memberService;
 	
 	@GET
