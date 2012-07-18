@@ -5,8 +5,10 @@ import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQuery(name="Event.findAll", query="select e from Event e")
 public class Event  extends DomainObject{
 
 	

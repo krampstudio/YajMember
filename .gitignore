@@ -15,3 +15,6 @@
 build
 .gradle
 /nbproject/private/
+
+# gae appcfg
+src/main/scripts/bulkloader-*

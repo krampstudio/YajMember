@@ -15,10 +15,16 @@ dependencies {
 	compile "com.google.appengine:appengine:$gaeVersion"
 	compile "com.google.appengine:appengine-api-labs:$gaeVersion"
 	compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion"
-	compile "com.google.appengine:appengine-api-labs:$gaeVersion"
+//	compile "com.google.appengine:appengine-tools-sdk:$gaeVersion"
 	compile "com.google.appengine:appengine-remote-api:$gaeVersion"
-	compile "com.google.appengine.orm:datanucleus-appengine:$dataNucleusVersion"
-	compile "javax.persistence:persistence-api:$jpaVersion"
+//	compile "com.google.appengine.orm:datanucleus-appengine:$dataNucleusVersion"
+	compile 'org.datanucleus:datanucleus-api-jpa:3.0.9'
+	compile 'org.datanucleus:datanucleus-api-jdo:3.0.7'
+	compile 'com.google.appengine.orm:datanucleus-appengine:2.0.1'
+	compile 'org.datanucleus:datanucleus-core:3.0.10'
+	compile "org.apache.geronimo.specs:geronimo-jpa_2.0_spec:1.0"
+	compile 'javax.jdo:jdo-api:3.0.1'
+	compile 'javax.transaction:transaction-api:1.1'
 	compile "javax.servlet:servlet-api:$servletVersion"
 	compile "com.google.inject:guice:$guiceVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
@@ -30,7 +36,6 @@ dependencies {
 gae {
 	httpPort = port.toInteger()
 	downloadSdk = true
-//	daemon = true
 	
 	appcfg {
 		host = "$host"
@@ -38,23 +43,47 @@ gae {
 		logs { 
 			//4 for CRITICAL, 3 for ERROR, 2 for WARNING, 1 for INFO, 0 for DEBUG.
 			severity = 0 
-			outputFile = file('mylogs.txt')
+			outputFile = file('gae.log')
 		}
 
 		app { id = "$appid" }
 	}
 }
 
-task bulkUpload(type:Exec) {
+configurations {
+	jpa2 {
+		extendsFrom compile
+	}
+}
+
+project.gaeSdkRoot = gradle.gradleUserHomeDir.toURI().toString() + "gae-sdk/appengine-java-sdk-${gaeVersion}"
+
+task jpa2Enhance(dependsOn: classes) << {
+	
+	ant.importBuild gaeSdkRoot + "/config/user/ant-macros.xml"
+	
+	ant.echo(message: ">jpa2Enhance")
+	ant.enhance(failonerror: true, verbose: true, api: "JPA") {
+		arg(value:"-enhancerVersion")
+		arg(value:"v2")
+		classpath {
+			pathelement(path: gaeSdkRoot+'/lib/appengine-tools-api.jar')
+			pathelement(path: configurations.jpa2.asPath)
+			pathelement(path: "build/exploded-war/WEB-INF/classes")
+		}
+		fileset(dir: "build/exploded-war/WEB-INF/classes") {
+			include(name: '**/*.class')
+		}
+	}
+	ant.echo(message: "jpa2Enhance<")
+}
+gaeRun.dependsOn jpa2Enhance
+
+
+task bulkUpload(type:Exec) << {
 	workingDir 'src/main/scripts'
   
 	commandLine "appcfg.py upload_data --config_file=map.yaml \
-				--filename=events.csv --kind=Event \
-				--url=http://$host:$port/remote_api"
- }
-
-task testCmd << {
-	println "appcfg.py upload_data --config_file=map.yaml \
 				--filename=events.csv --kind=Event \
 				--url=http://$host:$port/remote_api"
 }

@@ -1,8 +1,9 @@
 package org.yajug.users.service;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.yajug.users.domain.Event;
 
@@ -10,13 +11,11 @@ public class EventServiceImpl extends Service implements EventService {
 
 	@Override
 	public List<Event> getAll() throws DataException {
-		List<Event> results = new ArrayList<Event>();
 		
-		Event e = new Event();
-		e.setDate(new Date());
-		e.setDescription("test");
-		results.add(e);
-		return results;
+		EntityManager em = getEntityManager();
+		TypedQuery<Event> tq = em.createNamedQuery("Event.findAll", Event.class);
+		
+		return tq.getResultList();
 	}
 
 }
