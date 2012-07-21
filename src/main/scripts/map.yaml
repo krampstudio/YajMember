@@ -12,7 +12,7 @@ transformers:
   connector: csv
 
   property_map:
-
+ 
     - property: title
       external_name: title
 
@@ -21,4 +21,5 @@ transformers:
     
     - property: date
       external_name: date
-
+      import_transform: transform.import_date_time('%Y-%m-%dT%H:%M:%S')
+      export_transform: transform.export_date_time('%Y-%m-%dT%H:%M:%S')
