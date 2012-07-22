@@ -56,26 +56,26 @@ configurations {
 	}
 }
 
-project.gaeSdkRoot = gradle.gradleUserHomeDir.toURI().toString() + "gae-sdk/appengine-java-sdk-${gaeVersion}"
+project.ext{
+	gaeSdkRoot = gradle.gradleUserHomeDir.toURI().toString() + "gae-sdk/appengine-java-sdk-${gaeVersion}"
+}
 
 task jpa2Enhance(dependsOn: classes) << {
 	
-	ant.importBuild gaeSdkRoot + "/config/user/ant-macros.xml"
+	ant.importBuild project.gaeSdkRoot + "/config/user/ant-macros.xml"
 	
-	ant.echo(message: ">jpa2Enhance")
 	ant.enhance(failonerror: true, verbose: true, api: "JPA") {
 		arg(value:"-enhancerVersion")
 		arg(value:"v2")
 		classpath {
-			pathelement(path: gaeSdkRoot+'/lib/appengine-tools-api.jar')
+			pathelement(path: project.gaeSdkRoot+'/lib/appengine-tools-api.jar')
 			pathelement(path: configurations.jpa2.asPath)
 			pathelement(path: "build/exploded-war/WEB-INF/classes")
 		}
-		fileset(dir: "build/exploded-war/WEB-INF/classes") {
+		fileset(dir: "build/exploded-war/WEB-INF/classes/") {
 			include(name: '**/*.class')
 		}
 	}
-	ant.echo(message: "jpa2Enhance<")
 }
 gaeRun.dependsOn jpa2Enhance
 

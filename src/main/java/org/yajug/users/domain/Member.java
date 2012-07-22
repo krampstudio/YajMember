@@ -12,7 +12,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 /**
- * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  *
  */
 @Entity

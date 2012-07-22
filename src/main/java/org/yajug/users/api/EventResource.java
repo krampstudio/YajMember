@@ -27,7 +27,7 @@ public class EventResource {
 	@Produces({MediaType.APPLICATION_JSON})
 	public String list(){
 		
-		Gson gson = new GsonBuilder().create();
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		
 		List<Event> events = new ArrayList<Event>();
 		try {
