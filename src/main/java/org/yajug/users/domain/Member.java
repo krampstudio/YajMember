@@ -3,7 +3,6 @@
  */
 package org.yajug.users.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -13,7 +12,6 @@ import javax.persistence.Enumerated;
 
 /**
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
- *
  */
 @Entity
 public class Member extends DomainObject {
@@ -22,7 +20,6 @@ public class Member extends DomainObject {
 	@Basic private String lastName;
 	@Basic private String email;
 	@Basic private String company;
-	@Basic private List<Membership> memberships;
 	@Enumerated(EnumType.STRING) private List<Role> roles;
 	
 	public Member(){
@@ -82,30 +79,6 @@ public class Member extends DomainObject {
 	 */
 	public void setCompany(String company) {
 		this.company = company;
-	}
-	
-	/**
-	 * @return the memberships
-	 */
-	public List<Membership> getMemberships() {
-		return memberships;
-	}
-	
-	/**
-	 * @param membership
-	 */
-	public void addMembership(Membership membership){
-		if(this.memberships == null){
-			this.memberships = new ArrayList<Membership>();
-		}
-		this.memberships.add(membership);
-	}
-	
-	/**
-	 * @param memberships the memberships to set
-	 */
-	public void setMemberships(List<Membership> memberships) {
-		this.memberships = memberships;
 	}
 	
 	/**

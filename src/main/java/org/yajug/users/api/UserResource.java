@@ -75,7 +75,7 @@ public class UserResource {
 		if(validMembership){
 			Membership membership = new Membership();
 			membership.setYear(Integer.valueOf(new SimpleDateFormat().format(new Date())));
-			member.addMembership(membership);
+			//TODO save membership
 		}
 		
 		try {

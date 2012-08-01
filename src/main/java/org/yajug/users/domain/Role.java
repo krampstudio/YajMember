@@ -1,5 +1,9 @@
 package org.yajug.users.domain;
 
+/**
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public enum Role {
 	PRESIDENT,
 	SECRETARY,
