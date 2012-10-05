@@ -1,30 +1,15 @@
 apply plugin: 'java'
-apply plugin: 'gae'
 
-buildscript {
-	repositories { mavenCentral() }
-
-	dependencies { classpath "org.gradle.api.plugins:gradle-gae-plugin:$gaePluginVersion" }
+configurations {
+	javaAgentOpenJpa
 }
 
 repositories { mavenCentral() }
 
 dependencies {
-	gaeSdk "com.google.appengine:appengine-java-sdk:$gaeVersion"
-	
-	compile "com.google.appengine:appengine:$gaeVersion"
-	compile "com.google.appengine:appengine-api-labs:$gaeVersion"
-	compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion"
-//	compile "com.google.appengine:appengine-tools-sdk:$gaeVersion"
-	compile "com.google.appengine:appengine-remote-api:$gaeVersion"
-//	compile "com.google.appengine.orm:datanucleus-appengine:$dataNucleusVersion"
-	compile 'org.datanucleus:datanucleus-api-jpa:3.0.9'
-	compile 'org.datanucleus:datanucleus-api-jdo:3.0.7'
-	compile 'com.google.appengine.orm:datanucleus-appengine:2.0.1'
-	compile 'org.datanucleus:datanucleus-core:3.0.10'
-	compile "org.apache.geronimo.specs:geronimo-jpa_2.0_spec:1.0"
-	compile 'javax.jdo:jdo-api:3.0.1'
-	compile 'javax.transaction:transaction-api:1.1'
+	javaAgentOpenJpa "org.apache.openjpa:openjpa-all:2.2.0"
+	compile "org.apache.openjpa:openjpa-all:2.2.0"
+	compile "org.apache.derby:derby:10.9.1.0"
 	compile "javax.servlet:servlet-api:$servletVersion"
 	compile "com.google.inject:guice:$guiceVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
@@ -33,57 +18,7 @@ dependencies {
 	testCompile "junit:junit:$junitVersion"
 }
 
-gae {
-	httpPort = port.toInteger()
-	downloadSdk = true
-	
-	appcfg {
-		host = "$host"
-		email = "$email"
-		logs { 
-			//4 for CRITICAL, 3 for ERROR, 2 for WARNING, 1 for INFO, 0 for DEBUG.
-			severity = 0 
-			outputFile = file('gae.log')
-		}
-
-		app { id = "$appid" }
-	}
-}
-
-configurations {
-	jpa2 {
-		extendsFrom compile
-	}
-}
-
-project.ext{
-	gaeSdkRoot = gradle.gradleUserHomeDir.toURI().toString() + "gae-sdk/appengine-java-sdk-${gaeVersion}"
-}
-
-task jpa2Enhance(dependsOn: classes) << {
-	
-	ant.importBuild project.gaeSdkRoot + "/config/user/ant-macros.xml"
-	
-	ant.enhance(failonerror: true, verbose: true, api: "JPA") {
-		arg(value:"-enhancerVersion")
-		arg(value:"v2")
-		classpath {
-			pathelement(path: project.gaeSdkRoot+'/lib/appengine-tools-api.jar')
-			pathelement(path: configurations.jpa2.asPath)
-			pathelement(path: "build/exploded-war/WEB-INF/classes")
-		}
-		fileset(dir: "build/exploded-war/WEB-INF/classes/") {
-			include(name: '**/*.class')
-		}
-	}
-}
-gaeRun.dependsOn jpa2Enhance
-
-
-task bulkUpload(type:Exec) << {
-	workingDir 'src/main/scripts'
-  
-	commandLine "appcfg.py upload_data --config_file=map.yaml \
-				--filename=events.csv --kind=Event \
-				--url=http://$host:$port/remote_api"
+test.doFirst {
+	String jvmArgsOpenJpa = "-javaagent:${configurations.javaAgentOpenJpa.files.iterator().next()}"
+	jvmArgs jvmArgsOpenJpa 
 }

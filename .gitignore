@@ -10,11 +10,15 @@
 .settings
 .classpath
 .metadata
+bin
 
 # gradle
 build
 .gradle
+
+#netbeans
 /nbproject/private/
 
-# gae appcfg
-src/main/scripts/bulkloader-*
+#derby
+derby.log
+testdb

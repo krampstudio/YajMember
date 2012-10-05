@@ -6,21 +6,22 @@ package org.yajug.users.domain;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 /**
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Entity
+@Embeddable
 public class Member extends DomainObject {
 
 	@Basic private String firstName;
 	@Basic private String lastName;
 	@Basic private String email;
 	@Basic private String company;
-	@Enumerated(EnumType.STRING) private List<Role> roles;
+	@ElementCollection private List<Role> roles;
 	
 	public Member(){
 	}

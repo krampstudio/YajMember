@@ -4,14 +4,20 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 /**
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Entity
+@Embeddable
 @NamedQuery(name="Event.findAll", query="select e from Event e")
 public class Event  extends DomainObject{
 
@@ -19,7 +25,7 @@ public class Event  extends DomainObject{
 	@Basic private String title;
 	@Basic private String description;
 	@Basic private Date date;
-	@Basic private List<Member> participants;
+	@ManyToMany private List<Member> participants;
 	
 	/**
 	 * @return the title

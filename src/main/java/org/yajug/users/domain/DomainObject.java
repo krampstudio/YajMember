@@ -7,15 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-import com.google.appengine.api.datastore.Key;
-
 @Entity
 @MappedSuperclass
 public abstract class DomainObject {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic private Key key;
+	@Basic private long  key;
 	
 	public DomainObject(){
 	}
@@ -23,14 +21,14 @@ public abstract class DomainObject {
 	/**
 	 * @return the key
 	 */
-	public Key getKey() {
+	public long getKey() {
 		return key;
 	}
 
 	/**
 	 * @param key the key to set
 	 */
-	public void setKey(Key key) {
+	public void setKey(long key) {
 		this.key = key;
 	}
 	

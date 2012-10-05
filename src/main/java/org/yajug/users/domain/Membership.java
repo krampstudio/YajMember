@@ -3,7 +3,9 @@ package org.yajug.users.domain;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 /**
  * 
@@ -17,8 +19,8 @@ public class Membership  extends DomainObject {
 	@Basic private int year;
 	@Basic private Date paiementDate;
 	@Basic private int amount;
-	@Basic private Event event;
-	@Basic private Member member;
+	@Embedded private Event event;
+	@Embedded private Member member;
 	
 	/**
 	 * @return the year
