@@ -9,15 +9,17 @@ public abstract class Service {
 	private static final String PERSISTENCE_UNIT = "transactions-optional";
 	
 	private static EntityManagerFactory emfInstance;
+	private EntityManager em;
 	
-	private static EntityManagerFactory getEntityManagerFactory() {
-		if (emfInstance == null) {
-			emfInstance = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
-		}
-		return emfInstance;
+	static{
+		emfInstance = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
 	}
 	
-	protected static EntityManager getEntityManager(){
-		return getEntityManagerFactory().createEntityManager();
+	public Service(){
+		em = emfInstance.createEntityManager();
+	}
+	
+	protected EntityManager getEntityManager(){
+		return em;
 	}
 }

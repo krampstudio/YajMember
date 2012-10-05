@@ -6,6 +6,7 @@ import javax.persistence.Basic;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 /**
  * 
@@ -14,13 +15,16 @@ import javax.persistence.OneToOne;
 @Entity
 public class Membership  extends DomainObject {
 
-	public static final int ANNUAL_FEE = 40;
+	@Transient public static int ANNUAL_FEE = 40;
 	
 	@Basic private int year;
 	@Basic private Date paiementDate;
 	@Basic private int amount;
-	@Embedded private Event event;
-	@Embedded private Member member;
+	@Transient private Event event;
+	@Transient private Member member;
+	
+	public Membership(){
+	}
 	
 	/**
 	 * @return the year

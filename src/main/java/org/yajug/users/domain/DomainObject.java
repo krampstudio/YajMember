@@ -13,7 +13,7 @@ public abstract class DomainObject {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic private long  key;
+	@Basic protected long  key;
 	
 	public DomainObject(){
 	}

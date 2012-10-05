@@ -4,12 +4,12 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" version="1.0">
 
-    <persistence-unit name="transactions-optional">
+    <persistence-unit name="transactions-optional"  transaction-type="RESOURCE_LOCAL">
+    	<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
         <class>org.yajug.users.domain.DomainObject</class>
-        <class>org.yajug.users.domain.Role</class>
         <class>org.yajug.users.domain.Member</class>
-        <class>org.yajug.users.domain.Event</class>
-        <class>org.yajug.users.domain.Membership</class>
+      <!--   <class>org.yajug.users.domain.Event</class>
+        <class>org.yajug.users.domain.Membership</class> -->
         <properties>
 			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" />
 			<property name="openjpa.ConnectionURL" value="jdbc:derby:testdb;create=true" />

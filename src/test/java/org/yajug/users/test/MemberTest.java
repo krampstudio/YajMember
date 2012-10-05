@@ -17,16 +17,9 @@ public class MemberTest {
 		assertNotNull(service);
 		
 		try {
-			service.save(new Member() {
-				@Override
-				public String getFirstName() {
-					return "Bertrand";
-				}
-				@Override
-				public String getLastName() {
-					return "Chevrier";
-				}
-			});
+			Member m = new Member();
+			m.setFirstName("Bertrand");
+			service.save(m);
 		} catch (DataException e) {
 			e.printStackTrace();
 			fail(e.getLocalizedMessage());

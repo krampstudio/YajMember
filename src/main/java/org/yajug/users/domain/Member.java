@@ -5,23 +5,31 @@ package org.yajug.users.domain;
 
 import java.util.List;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 
 /**
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Entity
-@Embeddable
+@Access(AccessType.FIELD)
 public class Member extends DomainObject {
 
 	@Basic private String firstName;
 	@Basic private String lastName;
 	@Basic private String email;
 	@Basic private String company;
-	@ElementCollection private List<Role> roles;
+	
+//	@ElementCollection(targetClass=Role.class)
+//	@Enumerated(EnumType.STRING)
+	@Transient
+	private List<Role> roles;
 	
 	public Member(){
 	}
