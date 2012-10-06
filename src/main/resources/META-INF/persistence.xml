@@ -8,12 +8,14 @@
     	<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
         <class>org.yajug.users.domain.DomainObject</class>
         <class>org.yajug.users.domain.Member</class>
-      <!--   <class>org.yajug.users.domain.Event</class>
-        <class>org.yajug.users.domain.Membership</class> -->
+        <class>org.yajug.users.domain.Event</class>
+        <class>org.yajug.users.domain.Membership</class>
         <properties>
 			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" />
-			<property name="openjpa.ConnectionURL" value="jdbc:derby:testdb;create=true" />
-			<property name="openjpa.ConnectionDriverName" value="org.apache.derby.jdbc.EmbeddedDriver" />
+			<property name="openjpa.ConnectionURL" value="jdbc:h2:tcp://localhost/~/test" />
+			<property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
+			<property name="openjpa.ConnectionUserName" value="sa"/>
+      		<property name="openjpa.ConnectionPassword" value=""/>
 		</properties>
     </persistence-unit>
 
