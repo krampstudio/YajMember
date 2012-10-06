@@ -3,21 +3,22 @@ package org.yajug.users.domain;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Basic;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 /**
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Entity
+@Access(AccessType.FIELD)
+@Inheritance(strategy=InheritanceType.JOINED)
 @NamedQuery(name="Event.findAll", query="select e from Event e")
 public class Event  extends DomainObject{
 
@@ -25,7 +26,7 @@ public class Event  extends DomainObject{
 	@Basic private String title;
 	@Basic private String description;
 	@Basic private Date date;
-	@Transient private List<Member> participants;
+	@ManyToMany private List<Member> participants;
 	
 	public Event(){
 	}

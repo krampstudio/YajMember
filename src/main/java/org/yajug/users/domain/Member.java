@@ -12,13 +12,15 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Transient;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 /**
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Entity
 @Access(AccessType.FIELD)
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Member extends DomainObject {
 
 	@Basic private String firstName;
@@ -26,13 +28,22 @@ public class Member extends DomainObject {
 	@Basic private String email;
 	@Basic private String company;
 	
-//	@ElementCollection(targetClass=Role.class)
-//	@Enumerated(EnumType.STRING)
-	@Transient
+	@ElementCollection(targetClass=Role.class)
+	@Enumerated(EnumType.STRING)
 	private List<Role> roles;
 	
-	public Member(){
+	
+	public Member() {
 	}
+	
+	public Member(String firstName, String lastName ,String email, String company, List<Role> roles) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.company = company;
+		this.roles = roles;
+	}
+	
 	
 	/**
 	 * @return the firstName

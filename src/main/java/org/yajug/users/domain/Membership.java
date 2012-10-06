@@ -2,9 +2,14 @@ package org.yajug.users.domain;
 
 import java.util.Date;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -13,15 +18,17 @@ import javax.persistence.Transient;
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Entity
+@Access(AccessType.FIELD)
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Membership  extends DomainObject {
 
-	@Transient public static int ANNUAL_FEE = 40;
+	public static final int ANNUAL_FEE = 40;
 	
 	@Basic private int year;
 	@Basic private Date paiementDate;
 	@Basic private int amount;
-	@Transient private Event event;
-	@Transient private Member member;
+	@ManyToOne private Event event;
+	@ManyToOne private Member member;
 	
 	public Membership(){
 	}

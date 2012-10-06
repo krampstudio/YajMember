@@ -15,7 +15,9 @@ public class MemberServiceImpl extends Service implements MemberService {
 		
 		EntityManager em = getEntityManager();
 		try{
+			em.getTransaction().begin();
 			em.persist(member);
+			em.getTransaction().commit();
 		}
 		finally{
 			em.close();
