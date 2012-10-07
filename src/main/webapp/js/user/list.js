@@ -2,7 +2,7 @@ define( ['gridy'], function(){
 	return {
 		build: function(){
 			$("#users").gridy({
-				url		: '/api/user/list',
+				url		: 'api/user/list',
 				dataType	: 'jsonp',
 				evenOdd		: true,
 				clickFx		: true,

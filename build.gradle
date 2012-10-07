@@ -1,38 +1,43 @@
 apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = 1.6
 
 configurations {
 	javaAgentOpenJpa
 }
 
-
 repositories { mavenCentral() }
 
 dependencies {
-	javaAgentOpenJpa "org.apache.openjpa:openjpa-all:2.2.0"
-	compile "org.apache.openjpa:openjpa-all:2.2.0"
-//	compile "org.apache.derby:derby:10.9.1.0"
-	compile 'com.h2database:h2:1.3.168'
+	javaAgentOpenJpa "org.apache.openjpa:openjpa-all:$openjpaVersion"
+	compile "org.apache.openjpa:openjpa-all:$openjpaVersion"
+	compile "com.h2database:h2:$h2Version"
 	compile "javax.servlet:servlet-api:$servletVersion"
-	compile "com.google.inject:guice:$guiceVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
+	compile "com.google.inject:guice:$guiceVersion"
 	compile "com.sun.jersey:jersey-bundle:$jerseyVersion"
 	compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
 	testCompile "junit:junit:$junitVersion"
 }
 
-task enhance(dependsOn: 'classes') << {
+task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA at build time") << {
 	ant.taskdef(name: 'openjpac', classname: 'org.apache.openjpa.ant.PCEnhancerTask'){
 		 classpath{
-			 pathelement(location: "build/classes/main")
-			 pathelement(location: "build/resources/main")
+			 pathelement(location: sourceSets.main.output.classesDir)
+			 pathelement(location: sourceSets.main.output.resourcesDir)
 			 pathelement(location: configurations.javaAgentOpenJpa.asPath)
 		 }
 	}
 	ant.openjpac(){
 		 classpath{
-			 pathelement(location: "build/classes/main")
-			 pathelement(location: "build/resources/main")
+			 pathelement(location: sourceSets.main.output.classesDir)
+			 pathelement(location: sourceSets.main.output.resourcesDir)
 			 pathelement(location: configurations.javaAgentOpenJpa.asPath)
 		 }
 	}
 }
+
+
+test.dependsOn enhance
+war.dependsOn enhance

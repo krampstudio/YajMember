@@ -4,7 +4,7 @@ define(function(){
 
 			$.ajax({
 				type 		: 'GET',
-				url 		: '/api/event/list',
+				url 		: 'api/event/list',
 				dataType 	: 'json',
 			}).done(function(data) {
 				if(!data.length || data.error){

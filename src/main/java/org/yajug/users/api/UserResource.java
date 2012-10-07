@@ -2,6 +2,7 @@ package org.yajug.users.api;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -16,6 +17,7 @@ import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.MemberService;
+import org.yajug.users.vo.GridVo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,6 +34,18 @@ public class UserResource {
 	@Path("list")
 	@Produces({MediaType.APPLICATION_JSON})
 	public String list(@QueryParam("callback") String callback){
+		
+		Gson gson = new GsonBuilder()
+						.serializeNulls()
+						.create();
+		
+		try {
+			List<Member> members = memberService.getAll();
+			String json = callback+"(" + gson.toJson(new GridVo(members)) + ")";
+			System.out.println(json);
+		} catch (DataException e) {
+			e.printStackTrace();
+		}
 		
 		final String expected = callback+"({" +
 				"\"list\":[{" +

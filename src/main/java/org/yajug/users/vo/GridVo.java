@@ -2,52 +2,43 @@ package org.yajug.users.vo;
 
 import java.util.List;
 
+import org.yajug.users.domain.Member;
+
 public class GridVo {
 
-	private int page;
+	private List<Member> list;
 	private int total;
 	
-	private List<GridRowVo> rows;
-
-	/**
-	 * @return the page
-	 */
-	public int getPage() {
-		return page;
+	public GridVo(List<Member> list) {
+		this.list = list;
+		this.total = list.size();
 	}
-
+	
 	/**
-	 * @param page the page to set
+	 * @return the list
 	 */
-	public void setPage(int page) {
-		this.page = page;
+	public List<Member> getList() {
+		return list;
 	}
-
+	
+	/**
+	 * @param list the list to set
+	 */
+	public void setList(List<Member> list) {
+		this.list = list;
+	}
+	
 	/**
 	 * @return the total
 	 */
 	public int getTotal() {
 		return total;
 	}
-
+	
 	/**
 	 * @param total the total to set
 	 */
 	public void setTotal(int total) {
 		this.total = total;
-	}
-
-	/**
-	 * @return the rows
-	 */
-	public List<GridRowVo> getRows() {
-		return rows;
-	}
-
-	/**
-	 * @param rows the rows to set
-	 */
-	public void setRows(List<GridRowVo> rows) {
-		this.rows = rows;
 	}
 }

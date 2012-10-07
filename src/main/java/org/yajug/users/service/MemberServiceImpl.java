@@ -1,11 +1,24 @@
 package org.yajug.users.service;
 
+
+import java.util.List;
+
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.yajug.users.domain.Member;
 
 public class MemberServiceImpl extends Service implements MemberService {
 
+	@Override
+	public List<Member> getAll() throws DataException {
+		
+		EntityManager em = getEntityManager();
+		TypedQuery<Member> tq = em.createNamedQuery("Member.findAll", Member.class);
+		
+		return tq.getResultList();
+	}
+	
 	@Override
 	public boolean save(Member member) throws DataException{
 		
@@ -24,5 +37,4 @@ public class MemberServiceImpl extends Service implements MemberService {
 		}
 		return true;
 	}
-
 }

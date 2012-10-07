@@ -11,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQuery;
 
 /**
  * This domain pojo represent a member of the jug.
@@ -20,6 +21,7 @@ import javax.persistence.InheritanceType;
 @Entity
 @Access(AccessType.FIELD)
 @Inheritance(strategy=InheritanceType.JOINED)
+@NamedQuery(name="Member.findAll", query="select m from Member m")
 public class Member extends DomainObject {
 
 	@Basic private String firstName;

@@ -11,6 +11,7 @@
         <class>org.yajug.users.domain.Event</class>
         <class>org.yajug.users.domain.Membership</class>
         <properties>
+        	<property name="openjpa.DynamicEnhancementAgent" value="false" />
 			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" />
 			<property name="openjpa.ConnectionURL" value="jdbc:h2:tcp://localhost/~/test" />
 			<property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
