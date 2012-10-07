@@ -7,6 +7,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+/**
+ * Provides shared properties by all the domain objects like the identifier.
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 @Entity
 @MappedSuperclass
 public abstract class DomainObject {
@@ -31,6 +36,4 @@ public abstract class DomainObject {
 	public void setKey(long key) {
 		this.key = key;
 	}
-	
-	
 }

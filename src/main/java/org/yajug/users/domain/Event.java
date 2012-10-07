@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 
 /**
+ * This domain pojo represents an event of the jug
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
@@ -22,12 +23,14 @@ import javax.persistence.NamedQuery;
 @NamedQuery(name="Event.findAll", query="select e from Event e")
 public class Event  extends DomainObject{
 
-	
 	@Basic private String title;
 	@Basic private String description;
 	@Basic private Date date;
 	@ManyToMany private List<Member> participants;
 	
+	/**
+	 * Default constructor needed by openjpa.
+	 */
 	public Event(){
 	}
 	

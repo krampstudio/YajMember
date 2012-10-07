@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.yajug.users.domain;
 
 import java.util.List;
@@ -16,6 +13,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 /**
+ * This domain pojo represent a member of the jug.
+ * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Entity
@@ -32,10 +31,20 @@ public class Member extends DomainObject {
 	@Enumerated(EnumType.STRING)
 	private List<Role> roles;
 	
-	
+	/**
+	 * Default constructor needed by openjpa.
+	 */
 	public Member() {
 	}
 	
+	/**
+	 * Convenient constructor
+	 * @param firstName
+	 * @param lastName
+	 * @param email
+	 * @param company
+	 * @param roles
+	 */
 	public Member(String firstName, String lastName ,String email, String company, List<Role> roles) {
 		this.firstName = firstName;
 		this.lastName = lastName;
