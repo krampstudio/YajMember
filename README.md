@@ -5,11 +5,13 @@ _Yet Another Jug Member App_
 
 Small app to manage our java user group users
 
+Build : Gradle
+
 Server side stack
 -----------------
 
-* Google App Engine
-* Gradle
+* Open JPA
+* Servlet 3
 * Guice
 * Jersey
 
