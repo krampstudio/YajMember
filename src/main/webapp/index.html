@@ -31,20 +31,26 @@
 			<a href="http://www.yajug.org" target="_blank">www.yajug.org</a>
 		</div>
 	</div>
-	<!-- {{if valid === true}}y{{else}}n{{/if}} -->
 	<script id="template" type="text/x-jquery-tmpl">
 			<tr>
 				<td>${key}</td>
-				<td>n</td>
+				<td>
+				{{if valid === true}}
+				<img src="img/valid.png" alt="y" title="${firstName} ${lastName} is a valid member" />
+				{{else}}
+				<img src="img/invalid.png" alt="n" title="${firstName} ${lastName} isn't a valid member" />
+				{{/if}}				
+				</td>
 				<td>${firstName}</td>
 				<td>${lastName}</td>
 				<td>${email}</td>
 				<td>${company}</td>
 				<td>${roles}</td>
 				<td class="gridy-button">
-					<a href="#">edit</a>
+					<a href="#">edit</a>&nbsp;
+					<a href="#">remove</a>
 				</td>
 			</tr>
-		</script>
+	</script>
 </body>
 </html> 

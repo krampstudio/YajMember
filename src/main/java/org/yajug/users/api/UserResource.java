@@ -19,13 +19,11 @@ import org.yajug.users.service.DataException;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.vo.GridVo;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 
 @Path("user")
-public class UserResource {
+public class UserResource extends RestResource {
 
 	@Inject
 	private MemberService memberService;
@@ -33,31 +31,16 @@ public class UserResource {
 	@GET
 	@Path("list")
 	@Produces({MediaType.APPLICATION_JSON})
-	public String list(@QueryParam("callback") String callback){
+	public String list(@QueryParam("callback") String callback) {
 		
-		Gson gson = new GsonBuilder()
-						.serializeNulls()
-						.create();
 		String json = "";
 		try {
 			List<Member> members = memberService.getAll();
-			json = callback+"(" + gson.toJson(new GridVo(members)) + ")";
+			json = callback+"(" + getSerializer().toJson(new GridVo(members)) + ")";
 		} catch (DataException e) {
 			e.printStackTrace();
-		}
-		
-//		json = callback+"(" +"{\"list\":[" +
-//					"{\"key\":12," +
-//					"\"valid\":false," +
-//					"\"firstName\":\"Bertrand\"," +
-//					"\"lastName\":\"Chevrier\"," +
-//					"\"email\":\"bertrand.chevrier@yajug.org\"," +
-//					"\"company\":\"yajug\"," +
-//					"\"roles\":null," +
-//					"}]," +
-//					"\"total\":1}"
-//				+ ")";
-		
+			json = serializeException(e);
+		} 
 		return json;
 	}
 	
@@ -71,11 +54,8 @@ public class UserResource {
 
 		boolean saved = false;
 		
-		Gson gson = new GsonBuilder()
-						.serializeNulls()
-						.create();
 		
-		Member member = gson.fromJson(memberData, Member.class);
+		Member member = getSerializer().fromJson(memberData, Member.class);
 		
 		if(validMembership){
 			Membership membership = new Membership();
@@ -91,7 +71,7 @@ public class UserResource {
 		
 		response.addProperty("saved", saved);
 		
-		return gson.toJson(response);
+		return getSerializer().toJson(response);
 	}
 	
 	public void setMemberService(MemberService memberService) {

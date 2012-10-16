@@ -6,9 +6,9 @@ define(function(){
 				type 		: 'GET',
 				url 		: 'api/event/list',
 				dataType 	: 'json',
-			}).done(function(data) {
+			}).done(function(data) {	//data is empty
 				if(!data.length || data.error){
-					alert("Error : " + data.error ? data.error : "unknown");
+					$.error("Error : " + data.error ? data.error : "unknown");
 				} else {
 					var template = "<option value='${date}'>${date} - ${description}</option>";
 					$.tmpl(template, data).appendTo('#events-subscribed');
@@ -63,7 +63,7 @@ define(function(){
 					}
 				}).done(function(data) {
 					if(!data.saved || data.error){
-						alert("Error : " + data.error ? data.error : "unknown");
+						$.error("Error : " + data.error ? data.error : "unknown");
 					} else {
 						alert("Saved");
 					}
@@ -72,5 +72,5 @@ define(function(){
 				return false;
 			});
 		}
-	}
+	};
 });

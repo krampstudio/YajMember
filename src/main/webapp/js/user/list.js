@@ -15,14 +15,13 @@ define( ['gridy'], function(){
 				 */
 				columns	: [
 				    { name: 'Id', value: 'key', width: 45 },
-					{ name: 'Valid Member',value: 'valid', width: 95 },
+					{ name: 'Valid Member',value: 'valid', width: 100 },
 					{ name: 'First Name', value: 'firstName', width: 150 },
 					{ name: 'Last Name', value: 'lastName', width: 150 },
-					{ name: 'Email', value: 'email', width: 300 },
+					{ name: 'Email', value: 'email', width: 280 },
 					{ name: 'Company', value: 'company', width: 100 },
 					{ name: 'Roles', value: 'roles', width: 100 },
-					{ name: 'Actions', value: 'actions', width: 250 },
-					{ width: 100 }
+					{ name: 'Actions', value: 'actions', width: 240 }
 				]
 			});
 		}
