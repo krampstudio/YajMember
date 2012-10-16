@@ -10,4 +10,6 @@ public interface MemberService {
 	List<Member> getAll() throws DataException;
 	
 	boolean save(Member member) throws DataException;
+	
+	boolean remove(Member member) throws DataException;
 }

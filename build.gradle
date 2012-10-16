@@ -39,6 +39,6 @@ task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA 
 	}
 }
 
-
 test.dependsOn enhance
 war.dependsOn enhance
+jettyRun.dependsOn enhance

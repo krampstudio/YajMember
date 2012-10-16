@@ -38,36 +38,27 @@ public class UserResource {
 		Gson gson = new GsonBuilder()
 						.serializeNulls()
 						.create();
-		
+		String json = "";
 		try {
 			List<Member> members = memberService.getAll();
-			String json = callback+"(" + gson.toJson(new GridVo(members)) + ")";
-			System.out.println(json);
+			json = callback+"(" + gson.toJson(new GridVo(members)) + ")";
 		} catch (DataException e) {
 			e.printStackTrace();
 		}
 		
-		final String expected = callback+"({" +
-				"\"list\":[{" +
-					"\"id\":\"1\"," +
-					"\"valid\":true," +
-					"\"email\":\"chevrier.bertrand@gmail.com\"," +
-					"\"company\":\"\"," +
-					"\"role\":\"\"," +
-					"\"lastname\":\"chevrier\"," +
-					"\"firstname\":\"bertrand\"" +
-				"},{" +
-					"\"id\":\"2\"," +
-					"\"valid\":true," +
-					"\"email\":\"emmylou.boquet@gmail.com\"," +
-					"\"company\":\"\"," +
-					"\"role\":\"\"," +
-					"\"lastname\":\"boquet\"," +
-					"\"firstname\":\"emmylou\"" +
-				"}]," +
-				"\"total\":2"  +
-			"})";
-		return expected;
+//		json = callback+"(" +"{\"list\":[" +
+//					"{\"key\":12," +
+//					"\"valid\":false," +
+//					"\"firstName\":\"Bertrand\"," +
+//					"\"lastName\":\"Chevrier\"," +
+//					"\"email\":\"bertrand.chevrier@yajug.org\"," +
+//					"\"company\":\"yajug\"," +
+//					"\"roles\":null," +
+//					"}]," +
+//					"\"total\":1}"
+//				+ ")";
+		
+		return json;
 	}
 	
 	@PUT

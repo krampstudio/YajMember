@@ -55,3 +55,8 @@ form select,
 form textarea{
 	width: 49%;
 }
+
+/* gridy fix */
+.gridy-table .gridy-header th{
+	text-align:left;
+}

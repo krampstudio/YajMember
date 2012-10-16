@@ -37,4 +37,22 @@ public class MemberServiceImpl extends Service implements MemberService {
 		}
 		return true;
 	}
+
+	@Override
+	public boolean remove(Member member) throws DataException {
+		if(member == null){
+			throw new DataException("Cannot save a null member");
+		}
+		
+		EntityManager em = getEntityManager();
+		try{
+			em.getTransaction().begin();
+			em.remove(member);
+			em.getTransaction().commit();
+		}
+		finally{
+			em.close();
+		}
+		return true;
+	}
 }

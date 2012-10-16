@@ -9,13 +9,18 @@ define( ['gridy'], function(){
 				resize		: true,
 				height		: 600,
 				width		: 1200,
+				
+				/*
+				 * the column list must match the template defined in index.html! 
+				 */
 				columns	: [
-					{ name: 'Valid Member',value: 'valid', width: 100 },
-					{ name: 'First Name', value: 'firstname', width: 150 },
-					{ name: 'Last Name', value: 'lastname', width: 150 },
+				    { name: 'Id', value: 'key', width: 45 },
+					{ name: 'Valid Member',value: 'valid', width: 95 },
+					{ name: 'First Name', value: 'firstName', width: 150 },
+					{ name: 'Last Name', value: 'lastName', width: 150 },
 					{ name: 'Email', value: 'email', width: 300 },
 					{ name: 'Company', value: 'company', width: 100 },
-					{ name: 'Role', value: 'role', width: 100 },
+					{ name: 'Roles', value: 'roles', width: 100 },
 					{ name: 'Actions', value: 'actions', width: 250 },
 					{ width: 100 }
 				]
