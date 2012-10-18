@@ -1,5 +1,7 @@
 package org.yajug.users.domain;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Access;
@@ -11,7 +13,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
 /**
  * This domain pojo represent a member of the jug.
@@ -32,6 +36,10 @@ public class Member extends DomainObject {
 	@ElementCollection(targetClass=Role.class)
 	@Enumerated(EnumType.STRING)
 	private List<Role> roles;
+	
+	@ManyToMany private List<Membership> memberships;
+	
+	@Transient private boolean valid;
 	
 	/**
 	 * Default constructor needed by openjpa.
@@ -55,6 +63,10 @@ public class Member extends DomainObject {
 		this.roles = roles;
 	}
 	
+	public Member(String firstName, String lastName ,String email, String company, List<Role> roles ,List<Membership> memberships) {
+		this(firstName, lastName, email, company, roles);
+		this.setMemberships(memberships);
+	}
 	
 	/**
 	 * @return the firstName
@@ -126,4 +138,50 @@ public class Member extends DomainObject {
 		this.roles = role;
 	}
 
+	/**
+	 * @return the memberships
+	 */
+	public List<Membership> getMemberships() {
+		return memberships;
+	}
+
+	/**
+	 * @param memberships the memberships to set
+	 */
+	public void setMemberships(List<Membership> memberships) {
+		this.memberships = memberships;
+		this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
+	}
+
+	/**
+	 * Check if this member instance has 
+	 * a valid membership for the current year.
+	 * 
+	 * @return true if valid
+	 */
+	public boolean isValid() {
+		return valid;
+	}
+	
+	/**
+	 * Check if this member instance has 
+	 * a valid membership for the specified year.
+	 * 
+	 * @param year the year we check for validity
+	 * @return true if valid
+	 */
+	public boolean isValidFor(int year) {
+		boolean validFor = false;
+		if(this.memberships == null){
+			validFor = false;
+		} else {
+			for(Membership ms : this.memberships){
+				if(ms.getYear() == year){
+					
+					break;
+				}
+			}
+		}
+		return validFor;
+	}
 }

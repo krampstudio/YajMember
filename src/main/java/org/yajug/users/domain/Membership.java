@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 /**
  * This domain pojo represent a annual membership paid by a member.
@@ -18,6 +19,10 @@ import javax.persistence.ManyToOne;
 @Entity
 @Access(AccessType.FIELD)
 @Inheritance(strategy=InheritanceType.JOINED)
+@NamedQuery(
+	name="Membership.getAllByMember", 
+	query="select ms from Membership ms where ms.member = :member"
+)
 public class Membership  extends DomainObject {
 
 	public static final int ANNUAL_FEE = 40;
