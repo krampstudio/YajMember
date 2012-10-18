@@ -41,6 +41,9 @@ form div{
 form div:hover{
 	background-color: #C8D8E2;
 }
+form div:last:hover{
+	background-color: #fff;
+}
 form label{
 	display:inline-block;
 	width:49%;
@@ -59,4 +62,15 @@ form textarea{
 /* gridy fix */
 .gridy-table .gridy-header th{
 	text-align:left;
+	text-indent:6px;
+}
+.gridy-table .gridy-header th .gridy-arrow-none{
+	display:inline-block;
+	float: none;
+}
+.gridy-table .gridy-button a{
+	display:inline-block;
+}
+.gridy-table .gridy-button a:hover{
+	color:#E77124;
 }

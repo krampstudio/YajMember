@@ -1,14 +1,20 @@
 define(function(){
 	return {
 		build: function(){
-
+			$('#submiter').button().click(function(event){
+				event.preventDefault();
+				$('#member-editor').submit();
+			});
+			
 			$.ajax({
 				type 		: 'GET',
 				url 		: 'api/event/list',
 				dataType 	: 'json',
-			}).done(function(data) {	//data is empty
-				if(!data.length || data.error){
-					$.error("Error : " + data.error ? data.error : "unknown");
+			}).done(function(data) {	
+				if(!data || data.error){
+					$.error("Error : " + (data.error ? data.error : "unknown"));
+				} else if(!data.length){
+					//data is empty no event
 				} else {
 					var template = "<option value='${date}'>${date} - ${description}</option>";
 					$.tmpl(template, data).appendTo('#events-subscribed');
@@ -38,7 +44,7 @@ define(function(){
 				if($(this).val() !== ''){
 					$('#date-subscribed').val('');
 				}
-			})
+			});
 			
 			$('#member-editor').submit(function(event){
 				event.preventDefault();
