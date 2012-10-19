@@ -34,6 +34,16 @@ public class Event  extends DomainObject{
 	public Event(){
 	}
 	
+	public Event(String title, String description, Date date, List<Member> participants) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.date = date;
+		this.participants = participants;
+	}
+
+
+
 	/**
 	 * @return the title
 	 */

@@ -8,10 +8,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.Membership;
 
-public class MemberServiceImpl extends Service implements MemberService {
+/**
+ * Implementation of the {@link MemberService} that use JPA to persist data.
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
+public class MemberServiceImpl extends JPAService implements MemberService {
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<Member> getAll() throws DataException {
 		
@@ -26,6 +33,9 @@ public class MemberServiceImpl extends Service implements MemberService {
 		return members;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean save(Member member) throws DataException{
 		
@@ -44,6 +54,9 @@ public class MemberServiceImpl extends Service implements MemberService {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean remove(Member member) throws DataException {
 		if(member == null){
@@ -61,19 +74,4 @@ public class MemberServiceImpl extends Service implements MemberService {
 		return true;
 	}
 	
-//	private boolean isValidMember(Member member, int year) throws DataException {
-//		if(member == null){
-//			throw new DataException("Cannot check for a null member");
-//		}
-//		
-//		EntityManager em = getEntityManager();
-//		try{
-//			TypedQuery<Membership> tq = em.createNamedQuery("Membership.getAllByMember", Membership.class);
-//			tq.setParameter("member", member);
-//			
-//		} finally{
-//			em.close();
-//		}
-//		return false;
-//	}
 }
