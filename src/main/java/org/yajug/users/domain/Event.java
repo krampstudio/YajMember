@@ -1,5 +1,7 @@
 package org.yajug.users.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -9,8 +11,10 @@ import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
 /**
  * This domain pojo represents an event of the jug
@@ -24,7 +28,7 @@ import javax.persistence.NamedQuery;
 public class Event  extends DomainObject{
 
 	@Basic private String title;
-	@Basic private String description;
+	@Lob private String description;
 	@Basic private Date date;
 	@ManyToMany private List<Member> participants;
 	
@@ -89,4 +93,16 @@ public class Event  extends DomainObject{
 	public void setParticipants(List<Member> participants) {
 		this.participants = participants;
 	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Event [title=" + title + ", description=" + description
+				+ ", date=" + date + ", participants=" + participants
+				+ ", key=" + key + "]";
+	}
+	
+	
 }
