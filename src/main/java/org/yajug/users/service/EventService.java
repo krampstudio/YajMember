@@ -1,6 +1,6 @@
 package org.yajug.users.service;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.yajug.users.domain.Event;
 
@@ -16,7 +16,7 @@ public interface EventService {
 	 * @return a list of events
 	 * @throws DataException
 	 */
-	List<Event> getAll() throws DataException;
+	Collection<Event> getAll() throws DataException;
 	
 	/**
 	 * Save an event
@@ -25,4 +25,12 @@ public interface EventService {
 	 * @throws DataException
 	 */
 	boolean save(Event event) throws DataException;
+	
+	/**
+	 * Save events
+	 * @param events
+	 * @return true if saved
+	 * @throws DataException
+	 */
+	boolean save(Collection<Event> events) throws DataException;
 }

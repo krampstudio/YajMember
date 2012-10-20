@@ -1,7 +1,7 @@
 package org.yajug.users.api;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,7 +26,7 @@ public class EventController extends RestController {
 	public String list(){
 		
 		String response = "";
-		List<Event> events = new ArrayList<Event>();
+		Collection<Event> events = new ArrayList<Event>();
 		
 		try {
 			events = eventService.getAll();

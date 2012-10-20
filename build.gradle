@@ -47,7 +47,8 @@ task bulk(type: JavaExec, dependsOn: 'classes', description : 'Bulk data import 
 	args relativePath('src/main/scripts/events.csv')
 	debug false
 }
- 
+
+bulk.dependsOn enhance
 test.dependsOn enhance
 war.dependsOn enhance
 jettyRun.dependsOn enhance

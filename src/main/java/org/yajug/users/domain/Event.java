@@ -1,7 +1,5 @@
 package org.yajug.users.domain;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +12,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
-import javax.persistence.Transient;
 
 /**
  * This domain pojo represents an event of the jug

@@ -3,7 +3,6 @@ package org.yajug.users.api;
 import java.security.InvalidParameterException;
 
 import org.apache.commons.lang.StringUtils;
-import org.yajug.users.vo.GridVo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

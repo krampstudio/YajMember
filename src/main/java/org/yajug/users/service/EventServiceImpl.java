@@ -1,6 +1,7 @@
 package org.yajug.users.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -20,7 +21,7 @@ public class EventServiceImpl extends JPAService implements EventService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Event> getAll() throws DataException {
+	public Collection<Event> getAll() throws DataException {
 		
 		List<Event> events = new ArrayList<Event>();
 		EntityManager em = getEntityManager();
@@ -45,13 +46,32 @@ public class EventServiceImpl extends JPAService implements EventService {
 			throw new DataException("Cannot save a null event");
 		}
 		
+		List<Event> events = new ArrayList<Event>();
+		events.add(event);
+		
+		return save(events);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean save(Collection<Event> events) throws DataException {
+		
+		if(events == null){
+			throw new DataException("Cannot save null events");
+		}
+		
 		EntityManager em = getEntityManager();
 		try{
 			em.getTransaction().begin();
-			em.persist(event);
+			for(Event event : events){
+				em.persist(event);
+			}
 			em.getTransaction().commit();
 		} catch(PersistenceException pe){
-			throw new DataException("", pe);
+			pe.printStackTrace();
+			//throw new DataException("", pe);
 		} finally{
 			em.close();
 		}
