@@ -4,11 +4,20 @@ import java.util.List;
 
 import org.yajug.users.domain.Member;
 
+/**
+ * Value Object : special bean format according to the widget grid.
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class GridVo {
 
 	private List<Member> list;
 	private int total;
 	
+	/**
+	 * Build it from a list of members
+	 * @param list the members' list
+	 */
 	public GridVo(List<Member> list) {
 		this.list = list;
 		this.total = list.size();

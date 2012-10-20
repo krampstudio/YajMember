@@ -12,12 +12,10 @@ import org.yajug.users.domain.Event;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 
 @Path("event")
-public class EventResource {
+public class EventController extends RestController {
 
 	@Inject
 	private EventService eventService;
@@ -27,14 +25,17 @@ public class EventResource {
 	@Produces({MediaType.APPLICATION_JSON})
 	public String list(){
 		
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		
+		String response = "";
 		List<Event> events = new ArrayList<Event>();
+		
 		try {
 			events = eventService.getAll();
+			response = getSerializer().toJson(events);
+			
 		} catch (DataException e) {
 			e.printStackTrace();
+			response = serializeException(e);
 		}
-		return gson.toJson(events);
+		return response;
 	}
 }

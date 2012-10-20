@@ -23,7 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 
 @Path("user")
-public class UserResource extends RestResource {
+public class MemberController extends RestController {
 
 	@Inject
 	private MemberService memberService;
@@ -33,15 +33,18 @@ public class UserResource extends RestResource {
 	@Produces({MediaType.APPLICATION_JSON})
 	public String list(@QueryParam("callback") String callback) {
 		
-		String json = "";
+		String response = "";
+		
 		try {
 			List<Member> members = memberService.getAll();
-			json = callback+"(" + getSerializer().toJson(new GridVo(members)) + ")";
+			
+			response = serializeJsonp(new GridVo(members), callback);
+			
 		} catch (DataException e) {
 			e.printStackTrace();
-			json = serializeException(e);
+			response = serializeException(e);
 		} 
-		return json;
+		return response;
 	}
 	
 	@PUT
