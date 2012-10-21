@@ -19,9 +19,11 @@ dependencies {
 	compile "com.google.inject:guice:$guiceVersion"
 	compile "com.sun.jersey:jersey-bundle:$jerseyVersion"
 	compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
-	compile 'net.sf.supercsv:super-csv:2.0.0-beta-1'
+	compile "net.sf.supercsv:super-csv:$superCsvVersion"
 	testCompile "junit:junit:$junitVersion"
 }
+
+
 
 task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA at build time") << {
 	ant.taskdef(name: 'openjpac', classname: 'org.apache.openjpa.ant.PCEnhancerTask'){
@@ -40,15 +42,23 @@ task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA 
 	}
 }
 
-task bulk(type: JavaExec, dependsOn: 'classes', description : 'Bulk data import '){
-	main = 'org.yajug.users.bulkimport.BulkImport'
-	classpath = sourceSets.main.runtimeClasspath
-	args  'event'
-	args relativePath('src/main/scripts/events.csv')
-	debug false
+ext {
+	event = relativePath('src/main/scripts/events.csv')
+	member = relativePath('src/main/scripts/member.csv')
 }
 
-bulk.dependsOn enhance
-test.dependsOn enhance
-war.dependsOn enhance
-jettyRun.dependsOn enhance
+task bulk(type: JavaExec, dependsOn: 'classes', description : 'Bulk data import') << {
+	main = 'org.yajug.users.bulkimport.BulkImport'
+	classpath = sourceSets.main.runtimeClasspath
+	args target
+	args project.ext[target]
+	debug false
+}
+bulk.doFirst {
+	//if(!project.hasProperty('target')){
+		println "Usage:"
+		println "gradle bulk -Ptarget=[event|member]"
+	//}
+}
+
+[bulk, test, war, jettyRun].each{ it.dependsOn enhance }
