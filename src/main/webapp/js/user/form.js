@@ -16,7 +16,7 @@ define(function(){
 				} else if(!data.length){
 					//data is empty no event
 				} else {
-					var template = "<option value='${date}'>${date} - ${description}</option>";
+					var template = "<option value='${date}'>${date} - ${title}</option>";
 					$.tmpl(template, data).appendTo('#events-subscribed');
 				}
 			});

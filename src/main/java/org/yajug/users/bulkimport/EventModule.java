@@ -1,5 +1,7 @@
 package org.yajug.users.bulkimport;
 
+import org.yajug.users.bulkimport.importer.DomainImporter;
+import org.yajug.users.bulkimport.importer.EventImporter;
 import org.yajug.users.bulkimport.reader.CsvEventReader;
 import org.yajug.users.bulkimport.reader.DomainReader;
 import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;

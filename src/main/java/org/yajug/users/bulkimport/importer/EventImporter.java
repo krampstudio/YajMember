@@ -1,4 +1,4 @@
-package org.yajug.users.bulkimport;
+package org.yajug.users.bulkimport.importer;
 
 import java.io.IOException;
 import java.util.ArrayList;

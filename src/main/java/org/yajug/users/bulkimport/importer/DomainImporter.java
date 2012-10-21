@@ -1,4 +1,4 @@
-package org.yajug.users.bulkimport;
+package org.yajug.users.bulkimport.importer;
 
 public interface DomainImporter {
 
