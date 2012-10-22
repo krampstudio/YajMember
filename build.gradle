@@ -8,6 +8,8 @@ configurations {
 	javaAgentOpenJpa
 }
 
+
+
 repositories { mavenCentral() }
 
 dependencies {
@@ -42,23 +44,41 @@ task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA 
 	}
 }
 
-ext {
+task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data import on a target (defined by -Ptarget=[event|member|...]]') {
+
+	//available imports
 	event = relativePath('src/main/scripts/events.csv')
 	member = relativePath('src/main/scripts/member.csv')
-}
-
-task bulk(type: JavaExec, dependsOn: 'classes', description : 'Bulk data import') << {
+	
+	//check the target is set 
+	doFirst {
+		if(!project.hasProperty('target')){
+		
+			println "\nUsage:"
+			println "\tgradle bulk -Ptarget=[event|member|...]"
+			println "where target is : "
+			bulk.additionalProperties.each{ println it }
+			
+			throw new GradleException('Target argument required')
+		} else {
+			println "\nBulk import of  $target\n"
+		}
+	}
+	
 	main = 'org.yajug.users.bulkimport.BulkImport'
 	classpath = sourceSets.main.runtimeClasspath
-	args target
-	args project.ext[target]
-	debug false
-}
-bulk.doFirst {
-	//if(!project.hasProperty('target')){
-		println "Usage:"
-		println "gradle bulk -Ptarget=[event|member]"
-	//}
+	if(project.hasProperty('target')){
+		bulk{
+			args target
+			args bulk[target]
+			debug false
+		}
+	}
 }
 
+
+
+task testMe << {
+	println "done"
+}
 [bulk, test, war, jettyRun].each{ it.dependsOn enhance }
