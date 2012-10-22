@@ -9,6 +9,7 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
+import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
 import org.yajug.users.bulkimport.reader.processor.EventCellProcessor;
 import org.yajug.users.domain.Event;
 
@@ -17,7 +18,7 @@ import com.google.inject.Inject;
 public class CsvEventReader implements DomainReader<Event> {
 
 	@Inject
-	private EventCellProcessor cellProcessor;
+	private DomainCellProcessor cellProcessor;
 	
 	@Override
 	public Collection<Event> read(String fileName) {
