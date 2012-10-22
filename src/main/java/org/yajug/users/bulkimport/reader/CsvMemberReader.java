@@ -3,6 +3,7 @@ package org.yajug.users.bulkimport.reader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -10,18 +11,18 @@ import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
-import org.yajug.users.domain.Event;
+import org.yajug.users.domain.Member;
 
 import com.google.inject.Inject;
 
-public class CsvEventReader implements DomainReader<Event> {
+public class CsvMemberReader implements DomainReader<Member> {
 
 	@Inject
 	private DomainCellProcessor cellProcessor;
 	
 	@Override
-	public Collection<Event> read(String fileName) {
-		Collection<Event> events = new ArrayList<Event>();
+	public Collection<Member> read(String fileName) {
+		Collection<Member> members = new ArrayList<Member>();
 		ICsvBeanReader beanReader = null;
         try {
             beanReader = new CsvBeanReader(
@@ -29,17 +30,21 @@ public class CsvEventReader implements DomainReader<Event> {
             		CsvPreference.STANDARD_PREFERENCE
             	);
             
-            // the header elements are used to map the values to the bean (names must match)
-            final String[] header = beanReader.getHeader(true);
+            String[] header = beanReader.getHeader(true);
+            for(int i = 5; i < header.length; i++){
+            	header[i] = null;
+            }
+            System.out.println("\n" + Arrays.deepToString(header) + "\n");
+            
             final CellProcessor[] processors = cellProcessor.getProcessors();
             
-            Event event;
-            while( (event = beanReader.read(Event.class, header, processors)) != null ) {
+            Member member;
+            while( (member = beanReader.read(Member.class, header, processors)) != null ) {
                 System.out.println(
                 		String.format("lineNo=%s, rowNo=%s, customer=%s", 
                 				beanReader.getLineNumber(),
-                				beanReader.getRowNumber(), event));
-                events.add(event);
+                				beanReader.getRowNumber(), member));
+                members.add(member);
             }
                 
         } catch(IOException e) {
@@ -53,6 +58,6 @@ public class CsvEventReader implements DomainReader<Event> {
 				}
             }
         }
-		return events;
+		return members;
 	}
 }
