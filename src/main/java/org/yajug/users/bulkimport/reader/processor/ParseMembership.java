@@ -1,5 +1,7 @@
 package org.yajug.users.bulkimport.reader.processor;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang.StringUtils;
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -29,7 +31,7 @@ public class ParseMembership extends CellProcessorAdaptor {
 			Membership membership = new Membership();
 			membership.setYear(year);
 			
-			context.getRowSource();
+			System.out.println("\n" + Arrays.deepToString(context.getRowSource().toArray()) + "\n");
 			
 			return next.execute(membership, context);
 			

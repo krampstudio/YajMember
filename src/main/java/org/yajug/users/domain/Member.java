@@ -1,5 +1,6 @@
 package org.yajug.users.domain;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -143,6 +144,16 @@ public class Member extends DomainObject {
 	public List<Membership> getMemberships() {
 		return memberships;
 	}
+	
+	public void setMembership(Membership membership){
+		if(this.memberships == null){
+			this.memberships = new ArrayList<Membership>();
+		}
+		this.memberships.add(membership);
+		if(Calendar.getInstance().get(Calendar.YEAR) == membership.getYear()){
+			this.valid = true;
+		}
+	}
 
 	/**
 	 * @param memberships the memberships to set
@@ -176,11 +187,22 @@ public class Member extends DomainObject {
 		} else {
 			for(Membership ms : this.memberships){
 				if(ms.getYear() == year){
-					
+					validFor = true;
 					break;
 				}
 			}
 		}
 		return validFor;
 	}
+
+	
+	@Override
+	public String toString() {
+		return "Member [firstName=" + firstName + ", lastName=" + lastName
+				+ ", email=" + email + ", company=" + company + ", roles="
+				+ roles + ", memberships=" + memberships + ", valid=" + valid
+				+ "]";
+	}
+	
+	
 }

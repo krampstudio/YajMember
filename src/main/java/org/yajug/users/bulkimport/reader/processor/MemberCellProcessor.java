@@ -12,11 +12,11 @@ public class MemberCellProcessor implements DomainCellProcessor {
 		cellProcessors = new CellProcessor[] { 
 				new NotNull(), 							// lastname
                 new NotNull(), 							// firstname
-                new NotNull(), 							// company
-                new NotNull(),							// email
+                new Optional(), 						// company
+                new Optional(),							// email
                 new Optional(new ParseMembership(2010)),
-                null,
-                null,
+                new Optional(new ParseMembership(2011)),
+                new Optional(new ParseMembership(2012)),
                 null,
                 null,
                 null,

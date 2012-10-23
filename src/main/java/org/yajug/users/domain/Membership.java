@@ -93,6 +93,9 @@ public class Membership  extends DomainObject {
 	 */
 	public void setEvent(Event event) {
 		this.event = event;
+		if(this.event.getDate() != null){
+			this.paiementDate = this.event.getDate();
+		}
 	}
 	
 	/**
@@ -108,5 +111,15 @@ public class Membership  extends DomainObject {
 	public void setMember(Member member) {
 		this.member = member;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Membership [year=" + year + ", paiementDate=" + paiementDate
+				+ ", amount=" + amount + ", event=" + event + "]";
+	}
+	
 	
 }
