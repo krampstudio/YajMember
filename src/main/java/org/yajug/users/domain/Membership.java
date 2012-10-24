@@ -93,7 +93,7 @@ public class Membership  extends DomainObject {
 	 */
 	public void setEvent(Event event) {
 		this.event = event;
-		if(this.event.getDate() != null){
+		if(this.event != null && this.event.getDate() != null){
 			this.paiementDate = this.event.getDate();
 		}
 	}

@@ -2,14 +2,15 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'jetty'
 
+//yes, we use the current stable version of Java ;)
 sourceCompatibility = 1.7
 
 configurations {
+	//create a configuration that reference the openjpa agent
 	javaAgentOpenJpa
 }
 
-
-
+//depdency management
 repositories { mavenCentral() }
 
 dependencies {
@@ -25,8 +26,9 @@ dependencies {
 	testCompile "junit:junit:$junitVersion"
 }
 
-
-
+/*
+ * Enhance (weaving) classes at build time as required by openjpa
+ */
 task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA at build time") << {
 	ant.taskdef(name: 'openjpac', classname: 'org.apache.openjpa.ant.PCEnhancerTask'){
 		 classpath{
@@ -44,11 +46,16 @@ task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA 
 	}
 }
 
+/*
+ * task used to import data 
+ */
 task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data import on a target (defined by -Ptarget=[event|member|...]]') {
 
 	//available imports
-	event = relativePath('src/main/scripts/events.csv')
-	member = relativePath('src/main/scripts/member.csv')
+	ext{
+		event = relativePath('src/main/scripts/events.csv')
+		member = relativePath('src/main/scripts/member.csv')
+	}
 	
 	//check the target is set 
 	doFirst {
@@ -57,7 +64,7 @@ task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data impo
 			println "\nUsage:"
 			println "\tgradle bulk -Ptarget=[event|member|...]"
 			println "where target is : "
-			bulk.additionalProperties.each{ println it }
+			bulk.ext.each{ println it }
 			
 			throw new GradleException('Target argument required')
 		} else {
@@ -70,15 +77,11 @@ task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data impo
 	if(project.hasProperty('target')){
 		bulk{
 			args target
-			args bulk[target]
+			args bulk.ext[target]
 			debug false
 		}
 	}
 }
 
-
-
-task testMe << {
-	println "done"
-}
+//make some tasks to depends on enhance
 [bulk, test, war, jettyRun].each{ it.dependsOn enhance }

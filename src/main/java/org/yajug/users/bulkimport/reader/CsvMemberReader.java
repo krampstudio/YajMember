@@ -79,17 +79,17 @@ public class CsvMemberReader implements DomainReader<Member> {
 	@Override
 	public Collection<Member> read(String fileName) {
 		Collection<Member> members = new ArrayList<Member>();
-		ICsvBeanReader beanReader = null;
-        try {
-            beanReader = new CsvBeanReader(
+        try(ICsvBeanReader  beanReader = new CsvBeanReader(
             		new FileReader(fileName), 
             		CsvPreference.STANDARD_PREFERENCE
-            	);
+            	)){
             
-            String[] headers = beanReader.getHeader(true);
+            final String[] baseHeaders = beanReader.getHeader(true);
+            String[] headers = baseHeaders;
             for(int i = 7; i < headers.length; i++){
             	headers[i] = null;
             }
+            System.out.println("\n" + Arrays.deepToString(baseHeaders) + "\n");
             System.out.println("\n" + Arrays.deepToString(headers) + "\n");
             
             final CellProcessor[] processors = cellProcessor.getProcessors();
@@ -113,25 +113,20 @@ public class CsvMemberReader implements DomainReader<Member> {
             			 if(StringUtils.isNotBlank(eventMembership)
             					 && "MBR".equalsIgnoreCase(eventMembership)){
             				 
-            				 Event event = events.get(headers[i]);
+            				 System.out.println(baseHeaders[i]);
+            				 
+            				 Event event = events.get(baseHeaders[i]);
             				 currentMembership.setEvent(event);
             			 }
                      }
             	}
                 members.add(member);
             }
+            System.out.println("\n" + Arrays.deepToString(members.toArray()) + "\n");
                 
         } catch(IOException e) {
         	e.printStackTrace();
-        } finally {
-            if( beanReader != null ) {
-                try {
-					beanReader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-            }
-        }
+        } 
 		return members;
 	}
 }

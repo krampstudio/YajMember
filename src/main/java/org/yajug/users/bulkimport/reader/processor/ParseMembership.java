@@ -14,6 +14,7 @@ public class ParseMembership extends CellProcessorAdaptor {
 	
 	public ParseMembership(int year) {
 		super();
+		this.year = year;
 	}
 	
 	public ParseMembership(int year, CellProcessor next) {
@@ -31,6 +32,7 @@ public class ParseMembership extends CellProcessorAdaptor {
 			Membership membership = new Membership();
 			membership.setYear(year);
 			
+			System.out.println(membership);
 			System.out.println("\n" + Arrays.deepToString(context.getRowSource().toArray()) + "\n");
 			
 			return next.execute(membership, context);
