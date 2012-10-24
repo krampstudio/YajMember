@@ -85,13 +85,10 @@ public class CsvMemberReader implements DomainReader<Member> {
             	)){
             
             final String[] baseHeaders = beanReader.getHeader(true);
-            String[] headers = baseHeaders;
+            String[] headers = baseHeaders.clone();
             for(int i = 7; i < headers.length; i++){
             	headers[i] = null;
             }
-            System.out.println("\n" + Arrays.deepToString(baseHeaders) + "\n");
-            System.out.println("\n" + Arrays.deepToString(headers) + "\n");
-            
             final CellProcessor[] processors = cellProcessor.getProcessors();
             
             Member member;
@@ -108,18 +105,18 @@ public class CsvMemberReader implements DomainReader<Member> {
             	}
             	//check if the member has subscribed during an event for the current year
             	if(currentMembership != null){
-            		 for(int i = 7; i < 11; i++){
-            			 String eventMembership = beanReader.get(i);
+            		 for(int i = 7; i < 12; i++){
+            			 String eventMembership = beanReader.get(i+1);
+            			 System.out.println(baseHeaders[i] + " " +eventMembership);
             			 if(StringUtils.isNotBlank(eventMembership)
             					 && "MBR".equalsIgnoreCase(eventMembership)){
-            				 
-            				 System.out.println(baseHeaders[i]);
-            				 
             				 Event event = events.get(baseHeaders[i]);
             				 currentMembership.setEvent(event);
             			 }
                      }
             	}
+            	//TODO add roles based on data
+            	
                 members.add(member);
             }
             System.out.println("\n" + Arrays.deepToString(members.toArray()) + "\n");

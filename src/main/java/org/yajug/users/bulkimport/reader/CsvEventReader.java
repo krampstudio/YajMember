@@ -22,12 +22,10 @@ public class CsvEventReader implements DomainReader<Event> {
 	@Override
 	public Collection<Event> read(String fileName) {
 		Collection<Event> events = new ArrayList<Event>();
-		ICsvBeanReader beanReader = null;
-        try {
-            beanReader = new CsvBeanReader(
+        try (ICsvBeanReader beanReader = new CsvBeanReader(
             		new FileReader(fileName), 
             		CsvPreference.STANDARD_PREFERENCE
-            	);
+            	)){
             
             // the header elements are used to map the values to the bean (names must match)
             final String[] header = beanReader.getHeader(true);
@@ -35,24 +33,12 @@ public class CsvEventReader implements DomainReader<Event> {
             
             Event event;
             while( (event = beanReader.read(Event.class, header, processors)) != null ) {
-                System.out.println(
-                		String.format("lineNo=%s, rowNo=%s, customer=%s", 
-                				beanReader.getLineNumber(),
-                				beanReader.getRowNumber(), event));
                 events.add(event);
             }
                 
         } catch(IOException e) {
         	e.printStackTrace();
-        } finally {
-            if( beanReader != null ) {
-                try {
-					beanReader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-            }
-        }
+        } 
 		return events;
 	}
 }

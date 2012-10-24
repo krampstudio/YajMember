@@ -2,11 +2,14 @@ package org.yajug.users.service;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
+import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Member;
 
 /**
@@ -43,11 +46,31 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 			throw new DataException("Cannot save a null member");
 		}
 		
+		Collection<Member> members = new ArrayList<Member>();
+		members.add(member);
+		
+		return save(members);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean save(Collection<Member> members) throws DataException{
+		
+		if(members == null){
+			throw new DataException("Cannot save null members");
+		}
+		
 		EntityManager em = getEntityManager();
 		try{
 			em.getTransaction().begin();
-			em.persist(member);
+			for(Member member : members){
+				em.persist(member);
+			}
 			em.getTransaction().commit();
+		} catch(PersistenceException pe){
+			pe.printStackTrace();
 		} finally{
 			em.close();
 		}

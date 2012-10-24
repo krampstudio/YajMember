@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import org.yajug.users.bulkimport.reader.DomainReader;
 import org.yajug.users.domain.Member;
+import org.yajug.users.service.DataException;
+import org.yajug.users.service.MemberService;
 
 import com.google.inject.Inject;
 
@@ -13,6 +15,9 @@ public class MemberImporter implements DomainImporter {
 
 	@Inject
 	private DomainReader<Member> reader;
+	
+	@Inject
+	private MemberService memberService;
 	
 	@Override
 	public int doImport(String fileName) {
@@ -23,9 +28,11 @@ public class MemberImporter implements DomainImporter {
 		try {
 			members = reader.read(fileName);
 		
-			imported = members.size();
+			if(memberService.save(members)){
+				imported = members.size();
+			}
 			
-		} catch (IOException e) {
+		} catch (IOException | DataException e) {
 			e.printStackTrace();
 		}
 

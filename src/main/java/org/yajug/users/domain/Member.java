@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -37,7 +38,8 @@ public class Member extends DomainObject {
 	@Enumerated(EnumType.STRING)
 	private List<Role> roles;
 	
-	@ManyToMany private List<Membership> memberships;
+	@ManyToMany(cascade={CascadeType.ALL})
+	private List<Membership> memberships;
 	
 	@Transient private boolean valid;
 	

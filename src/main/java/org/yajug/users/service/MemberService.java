@@ -1,6 +1,7 @@
 package org.yajug.users.service;
 
 
+import java.util.Collection;
 import java.util.List;
 
 import org.yajug.users.domain.Member;
@@ -26,6 +27,14 @@ public interface MemberService {
 	 * @throws DataException
 	 */
 	boolean save(Member member) throws DataException;
+	
+	/**
+	 * Save  members
+	 * @param members the members to save
+	 * @return true if save
+	 * @throws DataException
+	 */
+	boolean save(Collection<Member> members) throws DataException;
 	
 	/**
 	 * Remove a member
