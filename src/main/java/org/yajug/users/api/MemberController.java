@@ -1,7 +1,5 @@
 package org.yajug.users.api;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -14,7 +12,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.Membership;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.vo.GridVo;
@@ -22,7 +19,7 @@ import org.yajug.users.vo.GridVo;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 
-@Path("user")
+@Path("member")
 public class MemberController extends RestController {
 
 	@Inject
@@ -51,7 +48,10 @@ public class MemberController extends RestController {
 	@Path("add")
 	@Produces({MediaType.APPLICATION_JSON})
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public String add(@FormParam("member") String memberData, @FormParam("validMembership") boolean validMembership){
+	public String add(
+			@FormParam("member") String memberData, 
+			@FormParam("validMembership") boolean validMembership
+		){
 		
 		JsonObject response = new JsonObject();
 
@@ -60,11 +60,11 @@ public class MemberController extends RestController {
 		
 		Member member = getSerializer().fromJson(memberData, Member.class);
 		
-		if(validMembership){
-			Membership membership = new Membership();
-			membership.setYear(Integer.valueOf(new SimpleDateFormat().format(new Date())));
-			//TODO save membership
-		}
+//		if(validMembership){
+//			Membership membership = new Membership();
+//			membership.setYear(Integer.valueOf(new SimpleDateFormat().format(new Date())));
+//			//TODO save membership
+//		}
 		
 		try {
 			saved = this.memberService.save(member);

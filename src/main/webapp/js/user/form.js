@@ -10,13 +10,16 @@ define(function(){
 				type 		: 'GET',
 				url 		: 'api/event/list',
 				dataType 	: 'json',
+				data		: {
+					current : true
+				}
 			}).done(function(data) {	
 				if(!data || data.error){
 					$.error("Error : " + (data.error ? data.error : "unknown"));
 				} else if(!data.length){
 					//data is empty no event
 				} else {
-					var template = "<option value='${date}'>${date} - ${title}</option>";
+					var template = "<option value='${key}'>${date} - ${title}</option>";
 					$.tmpl(template, data).appendTo('#events-subscribed');
 				}
 			});
@@ -54,13 +57,18 @@ define(function(){
 					'lastName'  : $('#lastname').val(),
 					'email' 	: $('#email').val(),
 					'company'  	: $('#company').val(),
-					'roles' 	: $('#roles').val()
+					'roles' 	: $('#roles').val(),
+					'membership': {
+						'event' : {
+							
+						}
+					}
 				};
 				var validMemberShip = $('#membership').val() === 'true';
 						
 				$.ajax({
 					type 		: 'PUT',
-					url 		: '/api/user/add',
+					url 		: 'api/member/add',
 					contentType : 'application/x-www-form-urlencoded',
 					dataType 	: 'json',
 					data 		: {
