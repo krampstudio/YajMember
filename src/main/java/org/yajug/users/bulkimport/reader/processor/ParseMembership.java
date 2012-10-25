@@ -1,13 +1,16 @@
 package org.yajug.users.bulkimport.reader.processor;
 
-import java.util.Arrays;
-
 import org.apache.commons.lang.StringUtils;
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.util.CsvContext;
 import org.yajug.users.domain.Membership;
 
+/**
+ * Custom cell processor that creates a  {@link Membership} from a cell (in  a particular context)
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class ParseMembership extends CellProcessorAdaptor {
 
 	private int year;
@@ -32,11 +35,7 @@ public class ParseMembership extends CellProcessorAdaptor {
 			Membership membership = new Membership();
 			membership.setYear(year);
 			
-			System.out.println(membership);
-			System.out.println("\n" + Arrays.deepToString(context.getRowSource().toArray()) + "\n");
-			
 			return next.execute(membership, context);
-			
 		}
 		
 		return null;

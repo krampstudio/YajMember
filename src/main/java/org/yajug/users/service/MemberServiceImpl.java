@@ -9,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
-import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Member;
 
 /**

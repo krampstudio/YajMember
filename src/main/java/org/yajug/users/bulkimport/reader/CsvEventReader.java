@@ -14,6 +14,11 @@ import org.yajug.users.domain.Event;
 
 import com.google.inject.Inject;
 
+/**
+ * Reads {@link Event} from CSV
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class CsvEventReader implements DomainReader<Event> {
 
 	@Inject

@@ -11,6 +11,11 @@ import org.yajug.users.service.EventService;
 
 import com.google.inject.Inject;
 
+/**
+ * Importer for {@link Event}
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class EventImporter implements DomainImporter {
 
 	@Inject

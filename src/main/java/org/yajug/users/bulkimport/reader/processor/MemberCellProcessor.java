@@ -4,6 +4,11 @@ import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 
+/**
+ * Provides cell processors for an {@link Member}
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class MemberCellProcessor implements DomainCellProcessor {
 
 	private CellProcessor[] cellProcessors;

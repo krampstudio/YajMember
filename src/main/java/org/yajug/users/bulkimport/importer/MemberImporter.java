@@ -11,6 +11,11 @@ import org.yajug.users.service.MemberService;
 
 import com.google.inject.Inject;
 
+/**
+ * Importer for {@link Member}
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class MemberImporter implements DomainImporter {
 
 	@Inject

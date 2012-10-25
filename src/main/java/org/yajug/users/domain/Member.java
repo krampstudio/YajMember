@@ -133,6 +133,15 @@ public class Member extends DomainObject {
 		return roles;
 	}
 	
+	public void setRole(Role role){
+		if(this.roles == null){
+			this.roles = new ArrayList<Role>();
+		}
+		if(!this.roles.contains(role)){
+			this.roles.add(role);
+		}
+	}
+	
 	/**
 	 * @param role the role to set
 	 */
@@ -147,6 +156,10 @@ public class Member extends DomainObject {
 		return memberships;
 	}
 	
+	/**
+	 * 
+	 * @param membership
+	 */
 	public void setMembership(Membership membership){
 		if(this.memberships == null){
 			this.memberships = new ArrayList<Membership>();

@@ -6,11 +6,15 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-
+/**
+ * Main entry point for the CLI bulk import
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class BulkImport {
 
 	/**
-	 * @param args
+	 * @param args path target
 	 */
 	public static void main(String[] args) {
 		
@@ -18,8 +22,8 @@ public class BulkImport {
 			//throw an exception or show help message
 		}
 		
+		//load the guice module regarding the args
 		AbstractModule module = null;
-			
 		switch(args[0].toLowerCase()){
 			case "event" : module = new EventModule(); break;
 			case "member" : module = new MemberModule(); break;
@@ -29,7 +33,9 @@ public class BulkImport {
 			Injector injector = Guice.createInjector(module);
 			DomainImporter importer = injector.getInstance(DomainImporter.class);
 		
-			importer.doImport(args[1]);
+			int imported = importer.doImport(args[1]);
+			
+			System.out.println(imported + " " + args[0] + " imported");
 		}
 	}
 

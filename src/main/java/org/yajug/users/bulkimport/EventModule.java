@@ -15,14 +15,21 @@ import org.yajug.users.service.MemberServiceImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
+/**
+ * Guice module that bind implementations for an event import
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class EventModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		//bind importer, readers and processors
 		bind(DomainImporter.class).to(EventImporter.class);
 		bind(new TypeLiteral<DomainReader<Event>>(){}).to(CsvEventReader.class);
 		bind(DomainCellProcessor.class).to(EventCellProcessor.class);
 		
+		//bind services
 		bind(MemberService.class).to(MemberServiceImpl.class);
         bind(EventService.class).to(EventServiceImpl.class);
 	}

@@ -6,6 +6,11 @@ import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.constraint.UniqueHashCode;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 
+/**
+ * Provides cell processors for an {@link Event}
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class EventCellProcessor implements DomainCellProcessor {
 
 	private CellProcessor[] cellProcessors;

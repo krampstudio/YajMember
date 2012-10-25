@@ -4,7 +4,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,11 +18,17 @@ import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
+import org.yajug.users.domain.Role;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 
 import com.google.inject.Inject;
 
+/**
+ * Reads {@link Member} from CSV
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class CsvMemberReader implements DomainReader<Member> {
 
 	@Inject
@@ -105,22 +110,21 @@ public class CsvMemberReader implements DomainReader<Member> {
             	}
             	//check if the member has subscribed during an event for the current year
             	if(currentMembership != null){
+            		member.setRole(Role.MEMBER);
             		 for(int i = 7; i < 12; i++){
             			 String eventMembership = beanReader.get(i+1);
-            			 System.out.println(baseHeaders[i] + " " +eventMembership);
             			 if(StringUtils.isNotBlank(eventMembership)
             					 && "MBR".equalsIgnoreCase(eventMembership)){
             				 Event event = events.get(baseHeaders[i]);
             				 currentMembership.setEvent(event);
             			 }
                      }
+            	} else{
+            		member.setRole(Role.OLD_MEMBER);
             	}
-            	//TODO add roles based on data
             	
                 members.add(member);
             }
-            System.out.println("\n" + Arrays.deepToString(members.toArray()) + "\n");
-                
         } catch(IOException e) {
         	e.printStackTrace();
         } 
