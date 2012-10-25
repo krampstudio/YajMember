@@ -1,0 +1,4 @@
+ - sort events list in add member
+ - check why roles are not loaded with members
+ - add better messaging to users
+ - 

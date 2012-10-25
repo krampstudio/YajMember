@@ -12,7 +12,7 @@ import org.yajug.users.service.MemberService;
 import com.google.inject.Inject;
 
 /**
- * Importer for {@link Member}
+ * Importer for {@link Member} 
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
