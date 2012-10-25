@@ -12,6 +12,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
@@ -34,11 +35,11 @@ public class Member extends DomainObject {
 	@Basic private String email;
 	@Basic private String company;
 	
-	@ElementCollection(targetClass=Role.class)
+	@ElementCollection(targetClass=Role.class, fetch=FetchType.LAZY)
 	@Enumerated(EnumType.STRING)
 	private List<Role> roles;
 	
-	@ManyToMany(cascade={CascadeType.ALL})
+	@ManyToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
 	private List<Membership> memberships;
 	
 	@Transient private boolean valid;

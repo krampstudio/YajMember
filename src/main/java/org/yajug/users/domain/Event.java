@@ -21,7 +21,7 @@ import javax.persistence.NamedQuery;
 @Entity
 @Access(AccessType.FIELD)
 @Inheritance(strategy=InheritanceType.JOINED)
-@NamedQuery(name="Event.findAll", query="select e from Event e")
+@NamedQuery(name="Event.findAll", query="select e from Event e order by e.date")
 public class Event  extends DomainObject{
 
 	@Basic private String title;
