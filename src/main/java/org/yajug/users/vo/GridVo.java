@@ -1,5 +1,8 @@
 package org.yajug.users.vo;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.yajug.users.domain.Member;
@@ -16,10 +19,22 @@ public class GridVo {
 	
 	/**
 	 * Build it from a list of members
-	 * @param list the members' list
+	 * @param members the members' list
 	 */
-	public GridVo(List<Member> list) {
-		this.list = list;
+	public GridVo(List<Member> members) {
+		if(members != null){
+			this.list = new ArrayList<Member>(members);
+			/*
+			 * Removes memberships from members list to prevent
+			 *  stack overflow from Gson serilizer 
+			 *  because Member -> Membership -> Member -> ...
+			 *  
+			 *  TODO use a better way to do that
+			 */
+			for(Member member : this.list){
+				member.setMemberships(null);
+			}
+		}
 		this.total = list.size();
 	}
 	

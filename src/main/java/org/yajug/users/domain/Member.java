@@ -35,7 +35,7 @@ public class Member extends DomainObject {
 	@Basic private String email;
 	@Basic private String company;
 	
-	@ElementCollection(targetClass=Role.class, fetch=FetchType.LAZY)
+	@ElementCollection(targetClass=Role.class, fetch=FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
 	private List<Role> roles;
 	
@@ -176,17 +176,30 @@ public class Member extends DomainObject {
 	 */
 	public void setMemberships(List<Membership> memberships) {
 		this.memberships = memberships;
-		this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
+		if(memberships != null){
+			this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
+		}
 	}
 
+	/**
+	 * Get the membership status for the current year.
+	 * 
+	 * @return true if the user is a valid member
+	 */
+	public boolean isValid() {
+		return valid;
+	}
+	
 	/**
 	 * Check if this member instance has 
 	 * a valid membership for the current year.
 	 * 
 	 * @return true if valid
 	 */
-	public boolean isValid() {
-		return valid;
+	public boolean checkValidity(){
+		System.out.println(" checkValidity ");
+		this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
+		return this.valid;
 	}
 	
 	/**
@@ -198,6 +211,7 @@ public class Member extends DomainObject {
 	 */
 	public boolean isValidFor(int year) {
 		boolean validFor = false;
+		
 		if(this.memberships == null){
 			validFor = false;
 		} else {

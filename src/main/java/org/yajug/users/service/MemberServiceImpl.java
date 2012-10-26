@@ -18,17 +18,32 @@ import org.yajug.users.domain.Member;
  */
 public class MemberServiceImpl extends JPAService implements MemberService {
 
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<Member> getAll() throws DataException {
+		return getAll(false);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Member> getAll(boolean checkValidy) throws DataException {
 		
 		List<Member> members = new ArrayList<Member>();
 		EntityManager em = getEntityManager();
 		try{
 			TypedQuery<Member> tq = em.createNamedQuery("Member.findAll", Member.class);
 			members = tq.getResultList();
+			
+			if(checkValidy && members != null){
+				for(Member member : members){
+					member.checkValidity();
+				}
+			}
 		} finally{
 			em.close();
 		}

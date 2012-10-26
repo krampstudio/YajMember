@@ -21,6 +21,14 @@ public interface MemberService {
 	List<Member> getAll() throws DataException;
 	
 	/**
+	 * Get all the members
+	 * @param checkValidy check for each member the valid status
+	 * @return a list of members
+	 * @throws DataException
+	 */
+	List<Member> getAll(boolean checkValidy) throws DataException;
+	
+	/**
 	 * Save a member
 	 * @param member the member to save
 	 * @return true if save

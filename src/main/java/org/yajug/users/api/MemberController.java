@@ -33,7 +33,7 @@ public class MemberController extends RestController {
 		String response = "";
 		
 		try {
-			List<Member> members = memberService.getAll();
+			List<Member> members = memberService.getAll(true);
 			
 			response = serializeJsonp(new GridVo(members), callback);
 			
