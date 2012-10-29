@@ -64,13 +64,20 @@ form textarea{
 	text-align:left;
 	text-indent:6px;
 }
-.gridy-table .gridy-header th .gridy-arrow-none{
+.gridy-table .gridy-header th .gridy-arrow-none,
+.gridy-table .gridy-header th .gridy-arrow-down,
+.gridy-table .gridy-header th .gridy-arrow-up,
+.gridy-table .gridy-header th .gridy-empty{
 	display:inline-block;
 	float: none;
 }
 .gridy-table .gridy-button a{
 	display:inline-block;
+	text-decoration: none;
 }
 .gridy-table .gridy-button a:hover{
 	color:#E77124;
+}
+.gridy-table .gridy-search-content input[type="button"] {
+	padding: 0;
 }

@@ -45,7 +45,11 @@
 				<td>${lastName}</td>
 				<td>${email}</td>
 				<td>${company}</td>
-				<td>${roles}</td>
+				<td>
+					{{each(i, role) roles }}
+					<img src="img/roles/${role.toLowerCase()}.png" alt="${role}" title="${role}" />&nbsp;
+					{{/each}}
+				</td>
 				<td class="gridy-button">
 					<a href="#">edit</a>&nbsp;
 					<a href="#">remove</a>

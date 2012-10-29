@@ -9,6 +9,9 @@ define( ['gridy'], function(){
 				resize		: true,
 				height		: 600,
 				width		: 1200,
+				before		: function(){
+					$('.gridy-search :button').button({disabled : false})
+				},
 				
 				/*
 				 * the column list must match the template defined in index.html! 

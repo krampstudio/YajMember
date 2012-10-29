@@ -197,7 +197,6 @@ public class Member extends DomainObject {
 	 * @return true if valid
 	 */
 	public boolean checkValidity(){
-		System.out.println(" checkValidity ");
 		this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
 		return this.valid;
 	}
