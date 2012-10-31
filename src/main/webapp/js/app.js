@@ -13,6 +13,11 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl'],  function($){
 
 	$(function() {
 		$('#actions').tabs({
+			create: function(event, ui) {
+				//unload splash and display screen
+				$('#splash').fadeOut();
+				$('#main').show('slow');
+			},
 			load : function(event, ui) {
 				if (ui.index === 0) {
 					requirejs([ 'user/list' ], function(list) {
