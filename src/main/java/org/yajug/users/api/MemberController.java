@@ -1,5 +1,6 @@
 package org.yajug.users.api;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -11,7 +12,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang.StringUtils;
 import org.yajug.users.domain.Member;
+import org.yajug.users.domain.utils.MemberComparator;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.vo.GridVo;
@@ -28,12 +31,23 @@ public class MemberController extends RestController {
 	@GET
 	@Path("list")
 	@Produces({MediaType.APPLICATION_JSON})
-	public String list(@QueryParam("callback") String callback) {
+	public String list(
+						@QueryParam("callback") String callback,
+						@QueryParam("sortName") String sortName,
+						@QueryParam("sortOrder") String sortOrder) {
 		
 		String response = "";
 		
 		try {
 			List<Member> members = memberService.getAll(true);
+			
+			if(StringUtils.isNotBlank(sortName)){
+				if("desc".equalsIgnoreCase(sortOrder)){
+					Collections.sort(members, Collections.reverseOrder(new MemberComparator(sortName)));
+				} else {
+					Collections.sort(members, new MemberComparator(sortName));
+				}
+			}
 			
 			response = serializeJsonp(new GridVo(members), callback);
 			

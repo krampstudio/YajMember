@@ -1,5 +1,6 @@
 requirejs.config({
 	baseUrl: 'js/lib',
+	urlArgs: 'bust=' + (new Date()).getTime(),	//only for dev  : no-cache
 	paths: {
 		user: '../user'
 	},

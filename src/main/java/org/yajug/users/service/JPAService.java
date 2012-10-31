@@ -1,8 +1,11 @@
 package org.yajug.users.service;
 
+import java.sql.SQLException;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 /**
  * Provides an {@link EntityManager} to it's subclasses via 
