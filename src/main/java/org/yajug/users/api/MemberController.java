@@ -1,5 +1,6 @@
 package org.yajug.users.api;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,9 +40,11 @@ public class MemberController extends RestController {
 		String response = "";
 		
 		try {
-			List<Member> members = memberService.getAll(true);
+			//copy service results to a writable list
+			List<Member> members = new ArrayList<Member>(memberService.getAll(true));
 			
 			if(StringUtils.isNotBlank(sortName)){
+				System.out.println(sortName);
 				if("desc".equalsIgnoreCase(sortOrder)){
 					Collections.sort(members, Collections.reverseOrder(new MemberComparator(sortName)));
 				} else {

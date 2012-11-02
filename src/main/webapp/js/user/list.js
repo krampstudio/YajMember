@@ -23,8 +23,8 @@ define( ['gridy'], function(){
 					{ name: 'Last Name', value: 'lastName', width: 150 },
 					{ name: 'Email', value: 'email', width: 280 },
 					{ name: 'Company', value: 'company', width: 100 },
-					{ name: 'Roles', value: 'roles', width: 100 },
-					{ name: 'Actions', value: 'actions', width: 240 }
+					{ name: 'Roles', width: 100 },
+					{ name: 'Actions', width: 240 }
 				]
 			});
 		}

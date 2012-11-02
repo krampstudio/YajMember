@@ -3,6 +3,7 @@ package org.yajug.users.domain.utils;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 
+import org.yajug.users.domain.DomainObject;
 import org.yajug.users.domain.Member;
 
 public class MemberComparator implements Comparator<Member>{
@@ -11,7 +12,11 @@ public class MemberComparator implements Comparator<Member>{
 	
 	public MemberComparator(String fieldName) {
 		try {
-			this.field = Member.class.getField(fieldName);
+			if("key".equals(fieldName)){
+				this.field = DomainObject.class.getDeclaredField(fieldName);
+			} else {
+				this.field = Member.class.getDeclaredField(fieldName);
+			}
 		} catch (NoSuchFieldException | SecurityException e) {
 			e.printStackTrace();
 		}
