@@ -4,12 +4,17 @@ package org.yajug.users.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.yajug.users.domain.Member;
+import org.yajug.users.domain.Member_;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
@@ -47,6 +52,46 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 		} finally{
 			em.close();
 		}
+		return members;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Member> findAll(String expression) throws DataException {
+		List<Member> members = new ArrayList<Member>();
+		
+		if(!validateSearchExpression(expression)){
+			throw new DataException("invalid search pattern");
+		}
+		
+		EntityManager em = getEntityManager();
+		try{
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Member> query = cb.createQuery(Member.class);
+			Root<Member> member = query.from(Member.class);
+
+			String exp = "%" + expression.toLowerCase() + "%";
+			
+			query
+				.select(member)
+				.where(
+					cb.or(
+						cb.like(cb.lower(member.get(Member_.firstName)), exp),
+						cb.like(cb.lower(member.get(Member_.lastName)), exp),
+						cb.like(cb.lower(member.get(Member_.email)), exp),
+						cb.like(cb.lower(member.get(Member_.company)), exp)
+					)
+				);
+			
+			TypedQuery<Member> tq = em.createQuery(query);
+			members = tq.getResultList();
+			
+		} finally{
+			em.close();
+		}
+		
 		return members;
 	}
 	
@@ -109,6 +154,10 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 			em.close();
 		}
 		return true;
+	}
+	
+	private boolean validateSearchExpression(String expression){
+		return Pattern.compile("^[\\p{Alnum}.@]*$").matcher(expression).find();
 	}
 	
 }

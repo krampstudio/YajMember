@@ -29,6 +29,14 @@ public interface MemberService {
 	List<Member> getAll(boolean checkValidy) throws DataException;
 	
 	/**
+	 * Textual search in the members  
+	 * @param expression to look for 
+	 * @return a list of members
+	 * @throws DataException
+	 */
+	List<Member> findAll(String expression) throws DataException;
+	
+	/**
 	 * Save a member
 	 * @param member the member to save
 	 * @return true if save

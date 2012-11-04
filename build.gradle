@@ -27,6 +27,14 @@ dependencies {
 }
 
 /*
+ * Uncomment to generate the meta model from gradle compileJava:
+ * it adds the OpenJPA Annotation Processor for Metamodel Generation 
+ * to the javac compiler
+ */
+//compileJava.options.compilerArgs.add('-Aopenjpa.metamodel=true')
+//compileJava.options.compilerArgs.add('-Aopenjpa.log=TRACE')
+
+/*
  * Enhance (weaving) classes at build time as required by openjpa
  */
 task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA at build time") << {
@@ -82,6 +90,8 @@ task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data impo
 		}
 	}
 }
+
+
 
 //make some tasks to depends on enhance
 [bulk, test, war, jettyRun].each{ it.dependsOn enhance }
