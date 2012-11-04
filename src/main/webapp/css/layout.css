@@ -81,6 +81,8 @@ form textarea{
 .gridy-table .gridy-button a{
 	display:inline-block;
 	text-decoration: none;
+	width:auto;
+	padding:3px 6px;
 }
 .gridy-table .gridy-button a:hover{
 	color:#E77124;

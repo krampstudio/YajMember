@@ -7,8 +7,8 @@ define( ['gridy'], function(){
 				evenOdd		: true,
 				clickFx		: true,
 				resize		: true,
-				height		: 600,
-				width		: 1200,
+				height		: 700,
+				width		: 975,
 				before		: function(){
 					$('.gridy-search :button').button({disabled : false})
 				},
@@ -18,13 +18,13 @@ define( ['gridy'], function(){
 				 */
 				columns	: [
 				    { name: 'Id', value: 'key', width: 45 },
-					{ name: 'Valid Member',value: 'valid', width: 100 },
-					{ name: 'First Name', value: 'firstName', width: 150 },
-					{ name: 'Last Name', value: 'lastName', width: 150 },
-					{ name: 'Email', value: 'email', width: 280 },
+					{ name: 'Valid',value: 'valid', width: 50 },
+					{ name: 'First Name', value: 'firstName', width: 125 },
+					{ name: 'Last Name', value: 'lastName', width: 125 },
+					{ name: 'Email', value: 'email', width: 225 },
 					{ name: 'Company', value: 'company', width: 100 },
-					{ name: 'Roles', width: 100 },
-					{ name: 'Actions', width: 240 }
+					{ name: 'Roles', width: 80 },
+					{ name: 'Actions', width: 200 }
 				]
 			});
 		}
