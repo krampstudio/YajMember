@@ -27,7 +27,7 @@ dependencies {
 }
 
 /*
- * Uncomment to generate the meta model from gradle compileJava:
+ * Uncomment to generate the meta model from gradle :compileJava
  * it adds the OpenJPA Annotation Processor for Metamodel Generation 
  * to the javac compiler
  */
@@ -90,8 +90,6 @@ task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data impo
 		}
 	}
 }
-
-
 
 //make some tasks to depends on enhance
 [bulk, test, war, jettyRun].each{ it.dependsOn enhance }

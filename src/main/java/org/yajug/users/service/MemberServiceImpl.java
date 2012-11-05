@@ -60,6 +60,14 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 	 */
 	@Override
 	public List<Member> findAll(String expression) throws DataException {
+		return findAll(false, expression);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Member> findAll(boolean checkValidy, String expression) throws DataException {
 		List<Member> members = new ArrayList<Member>();
 		
 		if(!validateSearchExpression(expression)){
@@ -87,6 +95,12 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 			
 			TypedQuery<Member> tq = em.createQuery(query);
 			members = tq.getResultList();
+			
+			if(checkValidy && members != null){
+				for(Member m : members){
+					m.checkValidity();
+				}
+			}
 			
 		} finally{
 			em.close();

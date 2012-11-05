@@ -49,7 +49,7 @@ public class MemberController extends RestController {
 		try {
 			List<Member> membersList = null;
 			if(StringUtils.isNotBlank(search)){
-				membersList = memberService.findAll(search);
+				membersList = memberService.findAll(true, search);
 			} else {
 				membersList = getMembersList(getMembers());
 			}
