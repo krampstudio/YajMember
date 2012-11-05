@@ -6,6 +6,36 @@ define(function(){
 				$('#member-editor').submit();
 			});
 			
+			var currentMemberId = $('body').data('member');
+			
+			if(currentMemberId){
+				
+				var toggleForm = function(){
+					var $submiter = $('#submiter'),
+						isDisabled = $submiter.button('option', 'disabled');
+					$('input, select',$('#member-editor')).attr('disabled', !isDisabled);
+					$submiter.button(isDisabled ? 'enable' : 'disable');
+				}();
+				
+				$.ajax({
+					type 		: 'GET',
+					url 		: 'api/member/getOne',
+					dataType 	: 'json',
+					data		: {
+						id : currentMemberId
+					}
+				}).done(function(data) {	
+					toggleForm();
+					if(!data || data.error){
+						$.error("Error : " + (data.error ? data.error : "unknown"));
+					} else {
+						alert('received')
+						console.log(data)
+					}
+					
+				});
+			}
+			
 			$.ajax({
 				type 		: 'GET',
 				url 		: 'api/event/list',

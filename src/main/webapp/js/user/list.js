@@ -12,6 +12,18 @@ define( ['gridy'], function(){
 				before		: function(){
 					$('.gridy-search :button').button({disabled : false})
 				},
+				done		: function(){
+					$('.member-edit').click(function(event){
+						event.preventDefault();
+						//extract the id and attach it to a high level element
+						$('body').data('member', $(this).attr('href').replace('#', ''));
+						
+						//opens the edit tab
+						$('#actions').tabs('select', 1);
+						
+						return false;
+					});
+				},
 				
 				/*
 				 * the column list must match the template defined in index.html! 
