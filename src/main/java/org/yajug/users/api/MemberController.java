@@ -15,7 +15,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.lang.NumberUtils;
 import org.apache.commons.lang.StringUtils;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.utils.MemberComparator;
@@ -23,6 +22,10 @@ import org.yajug.users.service.DataException;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.vo.GridVo;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 
@@ -146,6 +149,32 @@ public class MemberController extends RestController {
 		return getSerializer().toJson(response);
 	}
 	
+	/**
+	 * use a custom serializer for Members
+	 */
+	@Override
+	protected Gson getSerializer() {
+		return new GsonBuilder()
+					.serializeNulls()
+					.setDateFormat("yyyy-MM-dd")
+					.setExclusionStrategies(new ExclusionStrategy() {
+						//prevent circular references serialization of : Member <-> MemberShip <-> Member
+						@Override public boolean shouldSkipField(FieldAttributes f) {
+							return Member.class.equals(f.getDeclaredClass());
+						}
+						
+						@Override public boolean shouldSkipClass(Class<?> clazz) {
+							return false;
+						}
+					})
+					.create();
+	}
+
+	/**
+	 * get the members (from cache or the service layer)
+	 * @return the map of members, with the member's id as key
+	 * @throws DataException
+	 */
 	private Map<Long, Member> getMembers() throws DataException{
 		if(this.members == null){
 			List<Member> membersList = memberService.getAll(true);
@@ -159,10 +188,18 @@ public class MemberController extends RestController {
 		return this.members;
 	}
 	
+	/**
+	 * Clear the current member's cache
+	 */
 	private void clearMembers(){
 		this.members = null;
 	}
 	
+	/**
+	 * convert the member's map to a list
+	 * @param membersMap
+	 * @return
+	 */
 	private static List<Member> getMembersList(Map<Long, Member> membersMap){
 		List<Member> membersList = new ArrayList<Member>();
 		if(membersMap != null){

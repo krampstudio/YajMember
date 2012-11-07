@@ -1,13 +1,14 @@
 define(function(){
 	return {
 		build: function(){
+			
 			$('#submiter').button().click(function(event){
 				event.preventDefault();
 				$('#member-editor').submit();
 			});
 			
+			//load member data
 			var currentMemberId = $('body').data('member');
-			
 			if(currentMemberId){
 				
 				var toggleForm = function(){
@@ -29,13 +30,12 @@ define(function(){
 					if(!data || data.error){
 						$.error("Error : " + (data.error ? data.error : "unknown"));
 					} else {
-						alert('received')
 						console.log(data)
 					}
-					
 				});
 			}
 			
+			//load events
 			$.ajax({
 				type 		: 'GET',
 				url 		: 'api/event/list',
@@ -53,6 +53,9 @@ define(function(){
 					$.tmpl(template, data).appendTo('#events-subscribed');
 				}
 			});
+			
+			
+			//form controls
 			
 			$('#membership').change(function() {
 				if ($(this).val() === 'true') {
@@ -79,6 +82,7 @@ define(function(){
 				}
 			});
 			
+			//send data
 			$('#member-editor').submit(function(event){
 				event.preventDefault();
 				
@@ -90,7 +94,7 @@ define(function(){
 					'roles' 	: $('#roles').val(),
 					'membership': {
 						'event' : {
-							
+							//TODO event
 						}
 					}
 				};
