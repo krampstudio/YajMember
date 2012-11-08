@@ -16,7 +16,8 @@ define(function(){
 						isDisabled = $submiter.button('option', 'disabled');
 					$('input, select',$('#member-editor')).attr('disabled', !isDisabled);
 					$submiter.button(isDisabled ? 'enable' : 'disable');
-				}();
+				};
+				toggleForm();
 				
 				$.ajax({
 					type 		: 'GET',
@@ -30,7 +31,16 @@ define(function(){
 					if(!data || data.error){
 						$.error("Error : " + (data.error ? data.error : "unknown"));
 					} else {
-						console.log(data)
+						$('#member-editor :input').each(function(){
+							if(data[$(this).attr('id')]){
+								$(this).val(data[$(this).attr('id')]);
+							}
+						});
+						if(data['valid'] && data['valid'] === true){
+							$('#membership').val(true);
+							$('#events-subscribed').closest('div').show();
+							$('#date-subscribed').closest('div').show();
+						}
 					}
 				});
 			}
@@ -87,8 +97,8 @@ define(function(){
 				event.preventDefault();
 				
 				var member = {
-					'firstName' : $('#firstname').val(),
-					'lastName'  : $('#lastname').val(),
+					'firstName' : $('#firstBame').val(),
+					'lastName'  : $('#lastName').val(),
 					'email' 	: $('#email').val(),
 					'company'  	: $('#company').val(),
 					'roles' 	: $('#roles').val(),
