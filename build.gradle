@@ -93,3 +93,9 @@ task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data impo
 
 //make some tasks to depends on enhance
 [bulk, test, war, jettyRun].each{ it.dependsOn enhance }
+
+//in development, we use a different jetty webdefault.xml to set the useFileMappedBuffer to false
+//to enable file modification when the in place server is running
+[jettyRun, jettyStop]*.with {
+	webDefaultXml = file('src/main/config/webdefault.xml')
+}
