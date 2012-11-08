@@ -40,6 +40,23 @@ define(function(){
 							$('#membership').val(true);
 							$('#events-subscribed').closest('div').show();
 							$('#date-subscribed').closest('div').show();
+							if(data['memberships'] && $.isArray(data['memberships'])){
+								var lastMembership = null, i;
+								for(i in data.memberships){
+									if(lastMembership === null 
+											|| data.memberships[i].year > lastMembership.year){
+										lastMembership = data.memberships[i];
+									}
+								}
+								if(typeof lastMembership === 'object'){
+									if(lastMembership['event']){
+										$('#events-subscribed').val(lastMembership.event.key);
+									}
+									if(lastMembership['paiementDate']){
+										$('#date-subscribed').val(lastMembership.paiementDate);
+									}
+								}
+							}
 						}
 					}
 				});
