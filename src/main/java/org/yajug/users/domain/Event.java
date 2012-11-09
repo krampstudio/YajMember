@@ -11,6 +11,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 /**
@@ -21,7 +22,11 @@ import javax.persistence.NamedQuery;
 @Entity
 @Access(AccessType.FIELD)
 @Inheritance(strategy=InheritanceType.JOINED)
-@NamedQuery(name="Event.findAll", query="select e from Event e order by e.date")
+@NamedQueries({
+	@NamedQuery(name="Event.findAll", query="select e from Event e order by e.date"),
+	@NamedQuery(name="Event.getOne", query="select e from Event e where e.key = :key")
+})
+
 public class Event  extends DomainObject{
 
 	@Basic private String title;

@@ -1,6 +1,7 @@
 <div>
 	<form id="member-editor">
 		<input type="hidden" name="key" id="key" value="" />
+		<input type="hidden" name="membership-key" id="membership-key" value="" />
 		<div>
 			<label for="firstName">First Name</label>
 			<input id="firstName" name="firstName" type="text" required="required" />
@@ -22,14 +23,14 @@
 			<input id="membership" name="membership" type="checkbox" value="true" />
 		</div>
 		<div style="display:none;">
-			<label for="events-subscribed">Subscribed during an event :</label>
-			<select id="events-subscribed" name="events-subscribed">
+			<label for="membership-event">Subscribed during an event :</label>
+			<select id="membership-event" name="membership-event">
 				<option value=""></option>
 			</select>
 		</div>
 		<div style="display:none;">
-			<label for="date-subscribed">Subscribed the :</label>
-			<input id="date-subscribed" name="date-subscribed" type="date" />
+			<label for="membership-paiementDate">Subscribed the :</label>
+			<input id="membership-paiementDate" name="membership-paiementDate" type="date" />
 		</div>
 		<div>
 			<label for="roles">Role</label>

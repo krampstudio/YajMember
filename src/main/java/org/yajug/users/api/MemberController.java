@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -17,8 +18,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringUtils;
 import org.yajug.users.domain.Member;
+import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.utils.MemberComparator;
 import org.yajug.users.service.DataException;
+import org.yajug.users.service.EventService;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.vo.GridVo;
 
@@ -34,6 +37,9 @@ public class MemberController extends RestController {
 
 	@Inject
 	private MemberService memberService;
+	
+	@Inject
+	private EventService eventService;
 	
 	/** cache of member list */
 	private Map<Long, Member> members;
@@ -120,24 +126,60 @@ public class MemberController extends RestController {
 	@Path("add")
 	@Produces({MediaType.APPLICATION_JSON})
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public String add( 	@FormParam("member") String memberData, 
-						@FormParam("validMembership") boolean validMembership ){
-		
+	public String add(@FormParam("member") String member){
+		return saveMember(member);
+	}
+	
+	@POST
+	@Path("update")
+	@Produces({MediaType.APPLICATION_JSON})
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public String update(@FormParam("member") String member){
+		return saveMember(member);
+	}
+	
+	/**
+	 * Save a member
+	 * @param memberData
+	 * @return the json response 
+	 */
+	private String saveMember(String memberData){
 		JsonObject response = new JsonObject();
-
 		boolean saved = false;
-		
 		
 		Member member = getSerializer().fromJson(memberData, Member.class);
 		
-//		if(validMembership){
-//			Membership membership = new Membership();
-//			membership.setYear(Integer.valueOf(new SimpleDateFormat().format(new Date())));
-//			//TODO save membership
-//		}
-		
 		try {
-			saved = this.memberService.save(member);
+			if(member.getKey() > 0){
+				//update merge manually the entity - to prevent JPA to break associations
+				//there is may be a better solution...
+				Member entity = getMembers().get(member.getKey());
+				if(entity != null){
+					entity.setFirstName(member.getFirstName());
+					entity.setLastName(member.getLastName());
+					entity.setCompany(member.getCompany());
+					entity.setRoles(member.getRoles());
+					entity.setEmail(member.getEmail());
+					
+					for(Membership membership : member.getMemberships()){
+						if(membership.getKey() > 0){
+							for(Membership entityMembership : entity.getMemberships()){
+								if(entityMembership.getKey() == membership.getKey()){
+									if(membership.getPaiementDate() != null){
+										entityMembership.setPaiementDate(membership.getPaiementDate());
+									}
+									if(membership.getEvent() != null && membership.getEvent().getKey() > 0){
+										entityMembership.setEvent(eventService.getOne(membership.getEvent().getKey()));
+									}
+									break; //there is only one membership
+								}
+							}
+						}
+					}
+				}
+			} else {
+				saved = this.memberService.save(member);
+			}
 		} catch (DataException e) {
 			response.addProperty("error", e.getLocalizedMessage());
 		} finally {

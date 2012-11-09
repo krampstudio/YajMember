@@ -35,6 +35,27 @@ public class EventServiceImpl extends JPAService implements EventService {
 		}
 		return events;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Event getOne(long key) throws DataException {
+		
+		Event event = null;
+		EntityManager em = getEntityManager();
+		try{
+			TypedQuery<Event> tq = em.createNamedQuery("Event.getOne", Event.class);
+			tq.setParameter("key", key);
+			event = tq.getSingleResult();
+			
+		} catch(PersistenceException pe){
+			throw new DataException("", pe);
+		} finally {
+			em.close();
+		}
+		return event;
+	}
 
 	/**
 	 * {@inheritDoc}

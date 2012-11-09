@@ -139,7 +139,11 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 		try{
 			em.getTransaction().begin();
 			for(Member member : members){
-				em.persist(member);
+				if(member.getKey() > 0){
+					em.merge(member);
+				} else {
+					em.persist(member);
+				}
 			}
 			em.getTransaction().commit();
 		} catch(PersistenceException pe){

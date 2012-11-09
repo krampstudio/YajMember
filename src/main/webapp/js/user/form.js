@@ -11,6 +11,9 @@ define(function(){
 			var currentMemberId = $('body').data('member');
 			if(currentMemberId){
 				
+				/**
+				 * Enable/disable the form fields
+				 */
 				var toggleForm = function(){
 					var $submiter = $('#submiter'),
 						isDisabled = $submiter.button('option', 'disabled');
@@ -37,9 +40,9 @@ define(function(){
 							}
 						});
 						if(data['valid'] && data['valid'] === true){
-							$('#membership').val(true);
-							$('#events-subscribed').closest('div').show();
-							$('#date-subscribed').closest('div').show();
+							$('#membership').prop('checked', true);
+							$('#membership-event').closest('div').show();
+							$('#membership-paiementDate').closest('div').show();
 							if(data['memberships'] && $.isArray(data['memberships'])){
 								var lastMembership = null, i;
 								for(i in data.memberships){
@@ -49,11 +52,14 @@ define(function(){
 									}
 								}
 								if(typeof lastMembership === 'object'){
+									if(lastMembership['key']){
+										$('#membership-key').val(lastMembership.key);
+									}
 									if(lastMembership['event']){
-										$('#events-subscribed').val(lastMembership.event.key);
+										$('#membership-event').val(lastMembership.event.key);
 									}
 									if(lastMembership['paiementDate']){
-										$('#date-subscribed').val(lastMembership.paiementDate);
+										$('#membership-paiementDate').val(lastMembership.paiementDate);
 									}
 								}
 							}
@@ -77,7 +83,7 @@ define(function(){
 					//data is empty no event
 				} else {
 					var template = "<option value='${key}'>${date} - ${title}</option>";
-					$.tmpl(template, data).appendTo('#events-subscribed');
+					$.tmpl(template, data).appendTo('#membership-event');
 				}
 			});
 			
@@ -86,55 +92,78 @@ define(function(){
 			
 			$('#membership').change(function() {
 				if ($(this).val() === 'true') {
-					$('#events-subscribed').closest('div').show();
-					$('#date-subscribed').closest('div').show();
+					$('#membership-event').closest('div').show();
+					$('#membership-paiementDate').closest('div').show();
 				} else {
-					$('#events-subscribed').closest('div').hide();
-					$('#date-subscribed').closest('div').hide();
+					$('#membership-event').closest('div').hide();
+					$('#membership-paiementDate').closest('div').hide();
 				}
 			});
 			
-			$('#date-subscribed').datepicker({
+			$('#membership-paiementDate').datepicker({
 				'dateFormat': 'yy-mm-dd'
 			});
 			
-			$('#date-subscribed').change(function(){
+			$('#membership-paiementDate').change(function(){
 				if($(this).val() !== ''){
-					$('#events-subscribed').val('');
+					$('#membership-event').val('');
 				}
 			});
-			$('#events-subscribed').change(function(){
+			$('#membership-event').change(function(){
 				if($(this).val() !== ''){
-					$('#date-subscribed').val('');
+					$('#membership-paiementDate').val('');
 				}
 			});
+			
+			/**
+			 * Serialize the form to a JSON format that match the REST objects
+			 * @param {jQueryElement} $form
+			 * @return {String} json 
+			 */
+			var serializeMember = function($form){
+				var member = {},
+					memberShip  = {};
+				if($form){
+					if($form.prop('tagName') !== 'FORM'){
+						$.error('Invalid jQuery element for $form. It much match a form tag.')
+					}
+					$.map($form.serializeArray(), function(elt, index){
+						if(!/^membership/.test(elt.name)){
+							member[elt.name] = elt.value;
+						} else {
+							memberShip[elt.name.replace(/^membership-/, '')] = elt.value;
+						}
+					});
+					if(member.roles && !$.isArray(member.roles)){
+						member.roles = [member.roles];
+					}
+					
+					member['memberships'] = [{
+						'key'	: memberShip['key'],
+						'paiementDate' : memberShip['paiementDate'],
+						'event' : {
+							'key': memberShip['event'] 
+						}
+					}];
+				}
+				
+				return member;
+			}
 			
 			//send data
 			$('#member-editor').submit(function(event){
 				event.preventDefault();
 				
-				var member = {
-					'firstName' : $('#firstBame').val(),
-					'lastName'  : $('#lastName').val(),
-					'email' 	: $('#email').val(),
-					'company'  	: $('#company').val(),
-					'roles' 	: $('#roles').val(),
-					'membership': {
-						'event' : {
-							//TODO event
-						}
-					}
-				};
-				var validMemberShip = $('#membership').val() === 'true';
+				var member = serializeMember($(this)),
+					udpate = (member.key && member.key > 0);
 						
 				$.ajax({
-					type 		: 'PUT',
-					url 		: 'api/member/add',
+					type 		: (udpate) ? 'POST' : 'PUT',
+					url 		: (udpate) ? 'api/member/update' : 'api/member/add',
 					contentType : 'application/x-www-form-urlencoded',
 					dataType 	: 'json',
 					data 		: {
-						member : JSON.stringify(member),
-						validMembership : validMemberShip
+						member : JSON.stringify(member)
 					}
 				}).done(function(data) {
 					if(!data.saved || data.error){

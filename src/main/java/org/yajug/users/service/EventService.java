@@ -19,6 +19,14 @@ public interface EventService {
 	Collection<Event> getAll() throws DataException;
 	
 	/**
+	 * get one event by key
+	 * @param key
+	 * @return teh event
+	 * @throws DataException
+	 */
+	Event getOne(long key) throws DataException;
+	
+	/**
 	 * Save an event
 	 * @param event the event to save
 	 * @return true if saved
