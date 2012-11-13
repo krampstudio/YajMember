@@ -26,6 +26,16 @@ dependencies {
 	testCompile "junit:junit:$junitVersion"
 }
 
+//in development, we use a different jetty webdefault.xml to set the useFileMappedBuffer to false
+//to enable file modification when the in place server is running
+jettyRun{
+	webDefaultXml = file('src/main/config/webdefault.xml')
+}
+//to do remote debugging
+//do
+//	export GRADLE_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=9999,server=y"
+
+
 /*
  * Uncomment to generate the meta model from gradle :compileJava
  * it adds the OpenJPA Annotation Processor for Metamodel Generation 
@@ -94,8 +104,3 @@ task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data impo
 //make some tasks to depends on enhance
 [bulk, test, war, jettyRun].each{ it.dependsOn enhance }
 
-//in development, we use a different jetty webdefault.xml to set the useFileMappedBuffer to false
-//to enable file modification when the in place server is running
-[jettyRun, jettyStop]*.with {
-	webDefaultXml = file('src/main/config/webdefault.xml')
-}

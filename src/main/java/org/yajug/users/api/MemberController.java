@@ -151,8 +151,9 @@ public class MemberController extends RestController {
 		
 		try {
 			if(member.getKey() > 0){
+				
 				//update merge manually the entity - to prevent JPA to break associations
-				//there is may be a better solution...
+				//TODO there is may be a better solution...
 				Member entity = getMembers().get(member.getKey());
 				if(entity != null){
 					entity.setFirstName(member.getFirstName());
@@ -177,6 +178,7 @@ public class MemberController extends RestController {
 						}
 					}
 				}
+				
 			} else {
 				saved = this.memberService.save(member);
 			}
@@ -197,19 +199,19 @@ public class MemberController extends RestController {
 	@Override
 	protected Gson getSerializer() {
 		return new GsonBuilder()
-					.serializeNulls()
-					.setDateFormat("yyyy-MM-dd")
-					.setExclusionStrategies(new ExclusionStrategy() {
-						//prevent circular references serialization of : Member <-> MemberShip <-> Member
-						@Override public boolean shouldSkipField(FieldAttributes f) {
-							return Member.class.equals(f.getDeclaredClass());
-						}
-						
-						@Override public boolean shouldSkipClass(Class<?> clazz) {
-							return false;
-						}
-					})
-					.create();
+				.serializeNulls()
+				.setDateFormat("yyyy-MM-dd")
+				.setExclusionStrategies(new ExclusionStrategy() {
+					//prevent circular references serialization of : Member <-> MemberShip <-> Member
+					@Override public boolean shouldSkipField(FieldAttributes f) {
+						return Member.class.equals(f.getDeclaredClass());
+					}
+					
+					@Override public boolean shouldSkipClass(Class<?> clazz) {
+						return false;
+					}
+				})
+				.create();
 	}
 
 	/**

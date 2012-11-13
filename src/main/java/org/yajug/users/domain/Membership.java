@@ -1,5 +1,6 @@
 package org.yajug.users.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Access;
@@ -65,6 +66,9 @@ public class Membership  extends DomainObject {
 	 */
 	public void setPaiementDate(Date paiement) {
 		this.paiementDate = paiement;
+		if(this.year <= 0 && this.paiementDate != null){
+			this.year = Integer.parseInt(new SimpleDateFormat("yyyy").format(this.paiementDate));
+		}
 	}
 	
 	/**

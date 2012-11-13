@@ -7,6 +7,8 @@ define(function(){
 				$('#member-editor').submit();
 			});
 			
+			//TODO load members once the events are set
+			
 			//load member data
 			var currentMemberId = $('body').data('member');
 			if(currentMemberId){
@@ -138,13 +140,18 @@ define(function(){
 						member.roles = [member.roles];
 					}
 					
-					member['memberships'] = [{
-						'key'	: memberShip['key'],
-						'paiementDate' : memberShip['paiementDate'],
-						'event' : {
-							'key': memberShip['event'] 
+					if($('#membership', $form).val() === true || memberShip['key']){
+						member['memberships'] = [{}];
+						if(memberShip['key']){
+							member['memberships'][0]['key'] = memberShip['key'];
 						}
-					}];
+						if(memberShip['paiementDate']){
+							member['memberships'][0]['paiementDate'] = memberShip['paiementDate'];
+						}
+						if(memberShip['event']){
+							member['memberships'][0]['event'] = {'key' : memberShip['event'] };
+						}
+					}
 				}
 				
 				return member;
