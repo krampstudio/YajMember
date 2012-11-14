@@ -156,27 +156,7 @@ public class MemberController extends RestController {
 				//TODO there is may be a better solution...
 				Member entity = getMembers().get(member.getKey());
 				if(entity != null){
-					entity.setFirstName(member.getFirstName());
-					entity.setLastName(member.getLastName());
-					entity.setCompany(member.getCompany());
-					entity.setRoles(member.getRoles());
-					entity.setEmail(member.getEmail());
 					
-					for(Membership membership : member.getMemberships()){
-						if(membership.getKey() > 0){
-							for(Membership entityMembership : entity.getMemberships()){
-								if(entityMembership.getKey() == membership.getKey()){
-									if(membership.getPaiementDate() != null){
-										entityMembership.setPaiementDate(membership.getPaiementDate());
-									}
-									if(membership.getEvent() != null && membership.getEvent().getKey() > 0){
-										entityMembership.setEvent(eventService.getOne(membership.getEvent().getKey()));
-									}
-									break; //there is only one membership
-								}
-							}
-						}
-					}
 				}
 				
 			} else {

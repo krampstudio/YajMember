@@ -15,6 +15,8 @@ import javax.persistence.criteria.Root;
 
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Member_;
+import org.yajug.users.domain.Membership;
+import org.yajug.users.domain.Event;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
@@ -139,8 +141,33 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 		try{
 			em.getTransaction().begin();
 			for(Member member : members){
-				if(member.getKey() > 0){
-					em.merge(member);
+				
+				Member previousMember = em.find(Member.class, member.getKey());
+				if(previousMember != null){
+					
+					previousMember.setFirstName(member.getFirstName());
+					previousMember.setLastName(member.getLastName());
+					previousMember.setCompany(member.getCompany());
+					previousMember.setRoles(member.getRoles());
+					previousMember.setEmail(member.getEmail());
+					
+					for(Membership membership : member.getMemberships()){
+						if(membership.getKey() > 0){
+							for(Membership entityMembership : previousMember.getMemberships()){
+								if(entityMembership.getKey() == membership.getKey()){
+									if(membership.getPaiementDate() != null){
+										entityMembership.setPaiementDate(membership.getPaiementDate());
+									}
+									if(membership.getEvent() != null && membership.getEvent().getKey() > 0){
+										entityMembership.setEvent(em.find(Event.class, membership.getEvent().getKey()));
+									}
+									break; //there is only one membership
+								}
+							}
+						}
+					}
+					em.merge(previousMember);
+					
 				} else {
 					em.persist(member);
 				}
