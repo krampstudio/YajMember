@@ -148,9 +148,12 @@ public class MemberController extends RestController {
 		boolean saved = false;
 		
 		Member member = getSerializer().fromJson(memberData, Member.class);
-		
+			
 		try {
-			if(member.getKey() > 0){
+			
+			saved = this.memberService.save(member);
+			
+			/*if(member.getKey() > 0){
 				
 				//update merge manually the entity - to prevent JPA to break associations
 				//TODO there is may be a better solution...
@@ -177,17 +180,17 @@ public class MemberController extends RestController {
 							}
 						}
 					}
+					saved = this.memberService.save(entity);
 				}
 				
 			} else {
-				saved = this.memberService.save(member);
-			}
+				
+			}*/
 		} catch (DataException e) {
 			response.addProperty("error", e.getLocalizedMessage());
 		} finally {
 			this.clearMembers();
 		}
-		
 		response.addProperty("saved", saved);
 		
 		return getSerializer().toJson(response);
