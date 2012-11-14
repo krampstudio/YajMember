@@ -27,7 +27,8 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl'],  function($){
 				}
 				if (ui.index === 1) {
 					requirejs([ 'user/form' ], function(form) {
-						form.build();
+						form.initControls();
+						form.loadEvents();
 					});
 				}
 			}
