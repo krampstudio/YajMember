@@ -16,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
 
@@ -27,7 +28,9 @@ import javax.persistence.Transient;
 @Entity
 @Access(AccessType.FIELD)
 @Inheritance(strategy=InheritanceType.JOINED)
-@NamedQuery(name="Member.findAll", query="select m from Member m")
+@NamedQueries({
+	@NamedQuery(name="Member.findAll", query="select m from Member m")
+})
 public class Member extends DomainObject implements Comparable<Member>{
 
 	@Basic private String firstName;
