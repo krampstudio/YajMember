@@ -13,6 +13,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * This domain pojo represents an event of the jug
@@ -29,10 +31,20 @@ import javax.persistence.NamedQuery;
 
 public class Event  extends DomainObject{
 
-	@Basic private String title;
-	@Lob private String description;
+	@Basic 
+	@NotNull
+	@Pattern(regexp=DomainObject.TEXT_PATTERN)
+	private String title;
+	
+	@Lob 
+	@Pattern(regexp=DomainObject.BLOCK_PATTERN)
+	private String description;
+	
+	
 	@Basic private Date date;
-	@ManyToMany private List<Member> participants;
+	
+	@ManyToMany 
+	private List<Member> participants;
 	
 	/**
 	 * Default constructor needed by openjpa.

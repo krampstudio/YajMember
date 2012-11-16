@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.Min;
 
 /**
  * Provides shared properties by all the domain objects like the identifier.
@@ -16,9 +17,14 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class DomainObject {
 
+	protected static final String TEXT_PATTERN = "^[\\w\\t \\-_+:'\\\"]{1,250}$";
+	protected static final String BLOCK_PATTERN = "^[\\w\\s\\-_+:'\\\"]*$";
+	
 	@Id
+	@Basic 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic protected long  key;
+	@Min(0)
+	protected long  key;
 	
 	public DomainObject(){
 	}
