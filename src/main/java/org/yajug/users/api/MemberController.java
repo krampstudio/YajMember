@@ -18,10 +18,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringUtils;
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.utils.MemberComparator;
 import org.yajug.users.service.DataException;
-import org.yajug.users.service.EventService;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.vo.GridVo;
 
@@ -37,9 +35,6 @@ public class MemberController extends RestController {
 
 	@Inject
 	private MemberService memberService;
-	
-	@Inject
-	private EventService eventService;
 	
 	/** cache of member list */
 	private Map<Long, Member> members;

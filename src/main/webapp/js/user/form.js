@@ -163,7 +163,15 @@ define(function(){
 					}
 					$.map($form.serializeArray(), function(elt, index){
 						if(!/^membership/.test(elt.name)){
-							member[elt.name] = elt.value;
+							if(member[elt.name] === undefined){
+								member[elt.name] = elt.value;
+							} else {
+								if(!$.isArray(member[elt.name])){
+									member[elt.name] = [member[elt.name]];
+								}
+								member[elt.name].push(elt.value);
+							}
+							
 						} else {
 							memberShip[elt.name.replace(/^membership-/, '')] = elt.value;
 						}
