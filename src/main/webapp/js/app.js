@@ -5,12 +5,14 @@ requirejs.config({
 		user: '../user'
 	},
 	shim: {
-	    'jquery-ui': ['jquery'],
-	    'jquery-tmpl': ['jquery'],
-	    'gridy': ['jquery']
+	    'jquery-ui'			: ['jquery'],
+	    'jquery-tmpl'		: ['jquery'],
+	    'gridy'				: ['jquery'],
+	    'noty/jquery.noty' 	: ['jquery'],
+	    'notify'			: ['noty/jquery.noty']
 	}
 });
-requirejs(['jquery', 'jquery-ui', 'jquery-tmpl'],  function($){
+requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmpl, notify){
 
 	$(function() {
 		$('#actions').tabs({
@@ -23,6 +25,7 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl'],  function($){
 				if (ui.index === 0) {
 					requirejs([ 'user/list' ], function(list) {
 						list.build();
+						notify('success', 'done');
 					});
 				}
 				if (ui.index === 1) {
