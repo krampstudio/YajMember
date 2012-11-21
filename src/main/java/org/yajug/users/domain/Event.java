@@ -13,6 +13,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -41,8 +42,11 @@ public class Event  extends DomainObject{
 	private String description;
 	
 	
-	@Basic private Date date;
+	@Basic 
+	@NotNull
+	private Date date;
 	
+	@Valid
 	@ManyToMany 
 	private List<Member> participants;
 	

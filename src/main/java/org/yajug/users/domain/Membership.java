@@ -11,6 +11,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 
 /**
  * This domain pojo represent a annual membership paid by a member.
@@ -28,11 +33,27 @@ public class Membership  extends DomainObject {
 
 	public static final int ANNUAL_FEE = 40;
 	
-	@Basic private int year;
-	@Basic private Date paiementDate;
-	@Basic private int amount;
-	@ManyToOne private Event event;
-	@ManyToOne private Member member;
+	@Basic 
+	@NotNull
+	@Min(1990)
+	@Max(2050)	//I hope the apps would be diferent in 2050
+	private int year;
+	
+	@Basic 
+	@Past
+	private Date paiementDate;
+	
+	@Basic 
+	@Min(0)
+	private int amount;
+	
+	@Valid
+	@ManyToOne 
+	private Event event;
+	
+	@Valid
+	@ManyToOne 
+	private Member member;
 	
 	/**
 	 * Default constructor needed by openjpa.

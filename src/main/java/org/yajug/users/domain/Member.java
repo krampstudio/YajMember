@@ -19,6 +19,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.apache.bval.constraints.Email;
 
 /**
  * This domain pojo represent a member of the jug.
@@ -33,10 +37,23 @@ import javax.persistence.Transient;
 })
 public class Member extends DomainObject implements Comparable<Member>{
 
-	@Basic private String firstName;
-	@Basic private String lastName;
-	@Basic private String email;
-	@Basic private String company;
+	@Basic 
+	@NotNull
+	@Pattern(regexp=DomainObject.TEXT_PATTERN)
+	private String firstName;
+	
+	@Basic 
+	@NotNull
+	@Pattern(regexp=DomainObject.TEXT_PATTERN)
+	private String lastName;
+	
+	@Basic 
+	@Email	//apache bval constraint
+	private String email;
+	
+	@Basic 
+	@Pattern(regexp=DomainObject.TEXT_PATTERN)
+	private String company;
 	
 	@ElementCollection(targetClass=Role.class, fetch=FetchType.EAGER)
 	@Enumerated(EnumType.STRING)
