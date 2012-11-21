@@ -15,6 +15,7 @@ requirejs.config({
 requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmpl, notify){
 
 	$(function() {
+		var firstFormLoad = true;
 		$('#actions').tabs({
 			create: function(event, ui) {
 				//unload splash and display screen
@@ -25,13 +26,35 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmp
 				if (ui.index === 0) {
 					requirejs([ 'user/list' ], function(list) {
 						list.build();
-						notify('success', 'done');
 					});
 				}
 				if (ui.index === 1) {
 					requirejs([ 'user/form' ], function(form) {
-						form.initControls();
-						form.loadEvents();
+						
+						var loadMember = function(callback){
+							if($('body').data('member')){
+								form.loadMember($('body').data('member'), callback);
+							}
+						};
+						
+						if(firstFormLoad === true){
+							form.initControls();
+							form.loadEvents(function(){
+								loadMember(function(){
+									firstFormLoad = false;
+								});
+							});
+						} else {
+							loadMember();
+						}
+					});
+				}
+			},
+			show : function(event, ui) {
+				
+				if (ui.index !== 1) {
+					requirejs([ 'user/form' ], function(form) {
+						form.clear();
 					});
 				}
 			}

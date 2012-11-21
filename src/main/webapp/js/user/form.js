@@ -59,7 +59,7 @@ define(function(){
 						if(!data.saved || data.error){
 							$.error("Error : " + data.error ? data.error : "unknown");
 						} else {
-							alert("Saved");
+							notify('success', 'Saved');
 						}
 					});
 					
@@ -71,7 +71,7 @@ define(function(){
 			 * Load the member data
 			 * @param {Number} the identifier of the member to load
 			 */
-			loadMember : function(memberId){
+			loadMember : function(memberId, callback){
 				if(memberId && memberId > 0){
 					self.toggleForm();
 					
@@ -117,6 +117,9 @@ define(function(){
 									}
 								}
 							}
+							if(typeof callback === 'function'){
+								callback();
+							}
 						}
 					});
 				}
@@ -125,7 +128,7 @@ define(function(){
 			/**
 			 * Load the list of events
 			 */
-			loadEvents : function (){
+			loadEvents : function (callback){
 				//load events
 				$.ajax({
 					type 		: 'GET',
@@ -143,9 +146,9 @@ define(function(){
 						var template = "<option value='${key}'>${date} - ${title}</option>";
 						$.tmpl(template, data).appendTo('#membership-event');
 					}
-					
-					//load the member data only once the events are loaded
-					self.loadMember(currentMemberId);
+					if(typeof callback === 'function'){
+						callback();
+					}
 				});
 			},
 			
@@ -194,6 +197,13 @@ define(function(){
 					}
 				}
 				return member;
+			},
+			
+			clear : function(){
+				$('body').removeData('member');
+				$('#member-editor').each(function(){
+					this.reset();
+				});
 			}
 		};
 	return self;

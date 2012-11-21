@@ -13,7 +13,6 @@ define( ['gridy'], function(){
 					$('.gridy-search :button').button({disabled : false})
 				},
 				done		: function(){
-					$('body').removeData('member');
 					$('.member-edit').click(function(event){
 						event.preventDefault();
 						//extract the id and attach it to a high level element
