@@ -1,9 +1,12 @@
+//RequireJs configuration: 
 requirejs.config({
 	baseUrl: 'js/lib',
-	urlArgs: 'bust=' + (new Date()).getTime(),	//only for dev  : no-cache
+	urlArgs: 'bust=' + (new Date()).getTime(),	//only for dev  : no-cache for the scripts
 	paths: {
 		user: '../user'
 	},
+	
+	//dependencies
 	shim: {
 	    'jquery-ui'			: ['jquery'],
 	    'jquery-tmpl'		: ['jquery'],
@@ -12,10 +15,18 @@ requirejs.config({
 	    'notify'			: ['noty/jquery.noty']
 	}
 });
+
+//The main entry point
 requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmpl, notify){
 
 	$(function() {
-		var firstFormLoad = true;
+		
+		var firstFormLoad = true,
+			isEditingMember = function(){
+				return $('body').data('member') !== undefined;
+			};
+		
+		//initialize the tabs
 		$('#actions').tabs({
 			create: function(event, ui) {
 				//unload splash and display screen
@@ -24,22 +35,30 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmp
 			},
 			load : function(event, ui) {
 				if (ui.index === 0) {
-					requirejs([ 'user/list' ], function(list) {
+					requirejs(['user/list'], function(list) {
+						//build the member list
 						list.build();
 					});
 				}
 				if (ui.index === 1) {
-					requirejs([ 'user/form' ], function(form) {
+					requirejs(['user/form'], function(form) {
 						
+						/**
+						 * Load member's data in the form.
+						 * The member's id is given by a data attribute bound to the body tag
+						 * @param {Function} callback executed without parameter when the member is loaded
+						 */
 						var loadMember = function(callback){
-							if($('body').data('member')){
+							if(isEditingMember()){
 								form.loadMember($('body').data('member'), callback);
 							}
 						};
 						
 						if(firstFormLoad === true){
+							//we initialise the form the first time
 							form.initControls();
 							form.loadEvents(function(){
+								//we load the member only once the events are loaded
 								loadMember(function(){
 									firstFormLoad = false;
 								});
@@ -52,13 +71,18 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmp
 			},
 			show : function(event, ui) {
 				
-				if (ui.index !== 1) {
-					requirejs([ 'user/form' ], function(form) {
+				if (ui.index !== 1){
+					//clean up teh form
+					requirejs(['user/form'], function(form) {
 						form.clear();
 					});
 				}
+				//rename the tab if we are add or editing a member
+				$('#actions ul:first li:nth-child(2) a').text(
+					(ui.index === 1 && isEditingMember()) ? 'Edit member' : 'Add a member'
+				);
 			}
 		});
+		
 	});
-	
 });
