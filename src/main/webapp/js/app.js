@@ -1,11 +1,11 @@
 //RequireJs configuration: 
 requirejs.config({
 	baseUrl: 'js/lib',
-	urlArgs: 'bust=' + (new Date()).getTime(),	//only for dev  : no-cache for the scripts
+	urlArgs: 'bust=' + (new Date()).getTime(),	//only for dev  : no-cache for the laoded scripts 
 	paths: {
-		user: '../user'
+		user: '../user',
+		event: '../event'
 	},
-	
 	//dependencies
 	shim: {
 	    'jquery-ui'			: ['jquery'],
@@ -39,8 +39,7 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmp
 						//build the member list
 						list.build();
 					});
-				}
-				if (ui.index === 1) {
+				} else if (ui.index === 1) {
 					requirejs(['user/form'], function(form) {
 						
 						/**
@@ -67,7 +66,16 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmp
 							loadMember();
 						}
 					});
-				}
+				} else if (ui.index === 2){
+					requirejs(['event/list'], function(list) {
+						list.load();
+					});
+					
+				} else if (ui.index === 3){
+					
+					
+					
+				} 
 			},
 			show : function(event, ui) {
 				

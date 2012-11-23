@@ -38,30 +38,5 @@
 			<a href="http://www.yajug.org" target="_blank">www.yajug.org</a>
 		</div>
 	</div>
-	<script id="template" type="text/x-jquery-tmpl">
-			<tr>
-				<td>${key}</td>
-				<td>
-				{{if valid === true}}
-				<img src="img/valid.png" alt="y" title="${firstName} ${lastName} is a valid member" />
-				{{else}}
-				<img src="img/invalid.png" alt="n" title="${firstName} ${lastName} isn't a valid member" />
-				{{/if}}				
-				</td>
-				<td>${firstName}</td>
-				<td>${lastName}</td>
-				<td>${email}</td>
-				<td>${company}</td>
-				<td>
-					{{each(i, role) roles }}
-					<img src="img/roles/${role.toLowerCase()}.png" alt="${role}" title="${role}" />&nbsp;
-					{{/each}}
-				</td>
-				<td class="gridy-button">
-					<a href="#${key}" name="member-${key}" class='member-edit'>edit</a>&nbsp;
-					<a href="#${key}" class='member-remove'>remove</a>
-				</td>
-			</tr>
-	</script>
 </body>
 </html> 

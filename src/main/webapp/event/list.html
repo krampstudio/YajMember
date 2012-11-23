@@ -1,1 +1,9 @@
-<div>event list</div>
+<ul id="events"></ul>
+<script id="event-item-template" type="text/x-jquery-tmpl">
+<li class='event'>
+	<h1>${title}</h1>
+	<h2>${date}</h2>
+	<img src='img/events/event-${key}.png' alt='affiche' />
+	<div>${description}</div>
+</li>
+</script>
