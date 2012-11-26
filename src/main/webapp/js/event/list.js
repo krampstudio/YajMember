@@ -1,6 +1,6 @@
 define( [], function(){
 	return {
-		load: function(){
+		load: function(callback){
 			//load events
 			$.ajax({
 				type 		: 'GET',
@@ -19,6 +19,21 @@ define( [], function(){
 					callback();
 				}
 			});
+		},
+		setUpControls: function(){
+			var getEventId = function($elt){
+				return $elt.parents('li.event').attr('id').replace('event-', '');
+			}
+			$('.event-editor')
+				.button({icons: { primary: "icon-evt-edit" }})
+				.click(function(){
+					console.log(getEventId($(this)));
+				});
+			$('.event-deletor')
+				.button({icons: { primary: "icon-evt-delete" }})
+				.click(function(){
+					console.log(getEventId($(this)));
+				});
 		}
 	};
 });

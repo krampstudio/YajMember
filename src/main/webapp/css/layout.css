@@ -90,3 +90,36 @@ form textarea{
 .gridy-table .gridy-search-content input[type="button"] {
 	padding: 0;
 }
+
+/* events */
+ul#events{
+	list-style-type: none;
+}
+li.event{
+	clear:both;
+	border-top: solid 1px #ddd;
+	margin-top:.5em;
+}
+li.event h2{
+	font-weight:normal;
+}
+li.event > img {
+	float:left;
+	margin:0 1em 0 0;
+	border: solid 1px #ddd;
+}
+li.event .event-ctrl{
+	margin:.5em;
+}
+.ui-button .ui-icon.icon-evt-edit{
+	background-image: url('../img/event_edit_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-evt-edit{
+	background-image: url('../img/event_edit.png');
+}
+.ui-button .ui-icon.icon-evt-delete{
+	background-image: url('../img/event_delete_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-evt-delete{
+	background-image: url('../img/event_delete.png');
+}

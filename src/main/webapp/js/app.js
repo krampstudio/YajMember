@@ -68,7 +68,9 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmp
 					});
 				} else if (ui.index === 2){
 					requirejs(['event/list'], function(list) {
-						list.load();
+						list.load(function(){
+							list.setUpControls();
+						});
 					});
 					
 				} else if (ui.index === 3){
