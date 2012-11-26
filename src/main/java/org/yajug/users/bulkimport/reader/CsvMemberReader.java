@@ -1,7 +1,9 @@
 package org.yajug.users.bulkimport.reader;
 
-import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,7 +87,7 @@ public class CsvMemberReader implements DomainReader<Member> {
 	public Collection<Member> read(String fileName) {
 		Collection<Member> members = new ArrayList<Member>();
         try(ICsvBeanReader  beanReader = new CsvBeanReader(
-            		new FileReader(fileName), 
+        			new BufferedReader(new InputStreamReader(new FileInputStream(fileName), CHARSET)), 
             		CsvPreference.STANDARD_PREFERENCE
             	)){
             

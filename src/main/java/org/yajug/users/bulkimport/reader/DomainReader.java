@@ -14,6 +14,9 @@ import org.yajug.users.domain.DomainObject;
  */
 public interface DomainReader<T extends DomainObject> {
 
+	/** Be careful, the CSV files must be encoded in UTF-8 without the Bit Order Mark */
+	final static String CHARSET = "UTF-8";
+	
 	/**
 	 * Reads domain objects from a file
 	 * @param fileName the name of the file to read from
