@@ -29,7 +29,6 @@ import javax.validation.constraints.Pattern;
 	@NamedQuery(name="Event.findAll", query="select e from Event e order by e.date"),
 	@NamedQuery(name="Event.getOne", query="select e from Event e where e.key = :key")
 })
-
 public class Event  extends DomainObject{
 
 	@Basic 

@@ -3,7 +3,7 @@
 <li class='event'>
 	<h1>${title}</h1>
 	<h2>${date}</h2>
-	<img src='img/events/event-${key}.png' alt='affiche' />
+	<img src='img/events/event-${date.replace(/-/g, '')}-small.png' alt='Flyer ${date}' title="Flyer of ${date} event" />
 	<div>${description}</div>
 </li>
 </script>
