@@ -1,4 +1,4 @@
-define( ['gridy'], function(){
+define( ['store', 'gridy'], function(store){
 	return {
 		build: function(){
 			$("#users").gridy({
@@ -10,13 +10,15 @@ define( ['gridy'], function(){
 				height		: 700,
 				width		: 975,
 				before		: function(){
-					$('.gridy-search :button').button({disabled : false})
+					$('.gridy-search :button').button({disabled : false});
 				},
 				done		: function(){
+				
 					$('.member-edit').click(function(event){
 						event.preventDefault();
-						//extract the id and attach it to a high level element
-						$('body').data('member', $(this).attr('href').replace('#', ''));
+						
+						//extract the id and store it 
+						store.set('member', $(this).attr('href').replace('#', ''));
 						
 						//opens the edit tab
 						$('#actions').tabs('select', 1);

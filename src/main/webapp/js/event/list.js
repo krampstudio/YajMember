@@ -1,4 +1,4 @@
-define( [], function(){
+define( ['store'], function(store){
 	return {
 		load: function(callback){
 			//load events
@@ -27,7 +27,14 @@ define( [], function(){
 			$('.event-editor')
 				.button({icons: { primary: "icon-evt-edit" }})
 				.click(function(){
-					console.log(getEventId($(this)));
+					event.preventDefault();
+					
+					store.set('event', getEventId($(this)));
+					
+					//opens the edit tab
+					$('#actions').tabs('select', 3);
+					
+					return false;
 				});
 			$('.event-deletor')
 				.button({icons: { primary: "icon-evt-delete" }})

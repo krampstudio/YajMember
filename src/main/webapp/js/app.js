@@ -17,14 +17,12 @@ requirejs.config({
 });
 
 //The main entry point
-requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmpl, notify){
+requirejs(	
+		['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store'],  
+		function($, ui, tmpl, notify, store){
 
 	$(function() {
-		
-		var firstFormLoad = true,
-			isEditingMember = function(){
-				return $('body').data('member') !== undefined;
-			};
+		var firstFormLoad = true;
 		
 		//initialize the tabs
 		$('#actions').tabs({
@@ -48,8 +46,8 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmp
 						 * @param {Function} callback executed without parameter when the member is loaded
 						 */
 						var loadMember = function(callback){
-							if(isEditingMember()){
-								form.loadMember($('body').data('member'), callback);
+							if(store.isset('member')){
+								form.loadMember(store.get('member'), callback);
 							}
 						};
 						
@@ -73,23 +71,27 @@ requirejs(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify'],  function($, ui, tmp
 						});
 					});
 					
-				} else if (ui.index === 3){
-					
-					
-					
 				} 
 			},
 			show : function(event, ui) {
 				
 				if (ui.index !== 1){
-					//clean up teh form
+					//clean up the form
 					requirejs(['user/form'], function(form) {
 						form.clear();
+						store.rm('member');
+					});
+				}
+				if (ui.index !== 3){
+					//clean up the form
+					requirejs(['event/form'], function(form) {
+						form.clear();
+						store.rm('event');
 					});
 				}
 				//rename the tab if we are add or editing a member
 				$('#actions ul:first li:nth-child(2) a').text(
-					(ui.index === 1 && isEditingMember()) ? 'Edit member' : 'Add a member'
+					(ui.index === 1 && store.isset('member')) ? 'Edit member' : 'Add a member'
 				);
 			}
 		});

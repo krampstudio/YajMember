@@ -1,8 +1,6 @@
 define(function(){
 	
-	//we know if we are in add or edit if there is a member data on the body DOM's element
-	var currentMemberId = $('body').data('member'),
-		self = {
+	var self = {
 			/**
 			 * Enable/Disable the form fields
 			 */
@@ -200,7 +198,6 @@ define(function(){
 			},
 			
 			clear : function(){
-				$('body').removeData('member');
 				$('#member-editor').each(function(){
 					this.reset();
 				});
