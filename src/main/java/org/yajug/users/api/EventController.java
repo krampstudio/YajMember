@@ -40,7 +40,7 @@ public class EventController extends RestController {
 			if(year != null && year.intValue() > 1990 && year.intValue() < 2030) {	
 				//yes ! a strong validation with hard coded values, I assume that
 				
-				//we filter events based the event year
+				//we filter events based on the event year
 				SimpleDateFormat formater = new SimpleDateFormat("yyyy");
 				for(Event event : events){
 					if(event.getDate() != null){
@@ -57,6 +57,29 @@ public class EventController extends RestController {
 			e.printStackTrace();
 			response = serializeException(e);
 		}
+		return response;
+	}
+	
+	@GET
+	@Path("getOne")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String getOne(@QueryParam("id") Long id){
+		String response = "";
+		
+		try {
+			
+			if(id == null || id.longValue() <= 0){
+				throw new DataException("Unable to retrieve an event from a wrong id");
+			}
+			
+			Event event = eventService.getOne(id);
+			
+			response = getSerializer().toJson(event);
+			
+		} catch (DataException e) {
+			e.printStackTrace();
+			response = serializeException(e);
+		} 
 		return response;
 	}
 }
