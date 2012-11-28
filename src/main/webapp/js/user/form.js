@@ -1,6 +1,8 @@
 define(function(){
-	
-	var self = {
+	/**
+	 * TODO creates a Form objects that can be used by both the event and the user forms
+	 */
+	var UserForm = {
 			/**
 			 * Enable/Disable the form fields
 			 */
@@ -70,6 +72,7 @@ define(function(){
 			 * @param {Number} the identifier of the member to load
 			 */
 			loadMember : function(memberId, callback){
+				var self = this;
 				if(memberId && memberId > 0){
 					self.toggleForm();
 					
@@ -203,5 +206,6 @@ define(function(){
 				});
 			}
 		};
-	return self;
+	
+	return UserForm;
 });

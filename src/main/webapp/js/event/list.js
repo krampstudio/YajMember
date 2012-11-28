@@ -26,7 +26,7 @@ define( ['store'], function(store){
 			}
 			$('.event-editor')
 				.button({icons: { primary: "icon-evt-edit" }})
-				.click(function(){
+				.click(function(event){
 					event.preventDefault();
 					
 					store.set('event', getEventId($(this)));

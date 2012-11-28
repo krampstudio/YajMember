@@ -3,7 +3,9 @@
  * or fallback to DOM data is not.
  */
 define( ['modernizr'], function(Modernizr){
+	
 	var ls = (Modernizr.localstorage === true),
+		ns = 'yajmember',
 	
 	/**
 	 * @class Store
@@ -15,9 +17,9 @@ define( ['modernizr'], function(Modernizr){
 		 */
 		get : function(key){
 			if(ls){
-				return localStorage.getItem(key);
+				return localStorage.getItem(ns + '.' + key);
 			}
-			return $('body').data(key)
+			return $('body').data(ns + '.' + key)
 		},
 				
 		/**
@@ -26,9 +28,9 @@ define( ['modernizr'], function(Modernizr){
 		 */
 		set : function(key, value){
 			if(ls){
-				localStorage.setItem(key, value);
+				localStorage.setItem(ns + '.' + key, value);
 			} else {
-				$('body').data(key, value);
+				$('body').data(ns + '.' + key, value);
 			}
 		},
 				
@@ -37,9 +39,9 @@ define( ['modernizr'], function(Modernizr){
 		 */
 		rm 	: function(key){
 			if(ls){
-				localStorage.removeItem(key);
+				localStorage.removeItem(ns + '.' + key);
 			} else {
-				$('body').removeData(key)
+				$('body').removeData(ns + '.' + key)
 			}
 		},
 		
@@ -48,9 +50,9 @@ define( ['modernizr'], function(Modernizr){
 		 */
 		isset : function(key){
 			if(ls){
-				return localStorage[key] !== undefined;
+				return localStorage[ns + '.' + key] !== undefined;
 			}
-			return $('body').data(key) !== undefined;
+			return $('body').data(ns + '.' + key) !== undefined;
 		}
 	};
 	
