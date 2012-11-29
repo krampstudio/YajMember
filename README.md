@@ -16,8 +16,31 @@ To start coding, you need:
 * Gradle version > 1.0 in your path
 * A relationnal database (I use H2 in dev, but you can use your favorite)
 
-If you select an other database, please change the settings in the ```src/main/resources/persistence.xml```
+If you select an other database, please change the settings in the ```src/main/resources/META-INF/persistence.xml```
 and add the driver to the gradle dependencies (same infos than Maven).
+
+Once the database is started, the first step is to add some data and by the way to generate the database schema. 
+The ```bulk``` task will help you to do this step. You can import the default data set, or edit the content of the CSV files 
+located under ```src/main/scripts```
+
+Then, just run:
+
+```bash
+$ gradle bulk -Ptarget=event
+```
+
+and if the previous task complete succesfully:
+
+```bash
+$ gradle bulk -Ptarget=member
+```
+
+Once the data is imported, you can start the web app:
+
+
+```bash
+$ gradle jettyRun
+```
 
 
 ## Thank you to the blocks that I have assembled to build this app
