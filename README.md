@@ -4,7 +4,23 @@ _Yet Another Jug Member App_
 
 Small app to manage our java user group users
 
-## Thanks to the bloc I assemblate to build this app:
+## Releases
+
+_still under dev (0.1 comming soon)_
+
+## Development
+
+To start coding, you need:
+
+* Git as well and the repo cloned
+* Gradle version > 1.0 in your path
+* A relationnal database (I use H2 in dev, but you can use your favorite)
+
+If you select an other database, please change the settings in the ```src/main/resources/persistence.xml```
+and add the driver to the gradle dependencies (same infos than Maven).
+
+
+## Thank you to the blocks that I have assembled to build this app
 
 ###Build
 
@@ -29,4 +45,3 @@ Small app to manage our java user group users
 * [Gridy](https://github.com/wbotelhos/gridy) : but I'm too lazy to build my own _listgrid_
 * [Noty](http://needim.github.com/noty/) : because communication is the key
 
-## Dévelopment
