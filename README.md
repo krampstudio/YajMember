@@ -13,7 +13,8 @@ _still under dev (0.1 comming soon)_
 To start coding, you need:
 
 * Git as well and the repo cloned
-* Gradle version > 1.0 in your path
+* Gradle version **>1.0** in your path
+* JDK **>=7**
 * A relationnal database (I use H2 in dev, but you can use your favorite)
 
 If you select an other database, please change the settings in the ```src/main/resources/META-INF/persistence.xml```
