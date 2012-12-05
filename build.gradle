@@ -22,17 +22,27 @@ dependencies {
 	compile "com.google.inject:guice:$guiceVersion"
 	compile "com.sun.jersey:jersey-bundle:$jerseyVersion"
 	compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
+	compile "com.google.api-client:google-api-client:$googleApiClientVersion"
+	compile "com.google.http-client:google-http-client-jackson2:$googleApiClientVersion"
+	compile "com.google.oauth-client:google-oauth-client:$googleApiClientVersion"
+	compile "com.google.oauth-client:google-oauth-client-servlet:$googleApiClientVersion"
+	compile 'org.codehaus.jackson:jackson-core-asl:1.9.4'
 	compile "net.sf.supercsv:super-csv:$superCsvVersion"
 	testCompile "junit:junit:$junitVersion"
 }
+
+
+//jetty conf
+httpPort = 8000
+stopPort = 8989
+stopKey = 'stopMe'
 
 //in development, we use a different jetty webdefault.xml to set the useFileMappedBuffer to false
 //to enable file modification when the in place server is running
 jettyRun{
 	webDefaultXml = file('src/main/config/webdefault.xml')
 }
-//to do remote debugging
-//do
+//to do remote debugging, set the following opts:
 //	export GRADLE_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=9999,server=y"
 
 
