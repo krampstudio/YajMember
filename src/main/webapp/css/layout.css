@@ -39,6 +39,14 @@ body {
 	color:#C85408;
 }
 
+form fieldset{
+	border:solid 1px #C8D8E2;
+	margin-bottom:1em;
+}
+form fieldset legend{
+	color: #88A9BD;
+	font-size:.8em;
+}
 form div{
 	width:75%;
 	margin:5px 0;
@@ -61,6 +69,7 @@ form input[type=text],
 form input[type=email], 
 form input[type=password], 
 form input[type=radio], 
+form input[type=file],
 form select, 
 form textarea{
 	width: 49%;

@@ -32,46 +32,59 @@ requirejs(
 				$('#main').show('slow');
 			},
 			load : function(event, ui) {
-				if (ui.index === 0) {
-					requirejs(['user/list'], function(list) {
-						//build the member list
-						list.build();
-					});
-				} else if (ui.index === 1) {
-					requirejs(['user/form'], function(form) {
-						
-						/**
-						 * Load member's data in the form.
-						 * The member's id is given by a data attribute bound to the body tag
-						 * @param {Function} callback executed without parameter when the member is loaded
-						 */
-						var loadMember = function(callback){
-							if(store.isset('member')){
-								form.loadMember(store.get('member'), callback);
-							}
-						};
-						
-						if(firstFormLoad === true){
-							//we initialise the form the first time
-							form.initControls();
-							form.loadEvents(function(){
-								//we load the member only once the events are loaded
-								loadMember(function(){
-									firstFormLoad = false;
-								});
-							});
-						} else {
-							loadMember();
-						}
-					});
-				} else if (ui.index === 2){
-					requirejs(['event/list'], function(list) {
-						list.load(function(){
-							list.setUpControls();
+				switch(ui.index) {
+					case 0 : 
+						requirejs(['user/list'], function(list) {
+							//build the member list
+							list.build();
 						});
-					});
-					
-				} 
+						break;
+					case 1:
+						requirejs(['user/form'], function(form) {
+							
+							/**
+							 * Load member's data in the form.
+							 * The member's id is given by a data attribute bound to the body tag
+							 * @param {Function} callback executed without parameter when the member is loaded
+							 */
+							var loadMember = function(callback){
+								if(store.isset('member')){
+									form.loadMember(store.get('member'), callback);
+								}
+							};
+							
+							if(firstFormLoad === true){
+								//we initialise the form the first time
+								form.initControls();
+								form.loadEvents(function(){
+									//we load the member only once the events are loaded
+									loadMember(function(){
+										firstFormLoad = false;
+									});
+								});
+							} else {
+								loadMember();
+							}
+						});
+						break;
+					case 2:
+						requirejs(['event/list'], function(list) {
+							list.load(function(){
+								list.setUpControls();
+							});
+						});
+						break;
+					case 3:
+						requirejs(['event/form'], function(eventForm) {
+							eventForm.initControls();
+							if(store.isset('event')){
+								eventForm.loadEvent(store.get('event'), function(){
+									console.log('loded');
+								});
+							}
+						});
+						break;
+				}
 			},
 			show : function(event, ui) {
 				

@@ -4,39 +4,71 @@ define(function(){
 	 */
 	var EventForm = {
 		
-		form : $('#event-editor'),
+		_formNames	: ['infos', 'flyer'],
+		_forms		: {},
+		
+		getForm : function(name){
+			if($.inArray(name, this._formNames) < 0){
+				return;
+			}
+			if(this._forms[name] === undefined || ($.isArray(this._forms[name]) && this._forms[name].length === 0)){
+				this._forms[name] = $('#event-'+name+'-editor');
+			}
+			return this._forms[name];
+		},
+		
+		getForms : function(){
+			var name, forms = [];
+			for(name in this._formNames){
+				forms.push(this.getForm(name));
+			}
+			return forms;
+		},
 		
 		/**
 		 * Enable/Disable the form fields
 		 */
 		toggleForm : function(){
+			var $submiter, isDisabled,
+				i, forms = this.getForms();
 			
-			var $submiter = $('#submiter'),
+			for(i in forms){
+				$submiter = $('.submiter', forms[i]);
 				isDisabled = $submiter.button('option', 'disabled');
-			$(':input', this.form).attr('disabled', !isDisabled);
-			$submiter.button(isDisabled ? 'enable' : 'disable');
+				
+				$(':input', forms[i]).attr('disabled', !isDisabled);
+				$submiter.button(isDisabled ? 'enable' : 'disable');
+			}
 		},
 		
 		/**
 		 * Initialize the controls behavior
 		 */
 		initControls : function(){
+			var self = this,
+				i, forms = this.getForms();
 			
-			var $form = this.form;
-			
-			// submit button
-			$('#submiter', $form).button().click(function(event){
-				event.preventDefault();
-				$('#event-editor').submit();
-			});
+			for(i in forms){
+				// submit button
+				$('#submiter', forms[i]).button().click(function(event){
+					event.preventDefault();
+					$('#event-editor').submit();
+				})
+			}
 			
 			// the date picker
-			$('#date', $form).datepicker({
+			$('#date', this.getForm('infos')).datepicker({
 				'dateFormat': 'yy-mm-dd'
+			}).on('change', function(){
+				if(this.value && this.value.length === 10){
+					self.getForm('flyer').show();
+				} else {
+					self.getForm('flyer').hide();
+				}
 			});
 			
 			// on form submit
-			$form.submit(function(event){
+			this.getForm('infos').submit(function(event){
 				event.preventDefault();
 				
 				var udpate = (member.key && member.key > 0);
@@ -47,7 +79,7 @@ define(function(){
 					contentType : 'application/x-www-form-urlencoded',
 					dataType 	: 'json',
 					data 		: {
-						event : JSON.stringify($form.serializeArray())
+						event : JSON.stringify($(this).serializeArray())
 					}
 				}).done(function(data) {
 					if(!data.saved || data.error){
@@ -65,8 +97,8 @@ define(function(){
 		 * Load an event
 		 * @param {Number} the identifier of the event to load
 		 */
-		loadMember : function(eventId, callback){
-			var $form = this.form;
+		loadEvent : function(eventId, callback){
+			var self	= this; 
 			
 			if(eventId && eventId > 0){
 				self.toggleForm();
@@ -83,7 +115,7 @@ define(function(){
 					if(!data || data.error){
 						$.error("Error : " + (data.error ? data.error : "unknown"));
 					} else {
-						$(':input', $form).each(function(){
+						$(':input', self.getForm('infos')).each(function(){
 							if(data[$(this).attr('id')]){
 								$(this).val(data[$(this).attr('id')]);
 							}
@@ -97,9 +129,11 @@ define(function(){
 		},
 		
 		clear : function(){
-			this.form.each(function(){
-				this.reset();
-			});
+//			$.each(this.getForms(), function(index, elt){
+//				if(elt){
+//					elt.reset();
+//				}
+//			});
 		}
 	};
 	
