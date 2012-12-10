@@ -46,7 +46,7 @@ public class MemberTest {
 	}
 	
 	@Test
-	public void testSave() {
+	public void testAdd() {
 		
 		try {
 			assertNotNull(this.member);

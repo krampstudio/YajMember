@@ -45,7 +45,7 @@ public class EventTest {
 	}
 	
 	@Test
-	public void testSave() {
+	public void testAdd() {
 		
 		try {
 			assertNotNull(this.event);
