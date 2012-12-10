@@ -1,4 +1,4 @@
-define(function(){
+define(['jhtmlarea'],function(){
 	/**
 	 * TODO creates a Form objects that can be used by both the event and the user forms
 	 */
@@ -67,6 +67,17 @@ define(function(){
 				}
 			});
 			
+			$('textarea', this.getForm('infos'))
+				.htmlarea({
+					toolbar: [
+                        "bold", "italic", "underline",
+                        "|",
+                        "h1", "h2", "h3", "h4", "h5", "h6",
+                        "|",
+                        "link", "unlink"
+                    ]});
+			
+			
 			// on form submit
 			this.getForm('infos').submit(function(event){
 				event.preventDefault();
@@ -120,6 +131,10 @@ define(function(){
 								$(this).val(data[$(this).attr('id')]);
 							}
 						});
+						if(data['description']){
+							$('#description', self.getForm('infos')).htmlarea('html', data.description.replace(/\\n/g, '<br />'));
+						}
+						$('#date', self.getForm('infos')).trigger('change');
 						if(typeof callback === 'function'){
 							callback();
 						}
