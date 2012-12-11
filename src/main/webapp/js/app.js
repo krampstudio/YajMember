@@ -22,10 +22,12 @@ requirejs(
 		function($, ui, tmpl, notify, store){
 
 	$(function() {
-		var firstFormLoad = true;
 		
-		//initialize the tabs
+		var initialized = {};
+		
+		//create the tabs
 		$('#actions').tabs({
+			cache: true,
 			create: function(event, ui) {
 				//unload splash and display screen
 				$('#splash').fadeOut();
@@ -41,30 +43,7 @@ requirejs(
 						break;
 					case 1:
 						requirejs(['user/form'], function(form) {
-							
-							/**
-							 * Load member's data in the form.
-							 * The member's id is given by a data attribute bound to the body tag
-							 * @param {Function} callback executed without parameter when the member is loaded
-							 */
-							var loadMember = function(callback){
-								if(store.isset('member')){
-									form.loadMember(store.get('member'), callback);
-								}
-							};
-							
-							if(firstFormLoad === true){
-								//we initialise the form the first time
-								form.initControls();
-								form.loadEvents(function(){
-									//we load the member only once the events are loaded
-									loadMember(function(){
-										firstFormLoad = false;
-									});
-								});
-							} else {
-								loadMember();
-							}
+							form.initControls();
 						});
 						break;
 					case 2:
@@ -75,36 +54,64 @@ requirejs(
 						});
 						break;
 					case 3:
-						requirejs(['event/form'], function(eventForm) {
-							eventForm.initControls();
-							if(store.isset('event')){
-								eventForm.loadEvent(store.get('event'), function(){
-									console.log('loded');
-								});
-							}
+						requirejs(['event/form'], function(form) {
+							form.initControls();
 						});
 						break;
 				}
 			},
 			show : function(event, ui) {
 				
-				if (ui.index !== 1){
-					//clean up the form
-					requirejs(['user/form'], function(form) {
-						form.clear();
+				requirejs(['user/form'], function(userForm) {
+					/**
+					 * Load member's data in the form.
+					 * The member's id is given by a data attribute bound to the body tag
+					 * @param {Function} callback executed without parameter when the member is loaded
+					 */
+					var loadMember = function(callback){
+						if(store.isset('member')){
+							userForm.loadMember(store.get('member'), callback);
+						}
+					};
+					
+					if(ui.index === 1 ){
+						//the 1st time, we load the member only once the events are loaded
+						if(!initialized['member']){
+							userForm.loadEvents(function(){
+								loadMember(function(){
+									initialized['member'] = true;
+								});
+							});
+						} else {
+							loadMember();
+						}
+					} else {
+						//clean up the form
+						userForm.clear();
 						store.rm('member');
-					});
-				}
-				if (ui.index !== 3){
-					//clean up the form
-					requirejs(['event/form'], function(form) {
-						form.clear();
+					}
+				});
+			
+				
+				requirejs(['event/form'], function(eventForm) {
+					if(ui.index === 3){
+						//load the event
+						if(store.isset('event')){
+							eventForm.loadEvent(store.get('event'));
+						}
+					} else {
+						//clean up the form
+						eventForm.clear();
 						store.rm('event');
-					});
-				}
-				//rename the tab if we are add or editing a member
+					}
+					
+				});
+				//rename the tab if we are add or editing
 				$('#actions ul:first li:nth-child(2) a').text(
 					(ui.index === 1 && store.isset('member')) ? 'Edit member' : 'Add a member'
+				);
+				$('#actions ul:first li:nth-child(4) a').text(
+					(ui.index === 3 && store.isset('event')) ? 'Edit event' : 'Add an event'
 				);
 			}
 		});

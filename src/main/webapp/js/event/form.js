@@ -1,4 +1,5 @@
 define(['jhtmlarea'],function(){
+	
 	/**
 	 * TODO creates a Form objects that can be used by both the event and the user forms
 	 */
@@ -45,14 +46,15 @@ define(['jhtmlarea'],function(){
 		 * Initialize the controls behavior
 		 */
 		initControls : function(){
+			console.log('initControls');
 			var self = this,
 				i, forms = this.getForms();
 			
 			for(i in forms){
 				// submit button
-				$('#submiter', forms[i]).button().click(function(event){
+				$('.submiter', forms[i]).button().click(function(event){
 					event.preventDefault();
-					$('#event-editor').submit();
+					forms[i].submit();
 				})
 			}
 			
@@ -127,15 +129,20 @@ define(['jhtmlarea'],function(){
 					if(!data || data.error){
 						$.error("Error : " + (data.error ? data.error : "unknown"));
 					} else {
+						console.log($(':input', self.getForm('infos')));
 						$(':input', self.getForm('infos')).each(function(){
 							if(data[$(this).attr('id')]){
 								$(this).val(data[$(this).attr('id')]);
 							}
 						});
+						if(data['date']){
+							$('#current-flyer',  self.getForm('flyer')).attr('src', 'img/events/event-'+data.date.replace(/\-/g,'')+'-small.png');
+						}
 						if(data['description']){
 							$('#description', self.getForm('infos')).htmlarea('html', data.description.replace(/\\n/g, '<br />'));
 						}
 						$('#date', self.getForm('infos')).trigger('change');
+						
 						if(typeof callback === 'function'){
 							callback();
 						}
@@ -145,11 +152,14 @@ define(['jhtmlarea'],function(){
 		},
 		
 		clear : function(){
-//			$.each(this.getForms(), function(index, elt){
-//				if(elt){
-//					elt.reset();
-//				}
-//			});
+			$.each(this.getForms(), function(index, elt){
+				$(':input', elt).val('');
+			});
+			console.log('cleared');
+			/*this.getForm('infos').each(function(index, elt){
+				elt.reset();
+			});
+			$('#current-flyer',  this.getForm('flyer')).removeAttr('src');*/
 		}
 	};
 	
