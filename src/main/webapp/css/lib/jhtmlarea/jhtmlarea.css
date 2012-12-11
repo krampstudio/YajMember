@@ -1,7 +1,7 @@
-﻿div.jHtmlArea { display: inline block; }
+div.jHtmlArea { display: inline block; }
 div.jHtmlArea div { padding: 0px; margin: 0px; }
 div.jHtmlArea .ToolBar { }
-div.jHtmlArea .ToolBar ul { border: solid 1px #ccc; margin: 1px; padding: 1px; float: left; background: #fff url(jHtmlArea_Toolbar_Group_BG.png) repeat-x;}
+div.jHtmlArea .ToolBar ul { border: solid 1px #ccc; margin: 1px; padding: 1px; float: left; background: #fff url(jHtmlArea_Toolbar_Group_BG.png) repeat-x; border-radius:3px; -moz-border-radius:3px;-o-border-radius:3px;-webkit-border-radius:3px;}
 div.jHtmlArea .ToolBar ul li { list-style-type: none; float: left; border: none; padding: 1px; margin: 1px; }
 div.jHtmlArea .ToolBar ul li:hover { border: solid 1px #ccc; background: #ddd url(jHtmlArea_Toolbar_Group__Btn_Select_BG.png); padding: 0; }
 div.jHtmlArea .ToolBar ul li a { display: block; width: 16px; height: 16px; background: url(jHtmlArea.png) no-repeat -16px -500px; border: none; cursor: pointer; padding: 0px; }
@@ -46,3 +46,5 @@ div.jHtmlArea .ToolBar ul li a.justifyright { background-position: -32px -32px;}
 div.jHtmlArea .ToolBar ul li a.increasefontsize { background-position: -48px -32px;}
 div.jHtmlArea .ToolBar ul li a.decreasefontsize { background-position: -64px -32px;}
 div.jHtmlArea .ToolBar ul li a.forecolor { background-position: -80px -32px;}
+
+div.jHtmlArea iframe {border: solid 1px #ccc; border-top-color: #666; border-left-color: #666; border-radius:3px; -moz-border-radius:3px;-o-border-radius:3px;-webkit-border-radius:3px; margin: 1px}

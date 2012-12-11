@@ -69,13 +69,14 @@ define(['jhtmlarea'],function(){
 			
 			$('textarea', this.getForm('infos'))
 				.htmlarea({
-					toolbar: [
-                        "bold", "italic", "underline",
-                        "|",
-                        "h1", "h2", "h3", "h4", "h5", "h6",
-                        "|",
-                        "link", "unlink"
-                    ]});
+						toolbar: [
+	                        'bold', 'italic', 'underline', '|',
+	                        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '|',
+	                        'link', 'unlink', '|',
+	                        'orderedList', 'unorderedList', 'indent', 'outdent'
+	                    ],
+	                    css : 'css/lib/jhtmlarea/jhtmlarea-editor.css'
+					});
 			
 			
 			// on form submit
