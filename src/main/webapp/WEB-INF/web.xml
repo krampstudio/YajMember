@@ -17,6 +17,27 @@
 		<listener-class>org.yajug.users.servlets.GuiceConfig</listener-class>
 	</listener>
 	
+	<servlet>
+		<servlet-name>OAuth</servlet-name>
+		<servlet-class>org.yajug.users.servlets.OauthServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>OAuthCallback</servlet-name>
+		<servlet-class>org.yajug.users.servlets.OauthCallbackServlet</servlet-class>
+	</servlet>
+	
+	
+	<servlet-mapping>
+		<servlet-name>OAuth</servlet-name>
+		<url-pattern>/oauth2</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>OAuthCallback</servlet-name>
+		<url-pattern>/oauth2callback</url-pattern>
+	</servlet-mapping>
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
