@@ -26,7 +26,7 @@ public class OauthServlet extends AbstractAuthorizationCodeServlet {
 				new JacksonFactory(),
 		        "691368454221.apps.googleusercontent.com", 
 		        "Vg7sUbBtvSmp7H_3eSp7yf1f",
-		        Collections.singleton("https://www.googleapis.com/auth/userinfo.profile")
+		        Collections.singleton("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email")
 	        )
 			.setCredentialStore(new CustomStore())
 	        .build();
