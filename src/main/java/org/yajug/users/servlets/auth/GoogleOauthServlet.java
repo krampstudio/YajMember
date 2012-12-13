@@ -1,4 +1,4 @@
-package org.yajug.users.servlets;
+package org.yajug.users.servlets.auth;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -6,14 +6,15 @@ import java.util.Collections;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.MemoryCredentialStore;
 import com.google.api.client.extensions.servlet.auth.oauth2.AbstractAuthorizationCodeServlet;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 
-public class OauthServlet extends AbstractAuthorizationCodeServlet {
+public class GoogleOauthServlet extends AbstractAuthorizationCodeServlet {
 
 	private static final long serialVersionUID = -5695026175093524514L;
 
@@ -23,7 +24,7 @@ public class OauthServlet extends AbstractAuthorizationCodeServlet {
 		
 		return new GoogleAuthorizationCodeFlow.Builder(
 				new NetHttpTransport(), 
-				new JacksonFactory(),
+				new GsonFactory(),
 		        "691368454221.apps.googleusercontent.com", 
 		        "Vg7sUbBtvSmp7H_3eSp7yf1f",
 		        Collections.singleton("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email")

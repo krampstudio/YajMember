@@ -1,4 +1,4 @@
-package org.yajug.users.servlets;
+package org.yajug.users.servlets.auth;
 
 import java.io.IOException;
 

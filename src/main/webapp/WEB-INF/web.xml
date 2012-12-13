@@ -19,23 +19,23 @@
 	
 	<servlet>
 		<servlet-name>OAuth</servlet-name>
-		<servlet-class>org.yajug.users.servlets.OauthServlet</servlet-class>
+		<servlet-class>org.yajug.users.servlets.GoogleOauthServlet</servlet-class>
 	</servlet>
 	
 	<servlet>
 		<servlet-name>OAuthCallback</servlet-name>
-		<servlet-class>org.yajug.users.servlets.OauthCallbackServlet</servlet-class>
+		<servlet-class>org.yajug.users.servlets.GoogleOauthCallbackServlet</servlet-class>
 	</servlet>
 	
 	
 	<servlet-mapping>
 		<servlet-name>OAuth</servlet-name>
-		<url-pattern>/oauth2</url-pattern>
+		<url-pattern>/auth</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>OAuthCallback</servlet-name>
-		<url-pattern>/oauth2callback</url-pattern>
+		<url-pattern>/authCallback</url-pattern>
 	</servlet-mapping>
 	
 	<welcome-file-list>
