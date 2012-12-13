@@ -19,6 +19,7 @@ function($){
 			};
 		
 		if(msg && type){
+			console.log("type " + layout[type])
 			return noty({
 				text : msg, 
 				layout: layout[type] || topLayout, 

@@ -1,4 +1,4 @@
-define(['jhtmlarea'],function(){
+define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 	
 	/**
 	 * TODO creates a Form objects that can be used by both the event and the user forms
@@ -48,20 +48,24 @@ define(['jhtmlarea'],function(){
 		initControls : function(){
 			console.log('initControls');
 			var self = this,
-				i, forms = this.getForms();
+				i, forms = this.getForms(),
+				$submiter, $date;
 			
 			for(i in forms){
+				$submiter  = $('.submiter', forms[i]);
 				// submit button
-				$('.submiter', forms[i]).button().click(function(event){
-					event.preventDefault();
-					forms[i].submit();
-				})
+				$submiter.button({label : $submiter.val()});
 			}
 			
 			// the date picker
-			$('#date', this.getForm('infos')).datepicker({
-				'dateFormat': 'yy-mm-dd'
-			}).on('change', function(){
+			$date = $('#date', this.getForm('infos'));
+			if(!Modernizr.inputtypes.date){
+				$date.datepicker({
+					'dateFormat': 'yy-mm-dd'
+				});
+			}
+			
+			$date.on('change', function(){
 				if(this.value && this.value.length === 10){
 					self.getForm('flyer').show();
 				} else {

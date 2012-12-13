@@ -22,7 +22,6 @@ requirejs(
 		function($, ui, tmpl, notify, store){
 
 	$(function() {
-		
 		var initialized = {};
 		
 		//create the tabs

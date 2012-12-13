@@ -1,4 +1,4 @@
-define(function(){
+define(['modernizr', 'notify'], function(Modernizr, notify){
 	/**
 	 * TODO creates a Form objects that can be used by both the event and the user forms
 	 */
@@ -18,11 +18,10 @@ define(function(){
 			 */
 			initControls : function(){
 				
+				var self = this;
+				
 				//submit button
-				$('#submiter').button().click(function(event){
-					event.preventDefault();
-					$('#member-editor').submit();
-				});
+				$('#submiter').button({label: $('#submiter').val()});
 				
 				//valid membership display/hide sections
 				$('#membership').change(function() {
