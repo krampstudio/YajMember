@@ -109,6 +109,17 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 				
 				return false;
 			});
+			
+			$('#flyer-remover', this.getForm('flyer')).click(function(){
+				
+			});
+			
+			$('#flyer-viewer', this.getForm('flyer')).click(function(){
+				if($('#current-flyer')){
+					window.open($('#current-flyer').attr('src').replace('-small', ''));
+				}
+				
+			});
 		},
 		
 		/**

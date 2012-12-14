@@ -15,7 +15,7 @@
 				<label for="description">Description</label>
 				<textarea id="description" name="description" rows="8" style="width:550px"></textarea>
 			</div>
-			<a class="submiter" href="#" >Save</a>
+			<input type="submit" class="submiter" value="Save" />
 		</fieldset>
 	</form>
 </div>
@@ -27,12 +27,13 @@
 				<label for="flyer">Image file</label>
 				<input id="flyer" name="flyer" type="file" />
 			</div>
-			<div>
+			<div class="current-flyer-field">
 				<label for="current-flyer">Current</label>
 				<img id="current-flyer" name="current-flyer" src="" alt="none" />
-				<a id="flyer-remover" href="#" >Remove</a>
+				<a id="flyer-remover" href="#" ><img src="img/delete.png" alt="Remove" title="Remove" /></a>
+				<a id="flyer-viewer" href="#" ><img src="img/image.png" alt="Full size View" title="Full size View" /></a>
 			</div>
-			<a class="submiter" href="#" >Upload</a>
+			<input type="submit" class="submiter" value="Upload" />
 		</fieldset>
 		
 	</form>

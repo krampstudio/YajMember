@@ -133,3 +133,13 @@ li.event .event-ctrl{
 .ui-button.ui-state-hover .ui-icon.icon-evt-delete{
 	background-image: url('../img/event_delete.png');
 }
+.current-flyer-field{
+	position:relative;
+}
+.current-flyer-field #flyer-remover{
+	position:absolute;
+}
+.current-flyer-field #flyer-viewer{
+	position:absolute;
+	top:24px;
+}
