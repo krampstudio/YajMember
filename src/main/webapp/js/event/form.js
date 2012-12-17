@@ -93,10 +93,10 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 			
 			
 			// on form submit
-			this.getForm('infos').submit(function(event){
-				event.preventDefault();
+			this.getForm('infos').submit(function(e){
+				e.preventDefault();
 				
-				var udpate = (member.key && member.key > 0);
+				var udpate = $('#key', $(this)).val().length > 0;
 						
 				$.ajax({
 					type 		: (udpate) ? 'POST' : 'PUT',
