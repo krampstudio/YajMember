@@ -177,11 +177,11 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 		},
 		
 		clear : function(){
-//			$.each(this.getForms(), function(index, elt){
-//				$(':input', elt).val('');
-//			});
-//			
-//			$('#current-flyer',  this.getForm('flyer')).removeAttr('src');
+			$.each(this.getForms(), function(index, elt){
+				$(':input', elt).val('');
+			});
+			$('#description', this.getForm('infos')).htmlarea('updateHtmlArea');
+			$('#current-flyer',  this.getForm('flyer')).removeAttr('src');
 		}
 	};
 	

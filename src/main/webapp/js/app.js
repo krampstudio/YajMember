@@ -70,10 +70,11 @@ requirejs(
 					case 3:
 						requirejs(['event/form'], function(eventForm) {
 							eventForm.initControls(function(){
-								if(!initialized['event'] && store.isset('event')){
-									eventForm.loadEvent(store.get('event'), function(){
-										initialized['event'] = true;
-									});
+								if(!initialized['event']){
+									if( store.isset('event')){
+										eventForm.loadEvent(store.get('event'));
+									}
+									initialized['event'] = true;
 								}
 							});
 						});
@@ -86,15 +87,15 @@ requirejs(
 
 				//User
 				requirejs(['user/form'], function(userForm) {
-					if(ui.index === 1 ){
-						//load the member
-						if(initialized['member'] && store.isset('member')){
+					if(initialized['member']){
+						if(ui.index === 1 && store.isset('member')){
+							//load the member
 							userForm.loadMember(store.get('member'));	
+						} else {
+							//clean up
+							userForm.clear();
+							store.rm('member');
 						}
-					} else {
-						//clean up
-						userForm.clear();
-						store.rm('member');
 					}
 				});
 				//rename the tab if we are add or editing
@@ -104,15 +105,14 @@ requirejs(
 				
 				//Event
 				requirejs(['event/form'], function(eventForm) {
-					if(ui.index === 3){
-						//load the event
-						if(initialized['event'] && store.isset('event')){
+					if(initialized['event']){
+						if(ui.index === 3 && store.isset('event')){
 							eventForm.loadEvent(store.get('event'));
+						} else {
+							//clean up
+							eventForm.clear();
+							store.rm('event');
 						}
-					} else {
-						//clean up
-						eventForm.clear();
-						store.rm('event');
 					}
 				});
 				//rename the tab if we are add or editing
