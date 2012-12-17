@@ -9,19 +9,25 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 		_forms		: {},
 		
 		getForm : function(name){
+			
 			if($.inArray(name, this._formNames) < 0){
 				return;
 			}
 			if(this._forms[name] === undefined || ($.isArray(this._forms[name]) && this._forms[name].length === 0)){
-				this._forms[name] = $('#event-'+name+'-editor');
+				if($('#event-'+name+'-editor').length > 0){
+					this._forms[name] = $('#event-'+name+'-editor');
+				} else {
+					console.log('form not found')
+				}
 			}
+			
 			return this._forms[name];
 		},
 		
 		getForms : function(){
-			var name, forms = [];
-			for(name in this._formNames){
-				forms.push(this.getForm(name));
+			var i, forms = [];
+			for(i in this._formNames){
+				forms.push(this.getForm(this._formNames[i]));
 			}
 			return forms;
 		},
@@ -32,7 +38,7 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 		toggleForm : function(){
 			var $submiter, isDisabled,
 				i, forms = this.getForms();
-			
+			console.log('toggle')
 			for(i in forms){
 				$submiter = $('.submiter', forms[i]);
 				isDisabled = $submiter.button('option', 'disabled');
@@ -45,16 +51,17 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 		/**
 		 * Initialize the controls behavior
 		 */
-		initControls : function(){
-			console.log('initControls');
+		initControls : function(callback){
 			var self = this,
 				i, forms = this.getForms(),
 				$submiter, $date;
 			
+			console.log(forms)
+			
 			for(i in forms){
 				$submiter  = $('.submiter', forms[i]);
 				// submit button
-				$submiter.button({label : $submiter.val()});
+				$('.submiter').button({label : $submiter.val(), disabled : false});
 			}
 			
 			// the date picker
@@ -118,8 +125,11 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 				if($('#current-flyer')){
 					window.open($('#current-flyer').attr('src').replace('-small', ''));
 				}
-				
 			});
+			
+			if(typeof callback === 'function'){
+				callback();
+			}
 		},
 		
 		/**
@@ -167,14 +177,11 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 		},
 		
 		clear : function(){
-			$.each(this.getForms(), function(index, elt){
-				$(':input', elt).val('');
-			});
-			console.log('cleared');
-			/*this.getForm('infos').each(function(index, elt){
-				elt.reset();
-			});
-			$('#current-flyer',  this.getForm('flyer')).removeAttr('src');*/
+//			$.each(this.getForms(), function(index, elt){
+//				$(':input', elt).val('');
+//			});
+//			
+//			$('#current-flyer',  this.getForm('flyer')).removeAttr('src');
 		}
 	};
 	

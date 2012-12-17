@@ -22,7 +22,11 @@ requirejs(
 		function($, ui, tmpl, notify, store){
 
 	$(function() {
-		var initialized = {};
+		
+		var initialized = {
+				user : false,
+				event : false
+			};
 		
 		//create the tabs
 		$('#actions').tabs({
@@ -33,6 +37,8 @@ requirejs(
 				$('#main').show('slow');
 			},
 			load : function(event, ui) {
+				
+				//Do the initializations by tab, once loaded
 				switch(ui.index) {
 					case 0 : 
 						requirejs(['user/list'], function(list) {
@@ -41,8 +47,17 @@ requirejs(
 						});
 						break;
 					case 1:
-						requirejs(['user/form'], function(form) {
-							form.initControls();
+						requirejs(['user/form'], function(userForm) {
+							userForm.initControls(function(){
+								userForm.loadEvents(function(){
+									if(!initialized['member']){
+										if(store.isset('member')){
+											userForm.loadMember(store.get('member'));	
+										}
+										initialized['member'] = true;
+									}
+								});
+							});
 						});
 						break;
 					case 2:
@@ -53,62 +68,54 @@ requirejs(
 						});
 						break;
 					case 3:
-						requirejs(['event/form'], function(form) {
-							form.initControls();
+						requirejs(['event/form'], function(eventForm) {
+							eventForm.initControls(function(){
+								if(!initialized['event'] && store.isset('event')){
+									eventForm.loadEvent(store.get('event'), function(){
+										initialized['event'] = true;
+									});
+								}
+							});
 						});
 						break;
 				}
 			},
+			
+			//do some clean and load at each tab opening
 			show : function(event, ui) {
-				
+
+				//User
 				requirejs(['user/form'], function(userForm) {
-					/**
-					 * Load member's data in the form.
-					 * The member's id is given by a data attribute bound to the body tag
-					 * @param {Function} callback executed without parameter when the member is loaded
-					 */
-					var loadMember = function(callback){
-						if(store.isset('member')){
-							userForm.loadMember(store.get('member'), callback);
-						}
-					};
-					
 					if(ui.index === 1 ){
-						//the 1st time, we load the member only once the events are loaded
-						if(!initialized['member']){
-							userForm.loadEvents(function(){
-								loadMember(function(){
-									initialized['member'] = true;
-								});
-							});
-						} else {
-							loadMember();
+						//load the member
+						if(initialized['member'] && store.isset('member')){
+							userForm.loadMember(store.get('member'));	
 						}
 					} else {
-						//clean up the form
+						//clean up
 						userForm.clear();
 						store.rm('member');
 					}
-				});
-			
-				
-				requirejs(['event/form'], function(eventForm) {
-					if(ui.index === 3){
-						//load the event
-						if(store.isset('event')){
-							eventForm.loadEvent(store.get('event'));
-						}
-					} else {
-						//clean up the form
-						eventForm.clear();
-						store.rm('event');
-					}
-					
 				});
 				//rename the tab if we are add or editing
 				$('#actions ul:first li:nth-child(2) a').text(
 					(ui.index === 1 && store.isset('member')) ? 'Edit member' : 'Add a member'
 				);
+				
+				//Event
+				requirejs(['event/form'], function(eventForm) {
+					if(ui.index === 3){
+						//load the event
+						if(initialized['event'] && store.isset('event')){
+							eventForm.loadEvent(store.get('event'));
+						}
+					} else {
+						//clean up
+						eventForm.clear();
+						store.rm('event');
+					}
+				});
+				//rename the tab if we are add or editing
 				$('#actions ul:first li:nth-child(4) a').text(
 					(ui.index === 3 && store.isset('event')) ? 'Edit event' : 'Add an event'
 				);

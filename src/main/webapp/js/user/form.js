@@ -16,7 +16,7 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 			/**
 			 * Initialize the controls behavior
 			 */
-			initControls : function(){
+			initControls : function(callback){
 				
 				var self = this;
 				
@@ -64,6 +64,10 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 					
 					return false;
 				});
+				
+				if(typeof callback === 'function'){
+					callback();
+				}
 			},
 			
 			/**
