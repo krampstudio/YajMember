@@ -15,8 +15,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class GoogleOAuthHelper {
 
-	private final static String CLIENT_ID = "691368454221.apps.googleusercontent.com";
-	private final static String CLIENT_SECRET = "Vg7sUbBtvSmp7H_3eSp7yf1f";
+	private final static String CLIENT_ID = "***";
+	private final static String CLIENT_SECRET = "***";
 	private final static String[] SCOPES = {
 		"https://www.googleapis.com/auth/userinfo.profile",
 		"https://www.googleapis.com/auth/userinfo.email"
