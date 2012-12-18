@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -16,6 +20,7 @@ import org.yajug.users.domain.Event;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 
+import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 
 @Path("event")
@@ -81,5 +86,44 @@ public class EventController extends RestController {
 			response = serializeException(e);
 		} 
 		return response;
+	}
+	
+	@PUT
+	@Path("add")
+	@Produces({MediaType.APPLICATION_JSON})
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public String add(@FormParam("event") String event){
+		return saveEvent(event);
+	}
+	
+	@POST
+	@Path("update")
+	@Produces({MediaType.APPLICATION_JSON})
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public String update(@FormParam("event") String event){
+		return saveEvent(event);
+	}
+	
+	/**
+	 * Save a member
+	 * @param eventData
+	 * @return the json response 
+	 */
+	private String saveEvent(String eventData){
+		JsonObject response = new JsonObject();
+		boolean saved = false;
+		
+		Event event = getSerializer().fromJson(eventData, Event.class);
+			
+		try {
+			
+			saved = this.eventService.save(event);
+			
+		} catch (DataException e) {
+			response.addProperty("error", e.getLocalizedMessage());
+		} 
+		response.addProperty("saved", saved);
+		
+		return getSerializer().toJson(response);
 	}
 }
