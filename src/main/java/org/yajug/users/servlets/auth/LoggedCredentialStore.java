@@ -5,8 +5,10 @@ import java.io.IOException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.CredentialStore;
 import com.google.api.client.auth.oauth2.MemoryCredentialStore;
+import com.google.inject.Singleton;
 
-public class CustomStore implements CredentialStore{
+@Singleton
+public class LoggedCredentialStore implements CredentialStore{
 	
 	private static MemoryCredentialStore delegate = new MemoryCredentialStore();
 
