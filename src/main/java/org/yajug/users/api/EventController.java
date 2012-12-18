@@ -1,5 +1,6 @@
 package org.yajug.users.api;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,6 +23,10 @@ import org.yajug.users.service.EventService;
 
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
+
+//import com.sun.jersey.multipart.FormDataParam;
 
 @Path("event")
 public class EventController extends RestController {
@@ -125,5 +130,20 @@ public class EventController extends RestController {
 		response.addProperty("saved", saved);
 		
 		return getSerializer().toJson(response);
+	}
+	
+	@PUT
+	@Path("/flyer")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String updateFlyer(
+			@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetails) {
+		
+		String response = "";
+		
+		fileDetails.getType();
+		
+		return response;
 	}
 }
