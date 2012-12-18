@@ -170,15 +170,16 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 					}
 					$.map($form.serializeArray(), function(elt, index){
 						if(!/^membership/.test(elt.name)){
-							if(member[elt.name] === undefined){
-								member[elt.name] = elt.value;
-							} else {
-								if(!$.isArray(member[elt.name])){
-									member[elt.name] = [member[elt.name]];
+							if(elt.value && elt.value.trim().length > 0){
+								if(member[elt.name] === undefined){
+									member[elt.name] = elt.value;
+								} else {
+									if(!$.isArray(member[elt.name])){
+										member[elt.name] = [member[elt.name]];
+									}
+									member[elt.name].push(elt.value);
 								}
-								member[elt.name].push(elt.value);
 							}
-							
 						} else {
 							memberShip[elt.name.replace(/^membership-/, '')] = elt.value;
 						}

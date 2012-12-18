@@ -105,7 +105,7 @@ public class EventController extends RestController {
 	}
 	
 	/**
-	 * Save a member
+	 * Save an event
 	 * @param eventData
 	 * @return the json response 
 	 */

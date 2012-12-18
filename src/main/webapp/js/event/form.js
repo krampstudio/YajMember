@@ -56,8 +56,6 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 				i, forms = this.getForms(),
 				$submiter, $date;
 			
-			console.log(forms)
-			
 			for(i in forms){
 				$submiter  = $('.submiter', forms[i]);
 				// submit button
@@ -104,7 +102,7 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 					contentType : 'application/x-www-form-urlencoded',
 					dataType 	: 'json',
 					data 		: {
-						event : JSON.stringify($(this).serializeArray())
+						event : JSON.stringify(self.serializeEvent($(this)))
 					}
 				}).done(function(data) {
 					if(!data.saved || data.error){
@@ -118,7 +116,7 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 			});
 			
 			$('#flyer-remover', this.getForm('flyer')).click(function(){
-				
+				$('#current-flyer',  this.getForm('flyer')).removeAttr('src');
 			});
 			
 			$('#flyer-viewer', this.getForm('flyer')).click(function(){
@@ -131,6 +129,8 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 				callback();
 			}
 		},
+		
+		
 		
 		/**
 		 * Load an event
@@ -174,6 +174,24 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 					}
 				});
 			}
+		},
+		
+		serializeEvent : function($form){
+			var event = {};
+			if($form){
+				if($form.prop('tagName') !== 'FORM'){
+					$.error('Invalid jQuery element for $form. It much match a form tag.')
+				}
+				$.map($form.serializeArray(), function(elt, index){
+					if(event[elt.name] === undefined && elt.value){
+						if( elt.value.trim().length > 0){
+							event[elt.name] = elt.value;
+						}
+					}
+				});
+				event['description'] = $('#description', $form).htmlarea('toHtmlString');
+			}
+			return event;
 		},
 		
 		clear : function(){

@@ -87,12 +87,22 @@ public class EventServiceImpl extends JPAService implements EventService {
 		try{
 			em.getTransaction().begin();
 			for(Event event : events){
-				em.persist(event);
+				
+				Event previousEvent = em.find(Event.class, event.getKey());
+				if(previousEvent != null){
+					
+					previousEvent.setTitle(event.getTitle());
+					previousEvent.setDate(event.getDate());
+					previousEvent.setDescription(event.getDescription());
+					
+					em.merge(previousEvent);
+				} else {
+					em.persist(event);
+				}
 			}
 			em.getTransaction().commit();
 		} catch(PersistenceException pe){
 			pe.printStackTrace();
-			//throw new DataException("", pe);
 		} finally{
 			em.close();
 		}
