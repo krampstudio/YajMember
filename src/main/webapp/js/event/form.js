@@ -1,13 +1,28 @@
-define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
+define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify, store){
 	
 	/**
-	 * TODO creates a Form objects that can be used by both the event and the user forms
+	 * @todo creates a Form objects that can be used by both the event and the user forms
+	 * @class
 	 */
 	var EventForm = {
 		
+		/**
+		 * list of forms
+		 * @private 
+		 */
 		_formNames	: ['infos', 'flyer'],
+		
+		/**
+		 * Store the forms 
+		 * @private
+		 */
 		_forms		: {},
 		
+		/**
+		 * Get an event's editor form from it's name
+		 * @param {String} name
+		 * @return {Object} the jQuery element  that match the form
+		 */
 		getForm : function(name){
 			
 			if($.inArray(name, this._formNames) < 0){
@@ -16,14 +31,16 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 			if(this._forms[name] === undefined || ($.isArray(this._forms[name]) && this._forms[name].length === 0)){
 				if($('#event-'+name+'-editor').length > 0){
 					this._forms[name] = $('#event-'+name+'-editor');
-				} else {
-					console.log('form not found')
 				}
 			}
 			
 			return this._forms[name];
 		},
 		
+		/**
+		 * Get all the event's editor forms
+		 * @returns {Array} of jQuery elements that match each form
+		 */
 		getForms : function(){
 			var i, forms = [];
 			for(i in this._formNames){
@@ -36,9 +53,9 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 		 * Enable/Disable the form fields
 		 */
 		toggleForm : function(){
-			var $submiter, isDisabled,
-				i, forms = this.getForms();
-			console.log('toggle')
+			var $submiter, isDisabled, i, 
+				forms = this.getForms();
+			
 			for(i in forms){
 				$submiter = $('.submiter', forms[i]);
 				isDisabled = $submiter.button('option', 'disabled');
@@ -49,21 +66,25 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 		},
 		
 		/**
-		 * Initialize the controls behavior
+		 * Initialize the controls behaviors, including form submit event handlers
+		 * @param {Function} a callback executed once the controls are initialized
 		 */
 		initControls : function(callback){
-			var self = this,
-				i, forms = this.getForms(),
-				$submiter, $date;
+			var i, $submiter, $date,
+				self 		= this,
+				forms 		= this.getForms(),
+				$infosForm 	= this.getForm('infos'),
+				$flyerForm 	= this.getForm('flyer');
 			
 			for(i in forms){
 				$submiter  = $('.submiter', forms[i]);
+				
 				// submit button
-				$('.submiter').button({label : $submiter.val(), disabled : false});
+				$submiter.button({label : $submiter.val(), disabled : false});
 			}
 			
 			// the date picker
-			$date = $('#date', this.getForm('infos'));
+			$date = $('#date', $infosForm);
 			if(!Modernizr.inputtypes.date){
 				$date.datepicker({
 					'dateFormat': 'yy-mm-dd'
@@ -71,14 +92,17 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 			}
 			
 			$date.on('change', function(){
-				if(this.value && this.value.length === 10){
-					self.getForm('flyer').show();
+				if(self.getEventId() !== undefined && 
+					this.value && this.value.length === 10){
+					
+					$flyerForm.show();
+					
 				} else {
-					self.getForm('flyer').hide();
+					$flyerForm.hide();
 				}
 			});
 			
-			$('textarea', this.getForm('infos'))
+			$('textarea', $infosForm)
 				.htmlarea({
 						toolbar: [
 	                        'bold', 'italic', 'underline', '|',
@@ -91,7 +115,7 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 			
 			
 			// on form submit
-			this.getForm('infos').submit(function(e){
+			$infosForm.submit(function(e){
 				e.preventDefault();
 				
 				var udpate = $('#key', $(this)).val().length > 0;
@@ -115,14 +139,40 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 				return false;
 			});
 			
-			$('#flyer-remover', this.getForm('flyer')).click(function(){
-				$('#current-flyer',  this.getForm('flyer')).removeAttr('src');
+			$('#flyer-remover', $flyerForm).click(function(){
+				$('#current-flyer',  $flyerForm).removeAttr('src');
 			});
 			
-			$('#flyer-viewer', this.getForm('flyer')).click(function(){
+			$('#flyer-viewer', $flyerForm).click(function(){
 				if($('#current-flyer')){
 					window.open($('#current-flyer').attr('src').replace('-small', ''));
 				}
+			});
+			
+			$('.submiter', $flyerForm).click(function(e){
+				var $postFrame = $("<iframe id='postFrame' />");
+				
+				e.preventDefault();
+				
+				$postFrame
+					.attr('name', 'postFrame')
+					.css('display', 'none')
+					.load(function(){
+						notify('info', 'document uploaded');
+					});
+				
+				$flyerForm.attr({
+						'action'	: 'api/event/flyer/'+self.getEventId(),
+						'method'	: 'POST',
+						'enctype'	: 'multipart/form-data',
+						'encoding'	: 'multipart/form-data',
+						'target'	: 'postFrame'/*,
+						'file'		: $('#flyer', $flyerForm).val()*/
+					})
+					.append($postFrame)
+					.submit();
+				
+				return false;
 			});
 			
 			if(typeof callback === 'function'){
@@ -130,11 +180,10 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 			}
 		},
 		
-		
-		
 		/**
-		 * Load an event
+		 * Load an event from the server and dispatch the data to the forms
 		 * @param {Number} the identifier of the event to load
+		 * @param {Function} a callback executed once the event is loaded
 		 */
 		loadEvent : function(eventId, callback){
 			var self	= this; 
@@ -154,7 +203,7 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 					if(!data || data.error){
 						$.error("Error : " + (data.error ? data.error : "unknown"));
 					} else {
-						console.log($(':input', self.getForm('infos')));
+						
 						$(':input', self.getForm('infos')).each(function(){
 							if(data[$(this).attr('id')]){
 								$(this).val(data[$(this).attr('id')]);
@@ -176,6 +225,10 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 			}
 		},
 		
+		/**
+		 * Creates an object from the form data
+		 * @returns {Object} that represents the inputs data
+		 */
 		serializeEvent : function($form){
 			var event = {};
 			if($form){
@@ -194,6 +247,25 @@ define(['modernizr', 'notify', 'jhtmlarea'], function(Modernizr, notify){
 			return event;
 		},
 		
+		/**
+		 * Get the id of the event currently selected
+		 * from either the store or the input field
+		 * @returns {Number} the id or undefined if not found
+		 */
+		getEventId : function(){
+			var $keyField;
+			if(store.isset('event')){
+				return store.get('event');
+			}
+			$keyField = $('#key', this.getForm('infos'));
+			if($keyField.length > 0 && $keyField.val().trim().length > 0){
+				return $keyField.val();
+			}
+		},
+		
+		/**
+		 * Clear the event forms
+		 */
 		clear : function(){
 			$.each(this.getForms(), function(index, elt){
 				$(':input', elt).val('');

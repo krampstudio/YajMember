@@ -12,6 +12,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -132,17 +133,18 @@ public class EventController extends RestController {
 		return getSerializer().toJson(response);
 	}
 	
-	@PUT
-	@Path("/flyer")
+	@POST
+	@Path("/flyer/{eventId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String updateFlyer(
-			@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetails) {
+			@FormDataParam("flyer") InputStream uploadedInputStream,
+			@FormDataParam("flyer") FormDataContentDisposition fileDetails,
+			@PathParam("eventId") long eventId) {
 		
 		String response = "";
 		
-		fileDetails.getType();
+		System.out.println(fileDetails);
 		
 		return response;
 	}
