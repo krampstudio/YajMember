@@ -20,6 +20,7 @@ dependencies {
 	compile "javax.servlet:servlet-api:$servletVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
 	compile "com.google.inject:guice:$guiceVersion"
+	compile "com.google.guava:guava:$guavaVersion"
 	compile "com.sun.jersey.contribs:jersey-multipart:$jerseyVersion"
 	compile "com.sun.jersey:jersey-bundle:$jerseyVersion"
 	compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
