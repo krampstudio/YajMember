@@ -1,5 +1,8 @@
 package org.yajug.users.service;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +12,9 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import org.yajug.users.domain.Event;
+import org.yajug.users.domain.Flyer;
+
+import com.google.common.io.ByteStreams;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
@@ -111,5 +117,17 @@ public class EventServiceImpl extends JPAService implements EventService {
 			em.close();
 		}
 		return true;
+	}
+
+	@Override
+	public boolean saveFlyer(InputStream input, String format, Flyer flyer) throws DataException {
+		boolean saved = false;
+		
+		try {
+			saved = ByteStreams.copy(input, new FileOutputStream(flyer.getFile())) > 0;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return saved;
 	}
 }

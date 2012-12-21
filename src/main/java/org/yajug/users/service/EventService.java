@@ -1,8 +1,10 @@
 package org.yajug.users.service;
 
+import java.io.InputStream;
 import java.util.Collection;
 
 import org.yajug.users.domain.Event;
+import org.yajug.users.domain.Flyer;
 
 /**
  * The service provides common management of {@link Event}s
@@ -41,4 +43,14 @@ public interface EventService {
 	 * @throws DataException
 	 */
 	boolean save(Collection<Event> events) throws DataException;
+	
+	/**
+	 * Persist an event's flyer
+	 * @param input the flyer's data
+	 * @param format the format of the input data (jpg, png, etc.)
+	 * @param flyer the flyer meta data object
+	 * @return true if the flyer is saved
+	 * @throws DataException
+	 */
+	boolean saveFlyer(InputStream input, String format, Flyer flyer)  throws DataException;
 }

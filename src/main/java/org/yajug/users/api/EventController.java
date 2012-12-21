@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.yajug.users.domain.Event;
+import org.yajug.users.domain.Flyer;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 
@@ -163,34 +164,20 @@ public class EventController extends RestController {
 			response.addProperty("error", "Unknow or unsupported file type");
 		}
 		
-		//get the event
-		Event event = null;
 		try {
-			event = eventService.getOne(eventId);
+			Event event = eventService.getOne(eventId);
+			if(event != null){
+			
+				final String eventFlyerPath = servletContext.getRealPath("/img/events/");
+				Flyer flyer = new Flyer(eventFlyerPath, event);
+				String format = bodyPart.getMediaType().getSubtype().toLowerCase();
+				
+				saved = eventService.saveFlyer(stream, format, flyer);
+			}
 		} catch (DataException e) {
 			response.addProperty("error", serializeException(e));
 		} 
 		
-		//THERE...
-		if(event != null){
-		
-			final String eventFlyerPath = servletContext.getRealPath("/img/events/");
-			final String eventFlyerName = "event-"
-					+ new SimpleDateFormat("yyyyMMdd").format(event.getDate()) 
-					+ "."
-					+ bodyPart.getMediaType().getSubtype();
-			
-			if(bodyPart.getMediaType().getSubtype().equalsIgnoreCase("png")){
-				File dest = new File(eventFlyerPath + eventFlyerName);
-				try {
-					saved = ByteStreams.copy(stream, new FileOutputStream(dest)) > 0;
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		;
 		response.addProperty("saved", saved);
 		
 		return getSerializer().toJson(response);
