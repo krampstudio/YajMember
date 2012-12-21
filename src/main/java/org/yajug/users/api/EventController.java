@@ -1,11 +1,16 @@
 package org.yajug.users.api;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -15,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -22,9 +28,12 @@ import org.yajug.users.domain.Event;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 
 //import com.sun.jersey.multipart.FormDataParam;
@@ -34,6 +43,9 @@ public class EventController extends RestController {
 
 	@Inject
 	private EventService eventService;
+	
+	@Context
+	private ServletContext servletContext;
 	
 	@GET
 	@Path("list")
@@ -138,14 +150,49 @@ public class EventController extends RestController {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String updateFlyer(
-			@FormDataParam("flyer") InputStream uploadedInputStream,
-			@FormDataParam("flyer") FormDataContentDisposition fileDetails,
+			@FormDataParam("flyer") InputStream stream,
+			@FormDataParam("flyer") FormDataContentDisposition contentDisposition,
+			@FormDataParam("flyer") FormDataBodyPart bodyPart, 
 			@PathParam("eventId") long eventId) {
 		
-		String response = "";
+		JsonObject response = new JsonObject();
+		boolean saved = false;
 		
-		System.out.println(fileDetails);
+		//check MIME TYPE
+		if(bodyPart == null || !bodyPart.getMediaType().isCompatible(new MediaType("image", "*"))){
+			response.addProperty("error", "Unknow or unsupported file type");
+		}
 		
-		return response;
+		//get the event
+		Event event = null;
+		try {
+			event = eventService.getOne(eventId);
+		} catch (DataException e) {
+			response.addProperty("error", serializeException(e));
+		} 
+		
+		//THERE...
+		if(event != null){
+		
+			final String eventFlyerPath = servletContext.getRealPath("/img/events/");
+			final String eventFlyerName = "event-"
+					+ new SimpleDateFormat("yyyyMMdd").format(event.getDate()) 
+					+ "."
+					+ bodyPart.getMediaType().getSubtype();
+			
+			if(bodyPart.getMediaType().getSubtype().equalsIgnoreCase("png")){
+				File dest = new File(eventFlyerPath + eventFlyerName);
+				try {
+					saved = ByteStreams.copy(stream, new FileOutputStream(dest)) > 0;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		;
+		response.addProperty("saved", saved);
+		
+		return getSerializer().toJson(response);
 	}
 }

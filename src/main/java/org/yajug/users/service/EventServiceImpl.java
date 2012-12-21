@@ -42,6 +42,10 @@ public class EventServiceImpl extends JPAService implements EventService {
 	@Override
 	public Event getOne(long key) throws DataException {
 		
+		if(key <= 0){
+			throw new DataException("Unable to retrieve an event from a wrong id");
+		}
+		
 		Event event = null;
 		EntityManager em = getEntityManager();
 		try{
@@ -50,7 +54,7 @@ public class EventServiceImpl extends JPAService implements EventService {
 			event = tq.getSingleResult();
 			
 		} catch(PersistenceException pe){
-			throw new DataException("", pe);
+			throw new DataException("An error occured whil retrieving an event", pe);
 		} finally {
 			em.close();
 		}
