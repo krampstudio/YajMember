@@ -19,6 +19,5 @@ build
 #netbeans
 /nbproject/private/
 
-#derby
-derby.log
-testdb
+#config
+src/main/resources/config.properties
