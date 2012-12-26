@@ -28,11 +28,10 @@ public class GoogleOauthCallbackServlet extends AbstractAuthorizationCodeCallbac
 
 	private static final long serialVersionUID = 4089922082374477164L;
 	
-	@Inject
-	private GoogleOAuthHelper oAuthHelper;
+	@Inject private GoogleOAuthHelper oAuthHelper;
 
 	@Override
-	  protected void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
+	protected void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
 			  throws ServletException, IOException {
 		
 		System.out.println("Access token : " +credential.getAccessToken());
@@ -46,7 +45,6 @@ public class GoogleOauthCallbackServlet extends AbstractAuthorizationCodeCallbac
 		if(response.getStatusCode() == 200){
 			String json = response.parseAsString();
 			if(StringUtils.isNotBlank(json)){
-				System.out.println(json);
 				Map<String, String> userInos =  new Gson().fromJson(json, new TypeToken<Map<String,String>>() {}.getType());
 			
 				System.out.println(userInos.toString());

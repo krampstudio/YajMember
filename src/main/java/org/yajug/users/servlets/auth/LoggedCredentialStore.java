@@ -13,8 +13,7 @@ public class LoggedCredentialStore implements CredentialStore{
 	private static MemoryCredentialStore delegate = new MemoryCredentialStore();
 
 	@Override
-	public boolean load(String userId, Credential credential)
-			throws IOException {
+	public boolean load(String userId, Credential credential) throws IOException {
 		System.out.println("Load : " + userId + " - " + credential.toString());
 		return delegate.load(userId, credential);
 	}
