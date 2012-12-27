@@ -15,11 +15,13 @@ public class GoogleOauthServlet extends AbstractAuthorizationCodeServlet {
 
 	private static final long serialVersionUID = -5695026175093524514L;
 	
+	/**
+	 * all the actions are delegated to the {@link GoogleOAuthHelper}
+	 */
 	@Inject private GoogleOAuthHelper oAuthHelper;
 	
 	@Override
 	protected AuthorizationCodeFlow initializeFlow() throws ServletException, IOException {
-		
 		return oAuthHelper.getAuthorizationCodeFlow();
 	}
 
@@ -30,6 +32,8 @@ public class GoogleOauthServlet extends AbstractAuthorizationCodeServlet {
 
 	@Override
 	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
-		return req.getSession(true).getId();
+		String userId = req.getSession(true).getId();
+		System.out.println("user id : " + userId);
+		return userId;
 	}
 }
