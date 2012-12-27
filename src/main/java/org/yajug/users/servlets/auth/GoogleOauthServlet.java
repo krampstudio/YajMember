@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.extensions.servlet.auth.oauth2.AbstractAuthorizationCodeServlet;
@@ -30,10 +31,20 @@ public class GoogleOauthServlet extends AbstractAuthorizationCodeServlet {
 		return oAuthHelper.getRedirectUri();
 	}
 
+	/**
+	 * We use the session id as user id for the credential store
+	 */
 	@Override
 	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
-		String userId = req.getSession(true).getId();
-		System.out.println("user id : " + userId);
-		return userId;
+		return req.getSession(true).getId();
+	}
+
+	/**
+	 * Invoked only when a user is already authenticated
+	 */
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		resp.sendRedirect("index.html?msg=alreadyauth");
 	}
 }

@@ -36,10 +36,12 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 public class GuiceConfig extends GuiceServletContextListener {
 
 	
-	
 	@Override
 	protected Injector getInjector() {
 		
+		/*
+		 * Guice module for the REST API 
+		 */
 		Module restModule = new JerseyServletModule() {
 			
 			@Override
@@ -55,6 +57,9 @@ public class GuiceConfig extends GuiceServletContextListener {
 	         }
 		};
 		
+		/*
+		 * Guice module for the authentication servlets
+		 */
 		Module authModule = new ServletModule() {
 
 			protected void configureServlets() {
@@ -68,13 +73,15 @@ public class GuiceConfig extends GuiceServletContextListener {
 				serve("/auth").with(GoogleOauthServlet.class);
 				serve("/authCallback").with(GoogleOauthCallbackServlet.class);
 			}
-			
 		};
 		
-		//Enables guice injector in Jersey's controllers
 		return Guice.createInjector(restModule, authModule);
 	}
 	
+	/**
+	 * Load the configuration properties
+	 * @return the properties
+	 */
 	private Properties getProperties(){
 		Properties properties = new Properties();
 		
