@@ -123,3 +123,24 @@ li.event .event-ctrl{
 .ui-button.ui-state-hover .ui-icon.icon-evt-delete{
 	background-image: url('../img/event_delete.png');
 }
+
+/* login button */
+a#login{
+	display: inline-block;
+	border: solid 1px #999;
+	border-bottom-color:#666;
+	border-right-color:#666;
+	border-radius:4px;
+	padding:.3em .5em .3em 2em;
+	margin:.1em;
+	color:#444;
+	font-weight:bold;
+	background-color:#EEE;
+	text-decoration: none;
+	background-image: url('../img/google.png');
+	background-repeat: no-repeat;
+	background-position: .3em .3em;
+}
+a#login:hover{
+	color:#999;	
+}
