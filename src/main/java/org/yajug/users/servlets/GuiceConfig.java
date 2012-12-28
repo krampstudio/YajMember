@@ -10,6 +10,7 @@ import org.yajug.users.service.EventService;
 import org.yajug.users.service.EventServiceImpl;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.service.MemberServiceImpl;
+import org.yajug.users.servlets.auth.AuthenticationFilter;
 import org.yajug.users.servlets.auth.GoogleOauthCallbackServlet;
 import org.yajug.users.servlets.auth.GoogleOauthServlet;
 import org.yajug.users.servlets.auth.LoggedCredentialStore;
@@ -21,10 +22,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
@@ -42,40 +41,29 @@ public class GuiceConfig extends GuiceServletContextListener {
 		/*
 		 * Guice module for the REST API 
 		 */
-		Module restModule = new JerseyServletModule() {
+		return Guice.createInjector(new JerseyServletModule() {
 			
 			@Override
 	         protected void configureServlets() {
+				
+				Names.bindProperties(binder(), getProperties());
+				
 	            bind(MemberController.class);
 	            bind(EventController.class);
 	            
 	            bind(MemberService.class).to(MemberServiceImpl.class);
 	            bind(EventService.class).to(EventServiceImpl.class);
-	            
-	            // Route all requests through GuiceContainer
-	            serve("/api/*").with(GuiceContainer.class);
-	         }
-		};
-		
-		/*
-		 * Guice module for the authentication servlets
-		 */
-		Module authModule = new ServletModule() {
-
-			protected void configureServlets() {
-				
-				Names.bindProperties(binder(), getProperties());
-				
-				bind(CredentialStore.class).to(LoggedCredentialStore.class);
+	            bind(CredentialStore.class).to(LoggedCredentialStore.class);
 				bind(HttpTransport.class).to(NetHttpTransport.class);
 				bind(JsonFactory.class).to(GsonFactory.class);
-				
+	            
+	            filter("/*").through(AuthenticationFilter.class);
+	            
+	            serve("/api/*").with(GuiceContainer.class);
 				serve("/auth").with(GoogleOauthServlet.class);
 				serve("/authCallback").with(GoogleOauthCallbackServlet.class);
-			}
-		};
-		
-		return Guice.createInjector(restModule, authModule);
+	         }
+		});
 	}
 	
 	/**
