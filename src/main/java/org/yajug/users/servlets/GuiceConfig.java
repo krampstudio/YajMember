@@ -57,7 +57,7 @@ public class GuiceConfig extends GuiceServletContextListener {
 				bind(HttpTransport.class).to(NetHttpTransport.class);
 				bind(JsonFactory.class).to(GsonFactory.class);
 	            
-	            filter("/*").through(AuthenticationFilter.class);
+	            filter("/", "*.html", "/api/*").through(AuthenticationFilter.class);
 	            
 	            serve("/api/*").with(GuiceContainer.class);
 				serve("/auth").with(GoogleOauthServlet.class);

@@ -36,6 +36,7 @@ public class GoogleOauthServlet extends AbstractAuthorizationCodeServlet {
 	 */
 	@Override
 	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
+		//we use the session id as credential store key
 		return req.getSession(true).getId();
 	}
 
@@ -45,6 +46,6 @@ public class GoogleOauthServlet extends AbstractAuthorizationCodeServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		resp.sendRedirect("index.html?msg=alreadyauth");
+		resp.sendRedirect("index.html");
 	}
 }

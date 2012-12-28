@@ -30,6 +30,7 @@ body {
    bottom:0;
    width:100%;
    height:30px;
+   color:#88A9BD;
 }
 #footer a{
 	color:#E77124;
@@ -124,8 +125,20 @@ li.event .event-ctrl{
 	background-image: url('../img/event_delete.png');
 }
 
-/* login button */
-a#login{
+/* login */
+#login-box{
+	width:25em;
+	border: solid 1px #E77124;
+	border-radius:5px;
+	margin:auto;
+	padding:.5em;
+	color:#fff;
+	font-weight:bold;
+	text-align:center;
+	background-color:#E77124;
+	background: -moz-linear-gradient(top, #FCB689, #E77124);
+}
+#login-box #login{
 	display: inline-block;
 	border: solid 1px #999;
 	border-bottom-color:#666;
@@ -135,12 +148,14 @@ a#login{
 	margin:.1em;
 	color:#444;
 	font-weight:bold;
-	background-color:#EEE;
 	text-decoration: none;
-	background-image: url('../img/google.png');
+	background-color:#eee;
+	/** css trick to support bg image and gradient: works only for moz and webkit */
+	background-image: url('../img/google.png'), -moz-linear-gradient(top,  #eee,  #999);
+	background-image: url('../img/google.png'), -webkit-gradient(linear, left top, left bottom, from(#eee), to(#999));
 	background-repeat: no-repeat;
 	background-position: .3em .3em;
 }
-a#login:hover{
+#login-box #login:hover{
 	color:#999;	
 }

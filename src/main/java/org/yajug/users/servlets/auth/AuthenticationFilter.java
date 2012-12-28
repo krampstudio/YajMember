@@ -51,22 +51,29 @@ public class AuthenticationFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
 		
+		//some uris are not filtered
 		if(allowed.contains(request.getServletPath())){
 			chain.doFilter(req, resp);
 			return;
 		}
 		
+		//we check if the session contains a user under the activeUser key
 		HttpSession session = request.getSession(false);
 		if(session != null){
-			User user = (User)session.getAttribute("user");
+			User user = (User)session.getAttribute("activeUser");
 			if(user != null && user.isVerifiedEmail()){
 				chain.doFilter(req, resp);
 				return;
-			}
+			} 
+			//if a session exists without a user we invalidate it
+			session.invalidate();
 		}
+		
 		if(request.getServletPath().contains("api")){
+			//for the rest api we send an http code
 			response.sendError(403);
 		} else {
+			//or we redirect to the login page
 			response.sendRedirect("login.html");
 		}
 	}

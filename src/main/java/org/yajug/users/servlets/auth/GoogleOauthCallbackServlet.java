@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.yajug.users.domain.User;
 
@@ -36,16 +37,30 @@ public class GoogleOauthCallbackServlet extends AbstractAuthorizationCodeCallbac
 		User user = oAuthHelper.getUser(credential);
 		if(oAuthHelper.isAllowed(user)){
 			req.getSession().setAttribute("activeUser", user);
-			resp.sendRedirect("index.html?auth=true");
+			resp.sendRedirect("index.html");
 			return;
 		} 
-		resp.sendRedirect("index.html?autherror=user not allowed");
+		
+		rmSession(req);
+		resp.sendRedirect("login.html?error=user not allowed");
 	}
 	
 	@Override
 	protected void onError(HttpServletRequest req, HttpServletResponse resp, AuthorizationCodeResponseUrl errorResponse)
 			throws ServletException, IOException {
-		 resp.sendRedirect("index.html?autherror="+errorResponse.getErrorDescription());
+		rmSession(req);
+		resp.sendRedirect("login.html?error="+errorResponse.getErrorDescription());
+	}
+	
+	/**
+	 * Remove the session in case of auth error
+	 * @param req the request linked to the session
+	 */
+	private void rmSession(HttpServletRequest req){
+		HttpSession session = req.getSession(false);
+		if(session != null){
+			session.invalidate();
+		}
 	}
 	
 	@Override
@@ -60,9 +75,8 @@ public class GoogleOauthCallbackServlet extends AbstractAuthorizationCodeCallbac
 
 	@Override
 	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
-		String userId = req.getSession(true).getId();
-		System.out.println("user id : " + userId);
-		return userId;
+		//we use the session id as credential store key
+		return req.getSession(true).getId();
 	}
 
 }

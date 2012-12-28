@@ -98,7 +98,7 @@ public class GoogleOAuthHelper {
 	public boolean isAllowed(User user){
 		return user != null 
 				&& user.isVerifiedEmail() 
-				&& user.getHd().equals(domain);
+				&& domain.equals(user.getHd());
 	}
 	
 	public String getRedirectUri() {
