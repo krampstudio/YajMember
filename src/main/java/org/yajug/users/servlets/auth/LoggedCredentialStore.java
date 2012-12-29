@@ -30,5 +30,4 @@ public class LoggedCredentialStore implements CredentialStore{
 		System.out.println("Delete : " + userId + " - " + credential.toString());
 		 delegate.delete(userId, credential);
 	}
-
 }

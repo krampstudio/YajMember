@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 
 import org.yajug.users.domain.User;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -31,8 +32,10 @@ public class AuthenticationFilter implements Filter {
 	private final static List<String> allowed;
 	
 	static{
-		allowed = Arrays.asList("/login.html", "/auth", "/authCallback");
+		allowed = Arrays.asList("/login.html", "/auth", "/authCallback", "/logout");
 	}
+	
+	@Inject private LogoutHelper logoutHelper;
 	
 	/**
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
@@ -66,7 +69,7 @@ public class AuthenticationFilter implements Filter {
 				return;
 			} 
 			//if a session exists without a user we invalidate it
-			session.invalidate();
+			logoutHelper.logout(request);
 		}
 		
 		if(request.getServletPath().contains("api")){

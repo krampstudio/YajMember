@@ -30,6 +30,7 @@ public class GoogleOauthCallbackServlet extends AbstractAuthorizationCodeCallbac
 	 * all the actions are delegated to the {@link GoogleOAuthHelper}
 	 */
 	@Inject private GoogleOAuthHelper oAuthHelper;
+	@Inject private LogoutHelper logoutHelper;
 
 	@Override
 	protected void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
@@ -41,26 +42,15 @@ public class GoogleOauthCallbackServlet extends AbstractAuthorizationCodeCallbac
 			return;
 		} 
 		
-		rmSession(req);
+		logoutHelper.logout(req);
 		resp.sendRedirect("login.html?error=user not allowed");
 	}
 	
 	@Override
 	protected void onError(HttpServletRequest req, HttpServletResponse resp, AuthorizationCodeResponseUrl errorResponse)
 			throws ServletException, IOException {
-		rmSession(req);
+		logoutHelper.logout(req);
 		resp.sendRedirect("login.html?error="+errorResponse.getErrorDescription());
-	}
-	
-	/**
-	 * Remove the session in case of auth error
-	 * @param req the request linked to the session
-	 */
-	private void rmSession(HttpServletRequest req){
-		HttpSession session = req.getSession(false);
-		if(session != null){
-			session.invalidate();
-		}
 	}
 	
 	@Override
