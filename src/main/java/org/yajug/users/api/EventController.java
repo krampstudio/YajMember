@@ -1,9 +1,5 @@
 package org.yajug.users.api;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,8 +25,6 @@ import org.yajug.users.domain.Flyer;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.sun.jersey.core.header.FormDataContentDisposition;

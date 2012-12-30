@@ -1,5 +1,6 @@
 package org.yajug.users.service;
 
+import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,10 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
+import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
 
@@ -122,9 +125,21 @@ public class EventServiceImpl extends JPAService implements EventService {
 	@Override
 	public boolean saveFlyer(InputStream input, String format, Flyer flyer) throws DataException {
 		boolean saved = false;
-		
 		try {
-			saved = ByteStreams.copy(input, new FileOutputStream(flyer.getFile())) > 0;
+			BufferedImage img = ImageIO.read(input);
+			ImageIO.write(img, format, flyer.getFile());
+			
+			BufferedImage thumbnail = Scalr.resize(
+					img, 
+					Scalr.Method.SPEED, 
+					Scalr.Mode.FIT_TO_WIDTH, 
+					181, 
+					256, 
+					Scalr.OP_ANTIALIAS
+				);
+			ImageIO.write(thumbnail, format, flyer.getThumbnail().getFile());
+			
+			//saved = ByteStreams.copy(input, new FileOutputStream(flyer.getFile())) > 0;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

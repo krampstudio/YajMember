@@ -21,10 +21,11 @@ dependencies {
 	compile "com.google.code.gson:gson:$gsonVersion"
 	compile "com.google.inject:guice:$guiceVersion"
 	compile "com.google.guava:guava:$guavaVersion"
-	compile "com.sun.jersey.contribs:jersey-multipart:$jerseyVersion"
 	compile "com.sun.jersey:jersey-bundle:$jerseyVersion"
 	compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
+	compile "com.sun.jersey.contribs:jersey-multipart:$jerseyVersion"
 	compile "net.sf.supercsv:super-csv:$superCsvVersion"
+	compile "org.imgscalr:imgscalr-lib:$scalrVersion"
 	testCompile "junit:junit:$junitVersion"
 }
 
