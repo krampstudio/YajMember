@@ -39,6 +39,9 @@ public class GuiceConfig extends GuiceServletContextListener {
 	@Override
 	protected Injector getInjector() {
 		
+		final Properties properties = getProperties();
+		final boolean authEnabled =Boolean.parseBoolean(properties.getProperty("auth.enabled"));
+		
 		/*
 		 * Guice module for the REST API 
 		 */
@@ -47,23 +50,27 @@ public class GuiceConfig extends GuiceServletContextListener {
 			@Override
 	         protected void configureServlets() {
 				
-				Names.bindProperties(binder(), getProperties());
+				Names.bindProperties(binder(), properties);
 				
 	            bind(MemberController.class);
 	            bind(EventController.class);
 	            
 	            bind(MemberService.class).to(MemberServiceImpl.class);
 	            bind(EventService.class).to(EventServiceImpl.class);
-	            bind(CredentialStore.class).to(LoggedCredentialStore.class);
-				bind(HttpTransport.class).to(NetHttpTransport.class);
-				bind(JsonFactory.class).to(GsonFactory.class);
 	            
-	            filter("/", "*.html", "/api/*").through(AuthenticationFilter.class);
+	            if(authEnabled){
 	            
-	            serve("/api/*").with(GuiceContainer.class);
-				serve("/auth").with(GoogleOauthServlet.class);
-				serve("/authCallback").with(GoogleOauthCallbackServlet.class);
-				serve("/logout").with(LogoutServlet.class);
+		            bind(CredentialStore.class).to(LoggedCredentialStore.class);
+					bind(HttpTransport.class).to(NetHttpTransport.class);
+					bind(JsonFactory.class).to(GsonFactory.class);
+		            
+		            filter("/", "*.html", "/api/*").through(AuthenticationFilter.class);
+		            
+					serve("/auth").with(GoogleOauthServlet.class);
+					serve("/authCallback").with(GoogleOauthCallbackServlet.class);
+					serve("/logout").with(LogoutServlet.class);
+	            }
+				serve("/api/*").with(GuiceContainer.class);
 	         }
 		});
 	}
