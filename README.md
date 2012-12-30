@@ -17,7 +17,10 @@ To start coding, you need:
 * JDK **>=7**
 * A relationnal database (I use H2 in dev, but you can use your favorite)
 
-If you select an other database, please change the settings in the ```src/main/resources/META-INF/persistence.xml```
+Copy the config file from ̀```src/main/config/config.propertie``` to somewhere in the classpath, ie. ```src/main/resources``̀`.
+Disable the authentication in the config file (```auth.enabled=false``̀ ) or ask me for the Google API identifier.
+
+If you select an other database than H2, please change the settings in the ```src/main/resources/META-INF/persistence.xml```
 and add the driver to the gradle dependencies (same infos than Maven).
 
 Once the database is started, the first step is to add some data and by the way to generate the database schema. 
