@@ -14,6 +14,7 @@ import org.yajug.users.servlets.auth.AuthenticationFilter;
 import org.yajug.users.servlets.auth.GoogleOauthCallbackServlet;
 import org.yajug.users.servlets.auth.GoogleOauthServlet;
 import org.yajug.users.servlets.auth.LoggedCredentialStore;
+import org.yajug.users.servlets.auth.LogoutServlet;
 
 import com.google.api.client.auth.oauth2.CredentialStore;
 import com.google.api.client.http.HttpTransport;
@@ -62,6 +63,7 @@ public class GuiceConfig extends GuiceServletContextListener {
 	            serve("/api/*").with(GuiceContainer.class);
 				serve("/auth").with(GoogleOauthServlet.class);
 				serve("/authCallback").with(GoogleOauthCallbackServlet.class);
+				serve("/logout").with(LogoutServlet.class);
 	         }
 		});
 	}

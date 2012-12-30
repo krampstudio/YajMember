@@ -17,7 +17,23 @@ body {
    	position:relative;
 }
 #header{
-	padding:5px 0 5px 10px;	
+	width:100%;
+	position:relative;
+}
+#header > img{
+	margin: 5px 10px;
+}
+#header #user-ctrl{
+	position: absolute;
+	right:10px;
+	top:5px;
+}
+#header #user-ctrl a{
+	color:#336699;
+	text-decoration: none;
+}
+#header #user-ctrl a:hover{
+	color:#88A9BD;
 }
 #content{
 	padding-bottom:30px;
@@ -27,10 +43,10 @@ body {
 	font-size:0.9em;
 	text-align: center;
 	position:absolute;
-   bottom:0;
-   width:100%;
-   height:30px;
-   color:#88A9BD;
+	bottom:0;
+	width:100%;
+	height:30px;
+	color:#88A9BD;
 }
 #footer a{
 	color:#E77124;

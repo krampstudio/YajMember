@@ -27,7 +27,7 @@ public class LoggedCredentialStore implements CredentialStore{
 
 	@Override
 	public void delete(String userId, Credential credential) throws IOException {
-		System.out.println("Delete : " + userId + " - " + credential.toString());
+		System.out.println("Delete : " + userId + " - " + credential);
 		 delegate.delete(userId, credential);
 	}
 }
