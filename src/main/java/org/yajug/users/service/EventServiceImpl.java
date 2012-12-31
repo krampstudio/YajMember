@@ -1,10 +1,10 @@
 package org.yajug.users.service;
 
 import java.awt.image.BufferedImage;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,11 +13,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang.StringUtils;
 import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
-
-import com.google.common.io.ByteStreams;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
@@ -34,10 +33,10 @@ public class EventServiceImpl extends JPAService implements EventService {
 		
 		List<Event> events = new ArrayList<Event>();
 		EntityManager em = getEntityManager();
-		try{
+		try {
 			TypedQuery<Event> tq = em.createNamedQuery("Event.findAll", Event.class);
 			events = tq.getResultList();
-		} catch(PersistenceException pe){
+		} catch(PersistenceException pe) {
 			throw new DataException("", pe);
 		} finally {
 			em.close();
@@ -51,18 +50,18 @@ public class EventServiceImpl extends JPAService implements EventService {
 	@Override
 	public Event getOne(long key) throws DataException {
 		
-		if(key <= 0){
+		if (key <= 0) {
 			throw new DataException("Unable to retrieve an event from a wrong id");
 		}
 		
 		Event event = null;
 		EntityManager em = getEntityManager();
-		try{
+		try {
 			TypedQuery<Event> tq = em.createNamedQuery("Event.getOne", Event.class);
 			tq.setParameter("key", key);
 			event = tq.getSingleResult();
 			
-		} catch(PersistenceException pe){
+		} catch(PersistenceException pe) {
 			throw new DataException("An error occured whil retrieving an event", pe);
 		} finally {
 			em.close();
@@ -76,7 +75,7 @@ public class EventServiceImpl extends JPAService implements EventService {
 	@Override
 	public boolean save(Event event) throws DataException{
 		
-		if(event == null){
+		if (event == null) {
 			throw new DataException("Cannot save a null event");
 		}
 		
@@ -92,43 +91,55 @@ public class EventServiceImpl extends JPAService implements EventService {
 	@Override
 	public boolean save(Collection<Event> events) throws DataException {
 		
-		if(events == null){
+		if (events == null) {
 			throw new DataException("Cannot save null events");
 		}
 		
 		EntityManager em = getEntityManager();
-		try{
+		try {
 			em.getTransaction().begin();
-			for(Event event : events){
+			for (Event event : events) {
 				
 				Event previousEvent = em.find(Event.class, event.getKey());
-				if(previousEvent != null){
-					
+				if (previousEvent != null) {
+					//update
 					previousEvent.setTitle(event.getTitle());
 					previousEvent.setDate(event.getDate());
 					previousEvent.setDescription(event.getDescription());
-					
 					em.merge(previousEvent);
 				} else {
+					//add
 					em.persist(event);
 				}
 			}
 			em.getTransaction().commit();
-		} catch(PersistenceException pe){
-			pe.printStackTrace();
-		} finally{
+		} catch (PersistenceException pe) {
+			throw new DataException("An error occured while saving the event", pe);
+		} finally {
 			em.close();
 		}
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean saveFlyer(InputStream input, String format, Flyer flyer) throws DataException {
 		boolean saved = false;
+
+		//validate input format
+		final List<String> allowedFormat = Arrays.asList("png", "jpg", "jpeg", "gif");
+		if(StringUtils.isBlank(format) || !allowedFormat.contains(format.toLowerCase())){
+			throw new ValidationException("Unsupported flyer format :" + format );
+		}
+		
 		try {
+			//save base flyer to format
 			BufferedImage img = ImageIO.read(input);
-			ImageIO.write(img, format, flyer.getFile());
+			ImageIO.write(img, Flyer.TYPE, flyer.getFile());
 			
+			//and creates the thumbnail
 			BufferedImage thumbnail = Scalr.resize(
 					img, 
 					Scalr.Method.SPEED, 
@@ -137,11 +148,10 @@ public class EventServiceImpl extends JPAService implements EventService {
 					256, 
 					Scalr.OP_ANTIALIAS
 				);
-			ImageIO.write(thumbnail, format, flyer.getThumbnail().getFile());
+			ImageIO.write(thumbnail, Flyer.TYPE, flyer.getThumbnail().getFile());
 			
-			//saved = ByteStreams.copy(input, new FileOutputStream(flyer.getFile())) > 0;
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new DataException("An error occured while saving the flyer", e);
 		}
 		return saved;
 	}
