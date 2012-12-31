@@ -143,7 +143,7 @@ public class EventController extends RestController {
 	@POST
 	@Path("/flyer/{eventId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces("text/plain; charset=UTF-8")
 	public String updateFlyer(
 			@FormDataParam("flyer") InputStream stream,
 			@FormDataParam("flyer") FormDataContentDisposition contentDisposition,
@@ -152,6 +152,8 @@ public class EventController extends RestController {
 		
 		JsonObject response = new JsonObject();
 		boolean saved = false;
+		
+		final String flyerPath = "img/events/";
 		
 		//check MIME TYPE
 		if(bodyPart == null || !bodyPart.getMediaType().isCompatible(new MediaType("image", "*"))){
@@ -162,16 +164,19 @@ public class EventController extends RestController {
 			Event event = eventService.getOne(eventId);
 			if(event != null){
 			
-				final String eventFlyerPath = servletContext.getRealPath("/img/events/");
-				Flyer flyer = new Flyer(eventFlyerPath, event);
+				final String flyerFullPath = servletContext.getRealPath(flyerPath);
+				Flyer flyer = new Flyer(flyerFullPath, event);
 				String format = bodyPart.getMediaType().getSubtype().toLowerCase();
 				
-				saved = eventService.saveFlyer(stream, format, flyer);
+				if(eventService.saveFlyer(stream, format, flyer)){
+					saved = true;
+					response.addProperty("flyer", flyerPath + flyer.getFile().getName());
+					response.addProperty("thumb", flyerPath + flyer.getThumbnail().getFile().getName());
+				}
 			}
 		} catch (DataException e) {
 			response.addProperty("error", serializeException(e));
 		} 
-		
 		response.addProperty("saved", saved);
 		
 		return getSerializer().toJson(response);

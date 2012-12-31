@@ -137,7 +137,7 @@ public class EventServiceImpl extends JPAService implements EventService {
 		try {
 			//save base flyer to format
 			BufferedImage img = ImageIO.read(input);
-			ImageIO.write(img, Flyer.TYPE, flyer.getFile());
+			saved = ImageIO.write(img, Flyer.TYPE, flyer.getFile());
 			
 			//and creates the thumbnail
 			BufferedImage thumbnail = Scalr.resize(
@@ -148,7 +148,7 @@ public class EventServiceImpl extends JPAService implements EventService {
 					256, 
 					Scalr.OP_ANTIALIAS
 				);
-			ImageIO.write(thumbnail, Flyer.TYPE, flyer.getThumbnail().getFile());
+			saved = saved && ImageIO.write(thumbnail, Flyer.TYPE, flyer.getThumbnail().getFile());
 			
 		} catch (IOException e) {
 			throw new DataException("An error occured while saving the flyer", e);
