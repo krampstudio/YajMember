@@ -2,12 +2,12 @@ package org.yajug.users.api;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,49 +25,76 @@ import org.yajug.users.domain.Flyer;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 
-//import com.sun.jersey.multipart.FormDataParam;
-
+/**
+ * This controller expose the Event API over HTTP
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 @Path("event")
 public class EventController extends RestController {
 
-	@Inject
-	private EventService eventService;
+	/** The service instance that manages events */
+	@Inject private EventService eventService;
 	
-	@Context
-	private ServletContext servletContext;
+	/** Enables you to access the current servlet context within an action (it's thread safe) */
+	@Context private ServletContext servletContext;
 	
+	/**
+	 * Get the list of events either for the current or a particular year <br>
+	 * Example:<br>
+	 * {@code curl -i -H "Accept: application/json" http://localhost:8000/YajMember/api/event/list?current=true}
+	 * 
+	 * 
+	 * @param current if true we load the events of the current year
+	 * @param year if current is false, it defines which year we load the events for
+	 * @return a JSON representation of the events
+	 */
 	@GET
 	@Path("list")
 	@Produces({MediaType.APPLICATION_JSON})
 	public String list(@QueryParam("current") Boolean current, @QueryParam("year") Integer year){
 		
 		String response = "";
-		Collection<Event> events = new ArrayList<Event>();
+		Collection<Event> events = Lists.newArrayList();
 		
 		try {
-			events = eventService.getAll();
 			if(BooleanUtils.isTrue(current)){
 				year = Integer.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 			}
 			if(year != null && year.intValue() > 1990 && year.intValue() < 2030) {	
 				//yes ! a strong validation with hard coded values, I assume that
 				
+				Collection<Event> allEvents = eventService.getAll();
+				
 				//we filter events based on the event year
-				SimpleDateFormat formater = new SimpleDateFormat("yyyy");
-				for(Event event : events){
-					if(event.getDate() != null){
-						Integer eventYear = Integer.valueOf(formater.format(event.getDate()));
-						if(eventYear.intValue() != year.intValue()){
-							events.remove(event);
-						}
-					}
-				}
+				final int yearFilter = year.intValue();
+				
+				events = ImmutableList.copyOf(
+							Iterables.filter(
+									allEvents, 
+									new Predicate<Event> (){
+
+										private final SimpleDateFormat formater = new SimpleDateFormat("yyyy");
+										
+										@Override
+										public boolean apply(Event event) {
+											return (event != null 
+													&& event.getDate() != null 
+													&& Integer.valueOf(formater.format(event.getDate())) == yearFilter);
+										}
+									}
+								)
+							);
 			}
 			response = getSerializer().toJson(events);
 			
@@ -78,6 +105,14 @@ public class EventController extends RestController {
 		return response;
 	}
 	
+	/**
+	 * Get an event from it's identifier<br>
+	 * Example:<br>
+	 * {@code curl -i -H "Accept: application/json"  http://localhost:8000/YajMember/api/event/getOne?id=1}
+	 * 
+	 * @param id
+	 * @return  a JSON representation of the event
+	 */
 	@GET
 	@Path("getOne")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -85,13 +120,10 @@ public class EventController extends RestController {
 		String response = "";
 		
 		try {
-			
-			if(id == null || id.longValue() <= 0){
+			if (id == null || id.longValue() <= 0) {
 				throw new DataException("Unable to retrieve an event from a wrong id");
 			}
-			
 			Event event = eventService.getOne(id);
-			
 			response = getSerializer().toJson(event);
 			
 		} catch (DataException e) {
@@ -101,6 +133,14 @@ public class EventController extends RestController {
 		return response;
 	}
 	
+	/**
+	 * Add a new event<br>
+	 * Example:<br>
+	 * {@code curl -i -H "Accept: application/json" -X PUT -d "event={key:...}"  http://localhost:8000/YajMember/api/event/update}
+	 * 
+	 * @param event the event to add in JSON format (a parsing/mapping will be done)
+	 * @return a JSON object that contains the 'saved' property
+	 */
 	@PUT
 	@Path("add")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -109,6 +149,14 @@ public class EventController extends RestController {
 		return saveEvent(event);
 	}
 	
+	/**
+	 * Update an event<br>
+	 *  Example:<br>
+	 * {@code curl -i -H "Accept: application/json" -X POST -d "event={key:...}"  http://localhost:8000/YajMember/api/event/update}
+	 * 
+	 * @param event the event to update in JSON format (a parsing/mapping will be done)
+	 * @return a JSON object that contains the 'saved' property
+	 */
 	@POST
 	@Path("update")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -123,15 +171,13 @@ public class EventController extends RestController {
 	 * @return the json response 
 	 */
 	private String saveEvent(String eventData){
+		
 		JsonObject response = new JsonObject();
 		boolean saved = false;
 		
 		Event event = getSerializer().fromJson(eventData, Event.class);
-			
 		try {
-			
 			saved = this.eventService.save(event);
-			
 		} catch (DataException e) {
 			response.addProperty("error", e.getLocalizedMessage());
 		} 
@@ -140,19 +186,57 @@ public class EventController extends RestController {
 		return getSerializer().toJson(response);
 	}
 	
+	/**
+	 * Remove an event<br>
+	 *  Example:<br>
+	 * {@code curl -i -H "Accept: application/json" -X DELETE  http://localhost:8000/YajMember/api/event/remove/1}
+	 * @param id the eventidentifier
+	 * @return a JSON object that contains the 'removed' property
+	 */
+	@DELETE
+	@Path("remove/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String remove(@PathParam("id") long id){
+		
+		JsonObject response = new JsonObject();
+		boolean removed = false;
+		
+		if (id > 0) {
+			try {
+				Event event = eventService.getOne(id);
+				if (event != null) {
+					removed = eventService.remove(event);
+				}
+			} catch (DataException e) {
+				response.addProperty("error", e.getLocalizedMessage());
+			} 
+		}
+		response.addProperty("removed", removed);
+		
+		return  getSerializer().toJson(response);
+	}
+	
+	/**
+	 * Update the event flyer's file. The method handles an HTTP file upload.
+	 * 
+	 * @param stream uploaded file data
+	 * @param contentDisposition file upload meta
+	 * @param bodyPart file upload meta
+	 * @param id the event identifier the flyer is linked to
+	 * @return  a JSON object that contains the 'saved' property
+	 */
 	@POST
-	@Path("/flyer/{eventId}")
+	@Path("/flyer/{id}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces("text/plain; charset=UTF-8")
 	public String updateFlyer(
 			@FormDataParam("flyer") InputStream stream,
 			@FormDataParam("flyer") FormDataContentDisposition contentDisposition,
 			@FormDataParam("flyer") FormDataBodyPart bodyPart, 
-			@PathParam("eventId") long eventId) {
+			@PathParam("id") long id) {
 		
 		JsonObject response = new JsonObject();
 		boolean saved = false;
-		
 		final String flyerPath = "img/events/";
 		
 		//check MIME TYPE
@@ -161,13 +245,16 @@ public class EventController extends RestController {
 		}
 		
 		try {
-			Event event = eventService.getOne(eventId);
+			//get the flyer's event
+			Event event = eventService.getOne(id);
 			if(event != null){
 			
+				//create a Flyer instance based on context
 				final String flyerFullPath = servletContext.getRealPath(flyerPath);
 				Flyer flyer = new Flyer(flyerFullPath, event);
 				String format = bodyPart.getMediaType().getSubtype().toLowerCase();
 				
+				//and save the file
 				if(eventService.saveFlyer(stream, format, flyer)){
 					saved = true;
 					response.addProperty("flyer", flyerPath + flyer.getFile().getName());

@@ -4,12 +4,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
@@ -17,6 +17,8 @@ import org.apache.commons.lang.StringUtils;
 import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
+
+import com.google.common.collect.Lists;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
@@ -61,6 +63,8 @@ public class EventServiceImpl extends JPAService implements EventService {
 			tq.setParameter("key", key);
 			event = tq.getSingleResult();
 			
+		} catch(NoResultException nre){
+			event = null;
 		} catch(PersistenceException pe) {
 			throw new DataException("An error occured whil retrieving an event", pe);
 		} finally {
@@ -120,6 +124,29 @@ public class EventServiceImpl extends JPAService implements EventService {
 		}
 		return true;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean remove(Event event) throws DataException {
+		boolean removed = false;
+
+		if (event == null || event.getKey() <= 0) {
+			throw new DataException("Trying to remove a null or non-identified event.");
+		}
+		
+		EntityManager em = getEntityManager();
+		try {
+			em.remove(event);
+			removed = true;
+		} catch (PersistenceException pe) {
+			throw new DataException("An error occured while removing the event", pe);
+		} finally {
+			em.close();
+		}
+		return removed;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -129,7 +156,8 @@ public class EventServiceImpl extends JPAService implements EventService {
 		boolean saved = false;
 
 		//validate input format
-		final List<String> allowedFormat = Arrays.asList("png", "jpg", "jpeg", "gif");
+		final List<String> allowedFormat = Lists.newArrayList("png", "jpg", "jpeg", "gif");
+		
 		if(StringUtils.isBlank(format) || !allowedFormat.contains(format.toLowerCase())){
 			throw new ValidationException("Unsupported flyer format :" + format );
 		}

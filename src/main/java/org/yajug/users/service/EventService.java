@@ -14,35 +14,43 @@ import org.yajug.users.domain.Flyer;
 public interface EventService {
 
 	/**
-	 * Get all the events
+	 * Get all the {@link Event}s
 	 * @return a list of events
 	 * @throws DataException
 	 */
 	Collection<Event> getAll() throws DataException;
 	
 	/**
-	 * get one event by key
+	 * get one {@link Event} by key
 	 * @param key
-	 * @return teh event
+	 * @return the {@link Event} or null
 	 * @throws DataException
 	 */
 	Event getOne(long key) throws DataException;
 	
 	/**
-	 * Save an event
-	 * @param event the event to save
+	 * Save an {@link Event}
+	 * @param event the {@link Event} to save
 	 * @return true if saved
 	 * @throws DataException
 	 */
 	boolean save(Event event) throws DataException;
 	
 	/**
-	 * Save events
-	 * @param events
+	 * Save {@link Event}s
+	 * @param events the {@link Event}s to save
 	 * @return true if saved
 	 * @throws DataException
 	 */
 	boolean save(Collection<Event> events) throws DataException;
+	
+	/**
+	 * Remove an {@link Event}
+	 * @param event the {@link Event} to remove
+	 * @return true if the removal is done
+	 * @throws DataException
+	 */
+	boolean remove(Event event) throws DataException;
 	
 	/**
 	 * Persist data of an event's flyer

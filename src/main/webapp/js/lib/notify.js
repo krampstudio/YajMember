@@ -1,6 +1,6 @@
 define(['jquery',
         'noty/layouts/topCenter', 
-        'noty/layouts/bottomRight',
+        'noty/layouts/center',
         'noty/themes/default'], 
 function($){
 	
@@ -8,12 +8,12 @@ function($){
 	
 	return  function(type, msg){
 		var topLayout = 'topCenter',
-			bottomLayout = 'bottomRight',
+			centerLayout = 'bottomRight',
 			layout = {
-				'alert'		: topLayout,
-				'info'		: bottomLayout,
-				'confirm'	: topLayout,
-				'success'	: bottomLayout,
+				'alert'		: centerLayout,
+				'info'		: topLayout,
+				'confirm'	: centerLayout,
+				'success'	: topLayout,
 				'error'		: topLayout,
 				'warning'	: topLayout
 			};
