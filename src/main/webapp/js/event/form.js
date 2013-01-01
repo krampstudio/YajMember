@@ -150,24 +150,35 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 			});
 			
 			$('.submiter', $flyerForm).click(function(e){
-				var $postFrame = $("<iframe id='postFrame' />");
-				
 				e.preventDefault();
 				
+				//clean up 
+				$("#postFrame", $flyerForm).remove();
+				
+				//we create an hidden frame as the action of the upload form (to prevent page reload)
+				var $postFrame = $("<iframe id='postFrame' />");
 				$postFrame
 					.attr('name', 'postFrame')
 					.css('display', 'none')
 					.load(function(){
-						notify('info', 'document uploaded');
+						
+						//we get the response in the frame
+						var result = $.parseJSON($(this).contents().text());
+						if(result && result.saved === true){
+							$('#current-flyer').attr('src', result.thumb);
+							notify('success', 'Flyer uploaded');
+						} else {
+							notify('error', 'Flyer upload error');
+						}
 					});
 				
+				//we update the form attributes according to the frame
 				$flyerForm.attr({
 						'action'	: 'api/event/flyer/'+self.getEventId(),
 						'method'	: 'POST',
 						'enctype'	: 'multipart/form-data',
 						'encoding'	: 'multipart/form-data',
-						'target'	: 'postFrame'/*,
-						'file'		: $('#flyer', $flyerForm).val()*/
+						'target'	: 'postFrame'
 					})
 					.append($postFrame)
 					.submit();

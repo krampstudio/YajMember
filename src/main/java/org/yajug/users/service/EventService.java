@@ -45,7 +45,7 @@ public interface EventService {
 	boolean save(Collection<Event> events) throws DataException;
 	
 	/**
-	 * Persist an event's flyer
+	 * Persist data of an event's flyer
 	 * @param input the flyer's data
 	 * @param format the format of the input data (jpg, png, etc.)
 	 * @param flyer the flyer meta data object

@@ -5,29 +5,32 @@ import java.text.SimpleDateFormat;
 
 public class Flyer {
 
-	private final static String TYPE = "png";
+	public final static String TYPE = "png";
 	private final static String THUMB_SUFFIX = "small";
 	
 	private String basePath; 
 	private String name;
 	private File file;
 	private Flyer thumbnail;
+	private boolean isThumb;
 	
 	public Flyer(){
 	}
 	
 	public Flyer(String basePath, Event event){
-		this(basePath, "event-" + new SimpleDateFormat("yyyyMMdd").format(event.getDate()));
+		this(basePath, "event-" + new SimpleDateFormat("yyyyMMdd").format(event.getDate()), false);
 	}
 	
-	public Flyer(String basePath, String name){
+	public Flyer(String basePath, String name, boolean isThumb){
 		this.basePath = basePath;
 		if(!basePath.endsWith(String.valueOf(File.separatorChar))){
 			this.basePath += File.separatorChar;
 		}
 		this.name = name;
 		this.file = new File(this.basePath + this.name + "." + TYPE);
-		this.thumbnail = new Flyer(basePath, name + "-" + THUMB_SUFFIX);
+		if(!isThumb){
+			this.thumbnail = new Flyer(basePath, name + "-" + THUMB_SUFFIX, true);
+		}
 	}
 
 	public String getBasePath() {
@@ -60,5 +63,9 @@ public class Flyer {
 
 	public void setThumbnail(Flyer thumbnail) {
 		this.thumbnail = thumbnail;
+	}
+	
+	public boolean isThumb() {
+		return isThumb;
 	}
 }
