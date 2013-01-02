@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
@@ -29,6 +30,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -102,6 +104,40 @@ public class EventController extends RestController {
 			e.printStackTrace();
 			response = serializeException(e);
 		}
+		return response;
+	}
+	
+	/**
+	 * Get the list of years where there was events. The current year is always present.
+	 * @return a JSON representation of the list.
+	 */
+	@GET
+	@Path("getYears")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String getEventYears(){
+		String response = "";
+		
+		try {
+			//we use a TreeSet to avoid duplicate and get the years ordered
+			TreeSet<Integer> years = Sets.newTreeSet();
+			int currentYear = Integer.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+			years.add(currentYear);
+			
+			Collection<Event> allEvents = eventService.getAll();
+			
+			final SimpleDateFormat formater = new SimpleDateFormat("yyyy");
+			for (Event event : allEvents) {
+				int year = Integer.valueOf(formater.format(event.getDate()));
+				if(!years.contains(year)){
+					years.add(year);
+				}
+			}
+			
+			response = getSerializer().toJson(years.descendingSet());
+		} catch (DataException e) {
+			e.printStackTrace();
+			response = serializeException(e);
+		} 
 		return response;
 	}
 	

@@ -62,9 +62,7 @@ requirejs(
 						break;
 					case 2:
 						requirejs(['event/list'], function(list) {
-							list.load(function(){
-								list.setUpControls();
-							});
+								list.setUp();
 						});
 						break;
 					case 3:
