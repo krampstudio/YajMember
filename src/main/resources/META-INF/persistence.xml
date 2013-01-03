@@ -17,6 +17,8 @@
 			<property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
 			<property name="openjpa.ConnectionUserName" value="sa"/>
       		<property name="openjpa.ConnectionPassword" value=""/>
+      		<property name="openjpa.Log" value="DefaultLevel=WARN" />
+      		<!-- <property name="openjpa.Log" value="DefaultLevel=WARN, Runtime=TRACE, Tool=INFO, SQL=TRACE"/> -->
 		</properties>
     </persistence-unit>
 
