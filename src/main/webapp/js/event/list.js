@@ -1,18 +1,18 @@
 /**
  * Manage event's list UI
- * @module EventList
+ * @module event/list
  */
-define("EventList", ['store', 'notify'], function(store, notify){
+define(['store', 'notify'], function(store, notify){
 	
 	/**
 	 * @constructor
-	 * @alias module:EventList
+	 * @alias module:event/list
 	 */
 	var EventList = {
 			
 		/**
 		 * Set up the list
-		 * @memberOf module:EventList
+		 * @memberOf module:event/list
 		 */
 		setUp: function(){
 			var self = this;
@@ -56,7 +56,7 @@ define("EventList", ['store', 'notify'], function(store, notify){
 		
 		/**
 		 * Load a list of events of a year onto a container 
-		 * @memberOf module:EventList
+		 * @memberOf module:event/list
 		 * @param {Object} $container jQuery element of the events container (an ul element)
 		 * @param {Number} year the year to retrieve the events for
 		 * @param {Function} [callback] a callback executed once the events are loaded
@@ -86,7 +86,7 @@ define("EventList", ['store', 'notify'], function(store, notify){
 		/**
 		 * set up the controls of an event list (the buttons associated to each event)
 		 * @private
-		 * @memberOf module:EventList
+		 * @memberOf module:event/list
 		 * @param {Object} $container jQuery element of the events container (an ul element)
 		 */
 		_setUpEventsControls: function($container){
@@ -113,24 +113,24 @@ define("EventList", ['store', 'notify'], function(store, notify){
 			$('.event-deletor', $container)
 				.button({icons: { primary: "icon-evt-delete" }})
 				.click(function(){
-					if(notify('confirm', 'You really want to remove this event?')){
-						self._rmEvent(getEventId($(this)));
-					}
+					var eventId = getEventId($(this));
+					notify('confirm', 'You really want to remove this event?', function(){
+						self._rmEvent(eventId);
+					});
 				});
 		},
 		
 		/**
 		 * Removes an event
 		 * @private
-		 * @memberOf module:EventList
+		 * @memberOf module:event/list
 		 * @param {Number} eventId the id of the event to remove
 		 */
 		_rmEvent: function(eventId){
 			$.ajax({
 				type 		: 'DELETE',
-				url 		: 'api/event/remove',
-				dataType 	: 'json',
-				data 		: {id : eventId}
+				url 		: 'api/event/remove/'+eventId,
+				dataType 	: 'json'
 			}).done(function(data) {	
 				if(data && data.removed === true){
 					notify('success', 'Event removed');

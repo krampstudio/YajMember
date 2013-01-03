@@ -18,15 +18,15 @@ requirejs.config({
 
 //The main entry point
 requirejs(	
-		['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store'],  
-		function($, ui, tmpl, notify, store){
+	['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store'],  
+	function($, ui, tmpl, notify, store){
 
-	$(function() {
+	$(function(){
 		
 		var initialized = {
-				user : false,
-				event : false
-			};
+			user : false,
+			event : false
+		};
 		
 		//create the tabs
 		$('#actions').tabs({
@@ -61,8 +61,8 @@ requirejs(
 						});
 						break;
 					case 2:
-						requirejs(['event/list'], function(list) {
-								list.setUp();
+						requirejs(['event/list'], function(eventList) {
+							eventList.setUp();
 						});
 						break;
 					case 3:
