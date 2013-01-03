@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -46,7 +47,7 @@ public class Event  extends DomainObject{
 	private Date date;
 	
 	@Valid
-	@ManyToMany 
+	@ManyToMany(cascade = CascadeType.DETACH)
 	private List<Member> participants;
 	
 	/**

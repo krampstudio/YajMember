@@ -239,10 +239,9 @@ public class EventController extends RestController {
 		
 		if (id > 0) {
 			try {
-				Event event = eventService.getOne(id);
-				if (event != null) {
-					removed = eventService.remove(event);
-				}
+				Event event = new Event();
+				event.setKey(id);
+				removed = eventService.remove(event);
 			} catch (DataException e) {
 				response.addProperty("error", e.getLocalizedMessage());
 			} 

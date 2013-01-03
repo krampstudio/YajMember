@@ -138,8 +138,13 @@ public class EventServiceImpl extends JPAService implements EventService {
 		
 		EntityManager em = getEntityManager();
 		try {
-			em.remove(event);
-			removed = true;
+			em.getTransaction().begin();
+			Event wcEvent = em.find(Event.class, event.getKey());
+			if(wcEvent != null){
+				em.remove(wcEvent);
+				removed = true;
+			}
+			em.getTransaction().commit();
 		} catch (PersistenceException pe) {
 			throw new DataException("An error occured while removing the event", pe);
 		} finally {
