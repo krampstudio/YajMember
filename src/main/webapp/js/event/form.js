@@ -10,7 +10,7 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 		 * list of forms
 		 * @private 
 		 */
-		_formNames	: ['infos', 'flyer'],
+		_formNames	: ['infos', 'flyer', 'participant'],
 		
 		/**
 		 * Store the forms 
@@ -74,7 +74,8 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 				self 		= this,
 				forms 		= this.getForms(),
 				$infosForm 	= this.getForm('infos'),
-				$flyerForm 	= this.getForm('flyer');
+				$flyerForm 	= this.getForm('flyer'),
+				$partForm	= this.getForm('participant');
 			
 			for(i in forms){
 				$submiter  = $('.submiter', forms[i]);
@@ -82,6 +83,8 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 				// submit button
 				$submiter.button({label : $submiter.val(), disabled : false});
 			}
+			
+			//init infos controls
 			
 			// the date picker
 			$date = $('#date', $infosForm);
@@ -113,7 +116,6 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 	                    css : 'css/lib/jhtmlarea/jhtmlarea-editor.css'
 					});
 			
-			
 			// on form submit
 			$infosForm.submit(function(e){
 				e.preventDefault();
@@ -138,6 +140,8 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 				
 				return false;
 			});
+			
+			//init flyer controls
 			
 			$('#flyer-remover', $flyerForm).click(function(){
 				$('#current-flyer',  $flyerForm).removeAttr('src');
@@ -182,9 +186,41 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 					})
 					.append($postFrame)
 					.submit();
-				
 				return false;
 			});
+			
+			
+			//init participant controls
+			
+			//toggle registrants field between input and textarea
+			$('#expand-registrants', $partForm)
+				.button({
+					icons: { primary: "icon-expand" },
+					text : false
+				})
+				.click(function(){
+					var $field		 = $('#registrants'),
+						$newField, title;
+					if($field.get(0).tagName.toLowerCase() === 'textarea'){
+						$newField = $("<input type='text' />");
+						title = 'Add single registrant';
+					} else {
+						$newField = $("<textarea></textarea>");
+						title = 'Add mulitple registrants';
+					}
+					$newField.attr({
+							id		: 'registrants', 
+							name	: 'registrants',
+							title	: title
+						})
+						.css('width', '40%')
+						.val($field.val());
+					$field.after($newField).remove();
+					
+					return false;
+				});
+				
+			
 			
 			if(typeof callback === 'function'){
 				callback();

@@ -121,6 +121,12 @@ li.event > img {
 li.event .event-ctrl{
 	margin:.5em;
 }
+.ui-button .ui-icon.icon-expand{
+	background-image: url('../img/expand_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-expand{
+	background-image: url('../img/expand.png');
+}
 .ui-button .ui-icon.icon-evt-edit{
 	background-image: url('../img/event_edit_high.png');
 }

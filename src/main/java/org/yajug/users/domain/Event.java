@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -47,8 +46,12 @@ public class Event  extends DomainObject{
 	private Date date;
 	
 	@Valid
-	@ManyToMany(cascade = CascadeType.DETACH)
+	@ManyToMany
 	private List<Member> participants;
+	
+	@Valid
+	@ManyToMany
+	private List<Member> registrants;
 	
 	/**
 	 * Default constructor needed by openjpa.
@@ -56,15 +59,12 @@ public class Event  extends DomainObject{
 	public Event(){
 	}
 	
-	public Event(String title, String description, Date date, List<Member> participants) {
+	public Event(String title, String description, Date date) {
 		super();
 		this.title = title;
 		this.description = description;
 		this.date = date;
-		this.participants = participants;
 	}
-
-
 
 	/**
 	 * @return the title
@@ -121,6 +121,14 @@ public class Event  extends DomainObject{
 	public void setParticipants(List<Member> participants) {
 		this.participants = participants;
 	}
+	
+	public List<Member> getRegistrants() {
+		return registrants;
+	}
+
+	public void setRegistrants(List<Member> registrants) {
+		this.registrants = registrants;
+	}
 
 	/**
 	 * @see java.lang.Object#toString()
@@ -129,8 +137,7 @@ public class Event  extends DomainObject{
 	public String toString() {
 		return "Event [title=" + title + ", description=" + description
 				+ ", date=" + date + ", participants=" + participants
+				+ ", registrants=" + registrants
 				+ ", key=" + key + "]";
 	}
-	
-	
 }
