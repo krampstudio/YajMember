@@ -104,20 +104,27 @@ public class EventServiceImpl extends JPAService implements EventService {
 			em.getTransaction().begin();
 			for (Event event : events) {
 				
-				Event previousEvent = em.find(Event.class, event.getKey());
-				if (previousEvent != null) {
-					//update
-					previousEvent.setTitle(event.getTitle());
-					previousEvent.setDate(event.getDate());
-					previousEvent.setDescription(event.getDescription());
-					em.merge(previousEvent);
-				} else {
+				boolean add = true;
+				
+				if(event.getKey() > 0){
+					Event previousEvent = em.find(Event.class, event.getKey());
+					if (previousEvent != null) {
+						//update
+						previousEvent.setTitle(event.getTitle());
+						previousEvent.setDate(event.getDate());
+						previousEvent.setDescription(event.getDescription());
+						em.merge(previousEvent);
+						add = false;
+					} 
+				} 
+				if(add) {
 					//add
 					em.persist(event);
 				}
 			}
 			em.getTransaction().commit();
 		} catch (PersistenceException pe) {
+			pe.printStackTrace();
 			throw new DataException("An error occured while saving the event", pe);
 		} finally {
 			em.close();
