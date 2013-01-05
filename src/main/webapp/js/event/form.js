@@ -143,11 +143,21 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 			
 			//init flyer controls
 			
-			$('#flyer-remover', $flyerForm).click(function(){
+			$('#flyer-remover', $flyerForm)
+			.button({
+				icons : { primary: "icon-delete" },
+				text : false
+			})
+			.click(function(){
 				$('#current-flyer',  $flyerForm).removeAttr('src');
 			});
 			
-			$('#flyer-viewer', $flyerForm).click(function(){
+			$('#flyer-viewer', $flyerForm)
+			.button({
+				icons : { primary: "icon-image" },
+				text : false
+			})
+			.click(function(){
 				if($('#current-flyer')){
 					window.open($('#current-flyer').attr('src').replace('-small', ''));
 				}
@@ -199,28 +209,46 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 					text : false
 				})
 				.click(function(){
-					var $field		 = $('#registrants'),
+					var $field 			= $('#registrants'),
+						singleTitle 	= 'Add a registrant',
+						mulitpleTitle	= 'Add multiple registrants', 
 						$newField, title;
+					
 					if($field.get(0).tagName.toLowerCase() === 'textarea'){
 						$newField = $("<input type='text' />");
-						title = 'Add single registrant';
+						title = mulitpleTitle;
+						$(this).button('option', 'label', singleTitle);
 					} else {
 						$newField = $("<textarea></textarea>");
-						title = 'Add mulitple registrants';
+						title = singleTitle;
+						$(this).button('option', 'label', mulitpleTitle);
 					}
 					$newField.attr({
 							id		: 'registrants', 
 							name	: 'registrants',
 							title	: title
 						})
-						.css('width', '40%')
 						.val($field.val());
 					$field.after($newField).remove();
 					
 					return false;
 				});
-				
-			
+			$('.list-box-ctrl a.ltr').button({
+				icons: { primary: "ui-icon-carat-1-e" },
+				text : false
+			});
+			$('.list-box-ctrl a.rtl').button({
+				icons: { primary: "ui-icon-carat-1-w" },
+				text : false
+			});
+			$('.list-box ul').selectable({
+				selected: function(event, ui){
+					$(ui.selected).addClass('ui-state-highlight');
+				},
+				unselected: function(event, ui){
+					$(ui.unselected).removeClass('ui-state-highlight');
+				}
+			});
 			
 			if(typeof callback === 'function'){
 				callback();
