@@ -201,6 +201,18 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 			
 			
 			//init participant controls
+			$('input#registrants').autocomplete({
+				minLength : 2,
+				delay: 600,
+				source : 'api/member/acSearch',
+				select : function(event, ui){
+					var $item = $('<li></li>');
+					$item.addClass('ui-state-default')
+						.attr('id', 'registered-' + ui.item.value)
+						.text(ui.item.label);
+					$('#registered').append($item);
+				}
+			});
 			
 			//toggle registrants field between input and textarea
 			$('#expand-registrants', $partForm)
@@ -233,6 +245,9 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 					
 					return false;
 				});
+			
+			
+			
 			$('.list-box-ctrl a.ltr').button({
 				icons: { primary: "ui-icon-carat-1-e" },
 				text : false

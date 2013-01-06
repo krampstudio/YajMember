@@ -27,6 +27,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 
@@ -86,6 +87,37 @@ public class MemberController extends RestController {
 			//jsonize
 			response = serializeJsonp(new GridVo(membersList), callback);
 			
+		} catch (DataException e) {
+			e.printStackTrace();
+			response = serializeException(e);
+		} 
+		return response;
+	}
+	
+	/**
+	 * Search members from a string
+	 * @param term the string 
+	 * @return a JSON string that contains an array of matching members 
+	 * 			in a particular format : {@code [{label: name, value : key}, ...]
+	 */
+	@GET
+	@Path("acSearch")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String acSearch( @QueryParam("term") String term){
+		String response = "";
+		try {
+			JsonArray array = new JsonArray();
+			
+			if(StringUtils.isNotBlank(term)){
+			
+				for(Member member : memberService.findAll(term)){
+					JsonObject item = new JsonObject();
+					item.addProperty("label", member.getFirstName() + " " + member.getLastName());
+					item.addProperty("value", member.getKey());
+					array.add(item);
+				}
+			}
+			response = getSerializer().toJson(array);
 		} catch (DataException e) {
 			e.printStackTrace();
 			response = serializeException(e);
