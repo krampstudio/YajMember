@@ -14,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.Member_;
 import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.Event;
 
@@ -83,15 +82,14 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 			Root<Member> member = query.from(Member.class);
 
 			String exp = "%" + expression.toLowerCase() + "%";
-			
 			query
 				.select(member)
 				.where(
 					cb.or(
-						cb.like(cb.lower(member.get(Member_.firstName)), exp),
-						cb.like(cb.lower(member.get(Member_.lastName)), exp),
-						cb.like(cb.lower(member.get(Member_.email)), exp),
-						cb.like(cb.lower(member.get(Member_.company)), exp)
+						cb.like(cb.lower(member.<String>get("firstName")), exp),
+						cb.like(cb.lower(member.<String>get("lastName")), exp),
+						cb.like(cb.lower(member.<String>get("email")), exp),
+						cb.like(cb.lower(member.<String>get("company")), exp)
 					)
 				);
 			
