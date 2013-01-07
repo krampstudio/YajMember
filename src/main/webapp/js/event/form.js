@@ -199,63 +199,92 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 				return false;
 			});
 			
-			
 			//init participant controls
-			$('input#registrants').autocomplete({
-				minLength : 2,
-				delay: 600,
-				source : 'api/member/acSearch',
-				select : function(event, ui){
-					var $item = $('<li></li>');
-					$item.addClass('ui-state-default')
-						.attr('id', 'registered-' + ui.item.value)
-						.text(ui.item.label);
-					$('#registered').append($item);
-				}
-			});
+			
+			/**
+			 * Set up autocomplete field
+			 */
+			var setUpAutocomplete = function(){
+				$('input#registrants').autocomplete({
+					minLength : 2,
+					delay: 600,
+					source : 'api/member/acSearch',
+					select : function(event, ui){
+						event.preventDefault();
+						var $item = $('<li></li>');
+						$item.addClass('ui-state-default')
+							.attr('id', 'registered-' + ui.item.value)
+							.text(ui.item.label);
+						$('#registered').append($item);
+						
+						return false;
+					}
+				});
+			};
+			setUpAutocomplete();
 			
 			//toggle registrants field between input and textarea
-			$('#expand-registrants', $partForm)
-				.button({
-					icons: { primary: "icon-expand" },
-					text : false
-				})
-				.click(function(){
-					var $field 			= $('#registrants'),
-						singleTitle 	= 'Add a registrant',
-						mulitpleTitle	= 'Add multiple registrants', 
-						$newField, title;
-					
-					if($field.get(0).tagName.toLowerCase() === 'textarea'){
-						$newField = $("<input type='text' />");
-						title = mulitpleTitle;
-						$(this).button('option', 'label', singleTitle);
-					} else {
-						$newField = $("<textarea></textarea>");
-						title = singleTitle;
-						$(this).button('option', 'label', mulitpleTitle);
-					}
-					$newField.attr({
-							id		: 'registrants', 
-							name	: 'registrants',
-							title	: title
-						})
-						.val($field.val());
-					$field.after($newField).remove();
-					
-					return false;
-				});
+			$('#expand-registrants', $partForm).button({
+				icons: { primary: "icon-expand" },
+				text : false
+			}).click(function(){
+				var $field 			= $('#registrants'),
+					singleTitle 	= 'Add a registrant',
+					mulitpleTitle	= 'Add multiple registrants', 
+					expand			= $field.get(0).tagName.toLowerCase() === 'input',
+					$newField, title;
+				
+				if(expand){
+					$newField = $("<textarea></textarea>");
+					title = singleTitle;
+					$(this).button('option', 'label', mulitpleTitle);
+				} else {
+					$newField = $("<input type='text' />");
+					title = mulitpleTitle;
+					$(this).button('option', 'label', singleTitle);
+				}
+				$newField.attr({
+					id		: 'registrants', 
+					name	: 'registrants',
+					title	: title
+				}).val($field.val());
+				
+				//remove the old & insert the new field
+				$field.after($newField).remove();
+				if(!expand){
+					//we need to set it up again because it is a new instance!
+					setUpAutocomplete();
+				}
+				return false;
+			});
 			
-			
-			
+			//move items from registrants to participants list box
 			$('.list-box-ctrl a.ltr').button({
 				icons: { primary: "ui-icon-carat-1-e" },
 				text : false
+			}).click(function(){
+				$('#registered li.ui-selected').each(function(index, elt){
+					var id = 'participant-' + elt.attr('id'),
+						$item = $('<li></li>');
+					if(!$('#' + id)){
+						$item.addClass('ui-state-default')
+							.attr('id', 'participant-' + elt.attr('id'))
+							.text(elt.text());
+						$('#participant').append($item);
+					}
+				});
+				return false;
 			});
+			
+			//remove participants from the list box
 			$('.list-box-ctrl a.rtl').button({
 				icons: { primary: "ui-icon-carat-1-w" },
 				text : false
+			}).click(function(){
+				$('#participant li.ui-selected').remove();
+				return false;
 			});
+			
 			$('.list-box ul').selectable({
 				selected: function(event, ui){
 					$(ui.selected).addClass('ui-state-highlight');
