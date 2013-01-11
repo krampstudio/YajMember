@@ -1,27 +1,35 @@
+/**
+ * Manage event's Form UI and IO
+ * @module event/form
+ */
 define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify, store){
 	
 	/**
 	 * @todo creates a Form objects that can be used by both the event and the user forms
-	 * @class
+	 * @constructor
+	 * @alias module:event/form
 	 */
 	var EventForm = {
 		
 		/**
-		 * list of forms
+		 * List of  sub forms
 		 * @private 
+		 * @memberOf module:event/form
 		 */
 		_formNames	: ['infos', 'flyer', 'participant'],
 		
 		/**
-		 * Store the forms 
+		 * Stores the forms refs
 		 * @private
+		 * @memberOf module:event/form
 		 */
 		_forms		: {},
 		
 		/**
 		 * Get an event's editor form from it's name
+		 * @memberOf module:event/form
 		 * @param {String} name
-		 * @return {Object} the jQuery element  that match the form
+		 * @return {Object} the jQuery element that match the form
 		 */
 		getForm : function(name){
 			
@@ -39,6 +47,7 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 		
 		/**
 		 * Get all the event's editor forms
+		 * @memberOf module:event/form
 		 * @returns {Array} of jQuery elements that match each form
 		 */
 		getForms : function(){
@@ -51,6 +60,8 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 		
 		/**
 		 * Enable/Disable the form fields
+		 * @deprecated
+		 * @memberOf module:event/form
 		 */
 		toggleForm : function(){
 			var $submiter, isDisabled, i, 
@@ -67,57 +78,64 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 		
 		/**
 		 * Initialize the controls behaviors, including form submit event handlers
+		 * @memberOf module:event/form
 		 * @param {Function} a callback executed once the controls are initialized
 		 */
-		initControls : function(callback){
-			var i, $submiter, $date,
-				self 		= this,
-				forms 		= this.getForms(),
-				$infosForm 	= this.getForm('infos'),
-				$flyerForm 	= this.getForm('flyer'),
-				$partForm	= this.getForm('participant');
+		initFormControls : function(callback){
+			var i, $submiter, 
+				forms 		= this.getForms();
 			
+			//setup forms submit buttons
 			for(i in forms){
 				$submiter  = $('.submiter', forms[i]);
-				
-				// submit button
 				$submiter.button({label : $submiter.val(), disabled : false});
 			}
+			this._initInfosControls(this.getForm('infos'));
+			this._initFlyerControls(this.getForm('flyer'));
+			this._initParticipantControls(this.getForm('participant'));
 			
-			//init infos controls
+			if(typeof callback === 'function'){
+				callback();
+			}
+		},
+		
+		/**
+		 * Initialize the controls for the Infos form.
+		 * @private
+		 * @memberOf module:event/form
+		 * @param {Object} the jquery element the reference the form
+		 */
+		_initInfosControls : function($form){
+			var self = this,
+				$date = $('#date', $form); // the date picker
 			
-			// the date picker
-			$date = $('#date', $infosForm);
 			if(!Modernizr.inputtypes.date){
 				$date.datepicker({
 					'dateFormat': 'yy-mm-dd'
 				});
 			}
-			
 			$date.on('change', function(){
-				if(self.getEventId() !== undefined && 
-					this.value && this.value.length === 10){
-					
-					$flyerForm.show();
-					
+				if(self.getEventId() !== undefined 
+						&& this.value 
+						&& this.value.length === 10){
+					self.getForm('flyer').show();
 				} else {
-					$flyerForm.hide();
+					self.getForm('flyer').hide();
 				}
 			});
 			
-			$('textarea', $infosForm)
-				.htmlarea({
-						toolbar: [
-	                        'bold', 'italic', 'underline', '|',
-	                        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '|',
-	                        'link', 'unlink', '|',
-	                        'orderedList', 'unorderedList', 'indent', 'outdent'
-	                    ],
-	                    css : 'css/lib/jhtmlarea/jhtmlarea-editor.css'
-					});
+			$('textarea', $form).htmlarea({
+				toolbar: [
+                    'bold', 'italic', 'underline', '|',
+                    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '|',
+                    'link', 'unlink', '|',
+                    'orderedList', 'unorderedList', 'indent', 'outdent'
+                ],
+                css : 'css/lib/jhtmlarea/jhtmlarea-editor.css'
+			});
 			
 			// on form submit
-			$infosForm.submit(function(e){
+			$form.submit(function(e){
 				e.preventDefault();
 				
 				var udpate = $('#key', $(this)).val().length > 0;
@@ -140,34 +158,38 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 				
 				return false;
 			});
+		},
+		
+		/**
+		 * Initialize the controls for the Flyer form.
+		 * @private
+		 * @memberOf module:event/form
+		 * @param {Object} the jquery element the reference the form
+		 */
+		_initFlyerControls : function($form){
+			var self = this;
 			
-			//init flyer controls
-			
-			$('#flyer-remover', $flyerForm)
-			.button({
+			$('#flyer-remover').button({
 				icons : { primary: "icon-delete" },
 				text : false
-			})
-			.click(function(){
-				$('#current-flyer',  $flyerForm).removeAttr('src');
+			}).click(function(){
+				$('#current-flyer').removeAttr('src');
 			});
 			
-			$('#flyer-viewer', $flyerForm)
-			.button({
+			$('#flyer-viewer').button({
 				icons : { primary: "icon-image" },
 				text : false
-			})
-			.click(function(){
+			}).click(function(){
 				if($('#current-flyer')){
 					window.open($('#current-flyer').attr('src').replace('-small', ''));
 				}
 			});
 			
-			$('.submiter', $flyerForm).click(function(e){
+			$('.submiter', $form).click(function(e){
 				e.preventDefault();
 				
 				//clean up 
-				$("#postFrame", $flyerForm).remove();
+				$("#postFrame", $form).remove();
 				
 				//we create an hidden frame as the action of the upload form (to prevent page reload)
 				var $postFrame = $("<iframe id='postFrame' />");
@@ -187,7 +209,7 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 					});
 				
 				//we update the form attributes according to the frame
-				$flyerForm.attr({
+				$form.attr({
 						'action'	: 'api/event/flyer/'+self.getEventId(),
 						'method'	: 'POST',
 						'enctype'	: 'multipart/form-data',
@@ -198,8 +220,16 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 					.submit();
 				return false;
 			});
-			
-			//init participant controls
+		},
+		
+		/**
+		 * Initialize the controls for the Participant form.
+		 * @private
+		 * @memberOf module:event/form
+		 * @param {Object} the jquery element the reference the form
+		 */
+		_initParticipantControls : function($form){
+			var self = this;
 			
 			/**
 			 * Set up autocomplete field
@@ -211,10 +241,12 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 					source : 'api/member/acSearch',
 					select : function(event, ui){
 						event.preventDefault();
-						var $item = $('<li></li>');
-						$item.addClass('ui-state-default')
+						
+						var $item = $('<li></li>')
+							.addClass('ui-state-default')
 							.attr('id', 'registered-' + ui.item.value)
 							.text(ui.item.label);
+						
 						$('#registered').append($item);
 						
 						return false;
@@ -224,7 +256,7 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 			setUpAutocomplete();
 			
 			//toggle registrants field between input and textarea
-			$('#expand-registrants', $partForm).button({
+			$('#expand-registrants').button({
 				icons: { primary: "icon-expand" },
 				text : false
 			}).click(function(){
@@ -264,14 +296,16 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 				text : false
 			}).click(function(){
 				$('#registered li.ui-selected').each(function(index, elt){
-					var id = 'participant-' + elt.attr('id'),
+					var id = 'participant-' + $(elt).attr('id'),
 						$item = $('<li></li>');
-					if(!$('#' + id)){
+					if($('#' + id).length === 0){
 						$item.addClass('ui-state-default')
-							.attr('id', 'participant-' + elt.attr('id'))
-							.text(elt.text());
+							.attr('id', id)
+							.text($(elt).text());
+						
 						$('#participant').append($item);
 					}
+					$(elt).removeClass('ui-selected ui-state-highlight');
 				});
 				return false;
 			});
@@ -285,6 +319,16 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 				return false;
 			});
 			
+			//remove registered from the list box
+			$('.list-box-ctrl a.rml').button({
+				icons: { primary: "ui-icon-trash" },
+				text : false
+			}).click(function(){
+				$('#registered li.ui-selected').remove();
+				return false;
+			});
+			
+			//enable list multiple selection
 			$('.list-box ul').selectable({
 				selected: function(event, ui){
 					$(ui.selected).addClass('ui-state-highlight');
@@ -293,14 +337,11 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 					$(ui.unselected).removeClass('ui-state-highlight');
 				}
 			});
-			
-			if(typeof callback === 'function'){
-				callback();
-			}
 		},
 		
 		/**
 		 * Load an event from the server and dispatch the data to the forms
+		 * @memberOf module:event/form
 		 * @param {Number} the identifier of the event to load
 		 * @param {Function} a callback executed once the event is loaded
 		 */
@@ -308,8 +349,6 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 			var self	= this; 
 			
 			if(eventId && eventId > 0){
-				self.toggleForm();
-				
 				$.ajax({
 					type 		: 'GET',
 					url 		: 'api/event/getOne',
@@ -318,7 +357,6 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 						id : eventId
 					}
 				}).done(function(data) {	
-					self.toggleForm();
 					if(!data || data.error){
 						$.error("Error : " + (data.error ? data.error : "unknown"));
 					} else {
@@ -346,6 +384,7 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 		
 		/**
 		 * Creates an object from the form data
+		 * @memberOf module:event/form
 		 * @returns {Object} that represents the inputs data
 		 */
 		serializeEvent : function($form){
@@ -369,6 +408,7 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 		/**
 		 * Get the id of the event currently selected
 		 * from either the store or the input field
+		 * @memberOf module:event/form
 		 * @returns {Number} the id or undefined if not found
 		 */
 		getEventId : function(){
@@ -384,6 +424,7 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 		
 		/**
 		 * Clear the event forms
+		 * @memberOf module:event/form
 		 */
 		clear : function(){
 			$.each(this.getForms(), function(index, elt){

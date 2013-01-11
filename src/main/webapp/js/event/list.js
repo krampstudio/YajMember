@@ -1,5 +1,5 @@
 /**
- * Manage event's list UI
+ * Manage event's list UI and IO
  * @module event/list
  */
 define(['store', 'notify'], function(store, notify){

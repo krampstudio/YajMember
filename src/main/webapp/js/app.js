@@ -67,7 +67,7 @@ requirejs(
 						break;
 					case 3:
 						requirejs(['event/form'], function(eventForm) {
-							eventForm.initControls(function(){
+							eventForm.initFormControls(function(){
 								if(!initialized['event']){
 									if( store.isset('event')){
 										eventForm.loadEvent(store.get('event'));
