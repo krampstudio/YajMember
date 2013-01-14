@@ -1,9 +1,12 @@
 package org.yajug.users.api;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
@@ -32,6 +35,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
@@ -301,6 +305,44 @@ public class EventController extends RestController {
 		} 
 		response.addProperty("saved", saved);
 		
+		return getSerializer().toJson(response);
+	}
+	
+	/**
+	 * TODO implement method
+	 * @param id
+	 * @return
+	 */
+	@DELETE
+	@Path("/flyer/{id}")
+	public String removeFlyer(@PathParam("id") long id){
+		JsonObject response = new JsonObject();
+		boolean removed = false;
+		
+		response.addProperty("removed", removed);
+		return getSerializer().toJson(response);
+	}
+	
+	@POST
+	@Path("updateParticipant/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public String updateParticipant(
+			@PathParam("id") long id, 
+			@FormParam("registered") String registeredData, 
+			@FormParam("participant") String participantData){
+		
+		JsonObject response = new JsonObject();
+		boolean saved = false;
+		
+		Type listType = new TypeToken<ArrayList<Integer>>() {}.getType();
+		List<Long> registeredIds = getSerializer().fromJson(registeredData, listType);
+		List<Long>participantIds = getSerializer().fromJson(participantData, listType);
+		
+		System.out.println(registeredIds.toString());
+		System.out.println(participantIds.toString());
+		
+		response.addProperty("saved", saved);
 		return getSerializer().toJson(response);
 	}
 }

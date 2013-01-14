@@ -296,7 +296,7 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 				text : false
 			}).click(function(){
 				$('#registered li.ui-selected').each(function(index, elt){
-					var id = 'participant-' + $(elt).attr('id'),
+					var id = 'participant-' + $(elt).attr('id').replace('registered-', ''),
 						$item = $('<li></li>');
 					if($('#' + id).length === 0){
 						$item.addClass('ui-state-default')
@@ -336,6 +336,43 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 				unselected: function(event, ui){
 					$(ui.unselected).removeClass('ui-state-highlight');
 				}
+			});
+			
+			//submit the registered and participants lists
+			$('.submiter', $form).click(function(e){
+				e.preventDefault();
+				
+				var lists = {
+					registered : [],
+					participant : []
+				};
+				
+				//get the ids of the both lists and push them to the lists arrays
+				$('.list-box ul', $form).each(function(){
+					var listId = $(this).attr('id');
+					$('li', $(this)).each(function(){
+						lists[listId].push($(this).attr('id').replace(listId+'-', ''));
+					});
+				});
+				
+				$.ajax({
+					type 		: 'POST',
+					url 		: 'api/event/updateParticipant/'+self.getEventId(),
+					contentType : 'application/x-www-form-urlencoded',
+					dataType 	: 'json',
+					data 		: {
+						registered  : JSON.stringify(lists.registered),
+						participant : JSON.stringify(lists.participant)
+					}
+				}).done(function(data) {
+					if(!data.saved || data.error){
+						$.error("Error : " + (data.error ? data.error : "unknown"));
+					} else {
+						notify('success', 'Saved');
+					}
+				});
+				
+				return false;
 			});
 		},
 		
