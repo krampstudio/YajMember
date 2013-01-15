@@ -113,6 +113,9 @@ public class EventServiceImpl extends JPAService implements EventService {
 						previousEvent.setTitle(event.getTitle());
 						previousEvent.setDate(event.getDate());
 						previousEvent.setDescription(event.getDescription());
+						previousEvent.setParticipants(event.getParticipants());
+						previousEvent.setRegistrants(event.getRegistrants());
+						
 						em.merge(previousEvent);
 						add = false;
 					} 
@@ -123,6 +126,7 @@ public class EventServiceImpl extends JPAService implements EventService {
 				}
 			}
 			em.getTransaction().commit();
+			
 		} catch (PersistenceException pe) {
 			pe.printStackTrace();
 			throw new DataException("An error occured while saving the event", pe);

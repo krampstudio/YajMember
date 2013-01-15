@@ -337,7 +337,8 @@ public class EventController extends RestController {
 		
 		Type listType = new TypeToken<ArrayList<Integer>>() {}.getType();
 		List<Long> registeredIds = getSerializer().fromJson(registeredData, listType);
-		List<Long>participantIds = getSerializer().fromJson(participantData, listType);
+		List<Long> participantIds = getSerializer().fromJson(participantData, listType);
+		
 		
 		System.out.println(registeredIds.toString());
 		System.out.println(participantIds.toString());
