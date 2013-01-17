@@ -26,9 +26,11 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang.BooleanUtils;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
+import org.yajug.users.domain.Member;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -57,6 +59,7 @@ public class EventController extends RestController {
 	
 	/**
 	 * Get the list of events either for the current or a particular year <br>
+	 * 
 	 * Example:<br>
 	 * {@code curl -i -H "Accept: application/json" http://localhost:8000/YajMember/api/event/list?current=true}
 	 * 
@@ -147,6 +150,7 @@ public class EventController extends RestController {
 	
 	/**
 	 * Get an event from it's identifier<br>
+	 * 
 	 * Example:<br>
 	 * {@code curl -i -H "Accept: application/json"  http://localhost:8000/YajMember/api/event/getOne?id=1}
 	 * 
@@ -175,6 +179,7 @@ public class EventController extends RestController {
 	
 	/**
 	 * Add a new event<br>
+	 * 
 	 * Example:<br>
 	 * {@code curl -i -H "Accept: application/json" -X PUT -d "event={key:...}"  http://localhost:8000/YajMember/api/event/update}
 	 * 
@@ -191,7 +196,8 @@ public class EventController extends RestController {
 	
 	/**
 	 * Update an event<br>
-	 *  Example:<br>
+	 * 
+	 * Example:<br>
 	 * {@code curl -i -H "Accept: application/json" -X POST -d "event={key:...}"  http://localhost:8000/YajMember/api/event/update}
 	 * 
 	 * @param event the event to update in JSON format (a parsing/mapping will be done)
@@ -228,8 +234,10 @@ public class EventController extends RestController {
 	
 	/**
 	 * Remove an event<br>
-	 *  Example:<br>
+	 * 
+	 * Example:<br>
 	 * {@code curl -i -H "Accept: application/json" -X DELETE  http://localhost:8000/YajMember/api/event/remove/1}
+	 * 
 	 * @param id the eventidentifier
 	 * @return a JSON object that contains the 'removed' property
 	 */
@@ -323,6 +331,17 @@ public class EventController extends RestController {
 		return getSerializer().toJson(response);
 	}
 	
+	/**
+	 * Update an the participants of an event<br>
+	 * 
+	 * Example:<br>
+	 * {@code curl -i -H "Accept: application/json" -X POST -d "registered=[1,...]&participant=[2,...]"  http://localhost:8000/YajMember/api/event/updateParticipant/12}
+	 * 
+	 * @param id the key of the event to update
+	 * @param registeredData JSON array of the registered member's ids
+	 * @param participantData JSON array of the participants member's ids
+	 * @return a JSON object that contains the 'saved' property
+	 */
 	@POST
 	@Path("updateParticipant/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -335,14 +354,37 @@ public class EventController extends RestController {
 		JsonObject response = new JsonObject();
 		boolean saved = false;
 		
-		Type listType = new TypeToken<ArrayList<Integer>>() {}.getType();
-		List<Long> registeredIds = getSerializer().fromJson(registeredData, listType);
-		List<Long> participantIds = getSerializer().fromJson(participantData, listType);
+		if(id > 0){
 		
+			//unserialize the JSON ids to lists
+			Type listType = new TypeToken<ArrayList<Long>>() {}.getType();
+			List<Long> registeredIds = getSerializer().fromJson(registeredData, listType);
+			List<Long> participantIds = getSerializer().fromJson(participantData, listType);
 		
-		System.out.println(registeredIds.toString());
-		System.out.println(participantIds.toString());
-		
+			//function used to map an id to a member
+			Function <Long, Member> idToMember = new Function<Long, Member>() {
+				@Override public Member apply(Long input) {
+					return new Member(input.longValue());
+				}
+			};
+			
+			//do the mapping
+			List<Member> registereds = Lists.transform(registeredIds, idToMember);
+			List<Member> participants = Lists.transform(participantIds, idToMember);
+			
+			try {
+				//create a bag instance
+				Event event = eventService.getOne(id);
+				if(event != null){
+					event.setParticipants(participants);
+					event.setRegistrants(registereds);
+					saved = eventService.save(event);
+				}
+			} catch (DataException e) {
+				e.printStackTrace();
+				response.addProperty("error", serializeException(e));
+			} 
+		}
 		response.addProperty("saved", saved);
 		return getSerializer().toJson(response);
 	}

@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
+import org.yajug.users.domain.Member;
 
 import com.google.common.collect.Lists;
 
@@ -106,15 +107,31 @@ public class EventServiceImpl extends JPAService implements EventService {
 				
 				boolean add = true;
 				
-				if(event.getKey() > 0){
+				if(event.getKey() > 0){	
 					Event previousEvent = em.find(Event.class, event.getKey());
 					if (previousEvent != null) {
 						//update
 						previousEvent.setTitle(event.getTitle());
 						previousEvent.setDate(event.getDate());
 						previousEvent.setDescription(event.getDescription());
-						previousEvent.setParticipants(event.getParticipants());
-						previousEvent.setRegistrants(event.getRegistrants());
+						
+						List<Member> participants = new ArrayList<>();
+						for(Member m : event.getParticipants()){
+							Member participant = em.find(Member.class, m.getKey());
+							if(participant != null){
+								participants.add(participant);
+							}
+						}
+						previousEvent.setParticipants(participants);
+						
+						List<Member> registrants = new ArrayList<>();
+						for(Member m : event.getRegistrants()){
+							Member registrant = em.find(Member.class, m.getKey());
+							if(registrant != null){
+								participants.add(registrant);
+							}
+						}
+						previousEvent.setRegistrants(registrants);
 						
 						em.merge(previousEvent);
 						add = false;

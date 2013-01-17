@@ -71,6 +71,14 @@ public class Member extends DomainObject implements Comparable<Member>{
 	}
 	
 	/**
+	 * Key based constructor
+	 * @param key
+	 */
+	public Member(long key){
+		super(key);
+	}
+	
+	/**
 	 * Convenient constructor
 	 * @param firstName
 	 * @param lastName

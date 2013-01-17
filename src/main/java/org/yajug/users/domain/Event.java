@@ -59,6 +59,14 @@ public class Event  extends DomainObject{
 	public Event(){
 	}
 	
+	/**
+	 * Key based constructor
+	 * @param key
+	 */
+	public Event(long key){
+		super(key);
+	}
+	
 	public Event(String title, String description, Date date) {
 		super();
 		this.title = title;

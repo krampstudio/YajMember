@@ -28,6 +28,10 @@ public abstract class DomainObject {
 	
 	public DomainObject(){
 	}
+	
+	public DomainObject(long  key){
+		this.key = key;
+	}
 
 	/**
 	 * @return the key
