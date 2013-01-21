@@ -9,14 +9,19 @@ import java.util.regex.Pattern;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.Event;
+import org.yajug.users.persistence.dao.MemberMongoDao;
+
+import com.google.inject.Inject;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-public class MemberServiceImpl extends MongoService implements MemberService {
+public class MemberServiceImpl implements MemberService {
 
+	
+	@Inject private MemberMongoDao memberMongoDao;
 	
 	/**
 	 * {@inheritDoc}
@@ -32,19 +37,11 @@ public class MemberServiceImpl extends MongoService implements MemberService {
 	@Override
 	public List<Member> getAll(boolean checkValidy) throws DataException {
 		
-		List<Member> members = new ArrayList<Member>();
-		EntityManager em = getEntityManager();
-		try{
-			TypedQuery<Member> tq = em.createNamedQuery("Member.findAll", Member.class);
-			members = tq.getResultList();
-			
-			if(checkValidy && members != null){
-				for(Member member : members){
-					member.checkValidity();
-				}
+		List<Member> members = memberMongoDao.getAll();
+		if(checkValidy && members != null){
+			for(Member member : members){
+				member.checkValidity();
 			}
-		} finally{
-			em.close();
 		}
 		return members;
 	}
@@ -68,35 +65,13 @@ public class MemberServiceImpl extends MongoService implements MemberService {
 			throw new DataException("invalid search pattern");
 		}
 		
-		EntityManager em = getEntityManager();
-		try{
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Member> query = cb.createQuery(Member.class);
-			Root<Member> member = query.from(Member.class);
-
-			String exp = "%" + expression.toLowerCase() + "%";
-			query
-				.select(member)
-				.where(
-					cb.or(
-						cb.like(cb.lower(member.<String>get("firstName")), exp),
-						cb.like(cb.lower(member.<String>get("lastName")), exp),
-						cb.like(cb.lower(member.<String>get("email")), exp),
-						cb.like(cb.lower(member.<String>get("company")), exp)
-					)
-				);
+		//TODO validate expression against javascript injections
+		members = memberMongoDao.search(expression);
 			
-			TypedQuery<Member> tq = em.createQuery(query);
-			members = tq.getResultList();
-			
-			if(checkValidy && members != null){
-				for(Member m : members){
-					m.checkValidity();
-				}
+		if(checkValidy && members != null){
+			for(Member m : members){
+				m.checkValidity();
 			}
-			
-		} finally{
-			em.close();
 		}
 		
 		return members;

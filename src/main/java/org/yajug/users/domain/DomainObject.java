@@ -11,6 +11,8 @@ public abstract class DomainObject {
 	protected static final String TEXT_PATTERN = "^[\\w\\t \\-_+:'\\\"]{1,250}$";
 	protected static final String BLOCK_PATTERN = "^[\\w\\s\\-_+:'\\\"]*$";
 	
+	protected long _id;
+	
 	protected long  key;
 	
 	public DomainObject(){

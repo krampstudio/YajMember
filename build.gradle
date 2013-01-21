@@ -17,6 +17,7 @@ dependencies {
 //	javaAgentOpenJpa "org.apache.openjpa:openjpa-all:$openjpaVersion"
 //	compile "org.apache.openjpa:openjpa-all:$openjpaVersion"
 	compile 'org.mongodb:mongo-java-driver:2.10.1'
+	compile 'org.jongo:jongo:0.3'
 	compile 'org.apache.commons:commons-lang3:3.1'
 //	compile "com.h2database:h2:$h2Version"
 	compile "javax.servlet:servlet-api:$servletVersion"
