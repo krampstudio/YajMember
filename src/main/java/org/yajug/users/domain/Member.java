@@ -4,68 +4,24 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
-import org.apache.bval.constraints.Email;
-
 /**
  * This domain pojo represent a member of the jug.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-@Entity
-@Access(AccessType.FIELD)
-@Inheritance(strategy=InheritanceType.JOINED)
-@NamedQueries({
-	@NamedQuery(name="Member.findAll", query="select m from Member m")
-})
+//	@NamedQuery(name="Member.findAll", query="select m from Member m")
 public class Member extends DomainObject implements Comparable<Member>{
 
-	@Basic 
-	@NotNull
-	@Pattern(regexp=DomainObject.TEXT_PATTERN)
 	private String firstName;
-	
-	@Basic 
-	@NotNull
-	@Pattern(regexp=DomainObject.TEXT_PATTERN)
 	private String lastName;
-	
-	@Basic 
-	@Email	//apache bval constraint
 	private String email;
-	
-	@Basic 
-	@Pattern(regexp=DomainObject.TEXT_PATTERN)
 	private String company;
-	
-	@ElementCollection(targetClass=Role.class, fetch=FetchType.EAGER)
-	@Enumerated(EnumType.STRING)
 	private List<Role> roles;
-	
-	@ManyToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
 	private List<Membership> memberships;
-	
-	@Transient private boolean valid;
+	private boolean valid;
 	
 	/**
-	 * Default constructor needed by openjpa.
+	 * Default constructor needed
 	 */
 	public Member() {
 	}

@@ -1,6 +1,6 @@
 package org.yajug.users.bulkimport.reader.processor;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.util.CsvContext;

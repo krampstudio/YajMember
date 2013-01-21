@@ -2,7 +2,7 @@ package org.yajug.users.api;
 
 import java.security.InvalidParameterException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

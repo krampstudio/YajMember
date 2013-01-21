@@ -3,60 +3,24 @@ package org.yajug.users.domain;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-
 /**
  * This domain pojo represent a annual membership paid by a member.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-@Entity
-@Access(AccessType.FIELD)
-@Inheritance(strategy=InheritanceType.JOINED)
-@NamedQuery(
-	name="Membership.getAllByMember", 
-	query="select ms from Membership ms where ms.member = :member"
-)
+//	name="Membership.getAllByMember", 
+//	query="select ms from Membership ms where ms.member = :member"
 public class Membership  extends DomainObject {
 
 	public static final int ANNUAL_FEE = 40;
-	
-	@Basic 
-	@NotNull
-	@Min(1990)
-	@Max(2050)	//I hope the apps would be diferent in 2050
 	private int year;
-	
-	@Basic 
-	@Past
 	private Date paiementDate;
-	
-	@Basic 
-	@Min(0)
 	private int amount;
-	
-	@Valid
-	@ManyToOne 
 	private Event event;
-	
-	@Valid
-	@ManyToOne 
 	private Member member;
 	
 	/**
-	 * Default constructor needed by openjpa.
+	 * Default constructor
 	 */
 	public Membership(){
 	}

@@ -6,13 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.Event;
@@ -22,7 +15,7 @@ import org.yajug.users.domain.Event;
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-public class MemberServiceImpl extends JPAService implements MemberService {
+public class MemberServiceImpl extends MongoService implements MemberService {
 
 	
 	/**

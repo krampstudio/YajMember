@@ -23,7 +23,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
 import org.yajug.users.domain.Member;

@@ -8,12 +8,8 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
@@ -26,7 +22,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-public class EventServiceImpl extends JPAService implements EventService {
+public class EventServiceImpl extends MongoService implements EventService {
 
 	/**
 	 * {@inheritDoc}

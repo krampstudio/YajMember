@@ -16,7 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.utils.MemberComparator;
 import org.yajug.users.service.DataException;

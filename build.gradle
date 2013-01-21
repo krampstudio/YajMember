@@ -14,9 +14,11 @@ configurations {
 repositories { mavenCentral() }
 
 dependencies {
-	javaAgentOpenJpa "org.apache.openjpa:openjpa-all:$openjpaVersion"
-	compile "org.apache.openjpa:openjpa-all:$openjpaVersion"
-	compile "com.h2database:h2:$h2Version"
+//	javaAgentOpenJpa "org.apache.openjpa:openjpa-all:$openjpaVersion"
+//	compile "org.apache.openjpa:openjpa-all:$openjpaVersion"
+	compile 'org.mongodb:mongo-java-driver:2.10.1'
+	compile 'org.apache.commons:commons-lang3:3.1'
+//	compile "com.h2database:h2:$h2Version"
 	compile "javax.servlet:servlet-api:$servletVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
 	compile "com.google.inject:guice:$guiceVersion"
@@ -54,7 +56,7 @@ jettyRun{
 
 /*
  * Enhance (weaving) classes at build time as required by openjpa
- */
+
 task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA at build time") << {
 	ant.taskdef(name: 'openjpac', classname: 'org.apache.openjpa.ant.PCEnhancerTask'){
 		 classpath{
@@ -70,7 +72,7 @@ task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA 
 			 pathelement(location: configurations.javaAgentOpenJpa.asPath)
 		 }
 	}
-}
+} */
 
 /*
  * task used to import data 
@@ -110,5 +112,5 @@ task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data impo
 }
 
 //make some tasks to depends on enhance
-[bulk, test, war, jettyRun].each{ it.dependsOn enhance }
+//[bulk, test, war, jettyRun].each{ it.dependsOn enhance }
 
