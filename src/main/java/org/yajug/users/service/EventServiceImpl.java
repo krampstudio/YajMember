@@ -13,34 +13,27 @@ import org.apache.commons.lang3.StringUtils;
 import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
-import org.yajug.users.domain.Member;
+import org.yajug.users.persistence.dao.EventMongoDao;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-public class EventServiceImpl extends MongoService implements EventService {
+public class EventServiceImpl implements EventService {
 
+	@Inject private EventMongoDao eventMongoDao;
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public Collection<Event> getAll() throws DataException {
 		
-		List<Event> events = new ArrayList<Event>();
-		EntityManager em = getEntityManager();
-		try {
-			TypedQuery<Event> tq = em.createNamedQuery("Event.findAll", Event.class);
-			events = tq.getResultList();
-		} catch(PersistenceException pe) {
-			throw new DataException("", pe);
-		} finally {
-			em.close();
-		}
-		return events;
+		return eventMongoDao.getAll();
 	}
 	
 	/**
@@ -52,22 +45,7 @@ public class EventServiceImpl extends MongoService implements EventService {
 		if (key <= 0) {
 			throw new DataException("Unable to retrieve an event from a wrong id");
 		}
-		
-		Event event = null;
-		EntityManager em = getEntityManager();
-		try {
-			TypedQuery<Event> tq = em.createNamedQuery("Event.getOne", Event.class);
-			tq.setParameter("key", key);
-			event = tq.getSingleResult();
-			
-		} catch(NoResultException nre){
-			event = null;
-		} catch(PersistenceException pe) {
-			throw new DataException("An error occured whil retrieving an event", pe);
-		} finally {
-			em.close();
-		}
-		return event;
+		return eventMongoDao.getOne(key);
 	}
 
 	/**
@@ -96,56 +74,9 @@ public class EventServiceImpl extends MongoService implements EventService {
 			throw new DataException("Cannot save null events");
 		}
 		
-		EntityManager em = getEntityManager();
-		try {
-			em.getTransaction().begin();
-			for (Event event : events) {
-				
-				boolean add = true;
-				
-				if(event.getKey() > 0){	
-					Event previousEvent = em.find(Event.class, event.getKey());
-					if (previousEvent != null) {
-						//update
-						previousEvent.setTitle(event.getTitle());
-						previousEvent.setDate(event.getDate());
-						previousEvent.setDescription(event.getDescription());
-						
-						List<Member> participants = new ArrayList<>();
-						for(Member m : event.getParticipants()){
-							Member participant = em.find(Member.class, m.getKey());
-							if(participant != null){
-								participants.add(participant);
-							}
-						}
-						previousEvent.setParticipants(participants);
-						
-						List<Member> registrants = new ArrayList<>();
-						for(Member m : event.getRegistrants()){
-							Member registrant = em.find(Member.class, m.getKey());
-							if(registrant != null){
-								participants.add(registrant);
-							}
-						}
-						previousEvent.setRegistrants(registrants);
-						
-						em.merge(previousEvent);
-						add = false;
-					} 
-				} 
-				if(add) {
-					//add
-					em.persist(event);
-				}
-			}
-			em.getTransaction().commit();
-			
-		} catch (PersistenceException pe) {
-			pe.printStackTrace();
-			throw new DataException("An error occured while saving the event", pe);
-		} finally {
-			em.close();
-		}
+		for (Event event : events) {
+			eventMongoDao.save(event);
+		} 
 		return true;
 	}
 	
@@ -154,27 +85,12 @@ public class EventServiceImpl extends MongoService implements EventService {
 	 */
 	@Override
 	public boolean remove(Event event) throws DataException {
-		boolean removed = false;
 
 		if (event == null || event.getKey() <= 0) {
 			throw new DataException("Trying to remove a null or non-identified event.");
 		}
 		
-		EntityManager em = getEntityManager();
-		try {
-			em.getTransaction().begin();
-			Event wcEvent = em.find(Event.class, event.getKey());
-			if(wcEvent != null){
-				em.remove(wcEvent);
-				removed = true;
-			}
-			em.getTransaction().commit();
-		} catch (PersistenceException pe) {
-			throw new DataException("An error occured while removing the event", pe);
-		} finally {
-			em.close();
-		}
-		return removed;
+		return eventMongoDao.remove(event);
 	}
 
 	/**

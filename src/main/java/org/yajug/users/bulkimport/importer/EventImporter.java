@@ -35,9 +35,6 @@ public class EventImporter implements DomainImporter {
 			
 			if(events.size() > 0){
 				//be sure the key is null
-				for(Event event : events){
-					event.setKey(0);
-				}
 				if(eventService.save(events)){
 					imported = events.size();
 				}

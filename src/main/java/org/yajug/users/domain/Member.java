@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * This domain pojo represent a member of the jug.
  * 
@@ -17,7 +19,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 	private String email;
 	private String company;
 	private List<Role> roles;
-	private List<Membership> memberships;
+	@JsonIgnore private List<Membership> memberships;
 	private boolean valid;
 	
 	/**

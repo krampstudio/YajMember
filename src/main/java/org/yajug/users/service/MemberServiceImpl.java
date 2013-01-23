@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.Membership;
-import org.yajug.users.domain.Event;
 import org.yajug.users.persistence.dao.MemberMongoDao;
 
 import com.google.inject.Inject;
@@ -103,46 +101,8 @@ public class MemberServiceImpl implements MemberService {
 			throw new DataException("Cannot save null members");
 		}
 		
-		EntityManager em = getEntityManager();
-		try{
-			em.getTransaction().begin();
-			for(Member member : members){
-				
-				Member previousMember = em.find(Member.class, member.getKey());
-				if(previousMember != null){
-					
-					previousMember.setFirstName(member.getFirstName());
-					previousMember.setLastName(member.getLastName());
-					previousMember.setCompany(member.getCompany());
-					previousMember.setRoles(member.getRoles());
-					previousMember.setEmail(member.getEmail());
-					
-					for(Membership membership : member.getMemberships()){
-						if(membership.getKey() > 0){
-							for(Membership entityMembership : previousMember.getMemberships()){
-								if(entityMembership.getKey() == membership.getKey()){
-									if(membership.getPaiementDate() != null){
-										entityMembership.setPaiementDate(membership.getPaiementDate());
-									}
-									if(membership.getEvent() != null && membership.getEvent().getKey() > 0){
-										entityMembership.setEvent(em.find(Event.class, membership.getEvent().getKey()));
-									}
-									break; //there is only one membership
-								}
-							}
-						}
-					}
-					em.merge(previousMember);
-					
-				} else {
-					em.persist(member);
-				}
-			}
-			em.getTransaction().commit();
-		} catch(PersistenceException pe){
-			pe.printStackTrace();
-		} finally{
-			em.close();
+		for(Member member : members){
+			memberMongoDao.save(member);
 		}
 		return true;
 	}
@@ -156,15 +116,7 @@ public class MemberServiceImpl implements MemberService {
 			throw new DataException("Cannot save a null member");
 		}
 		
-		EntityManager em = getEntityManager();
-		try{
-			em.getTransaction().begin();
-			em.remove(member);
-			em.getTransaction().commit();
-		} finally{
-			em.close();
-		}
-		return true;
+		return  memberMongoDao.remove(member);
 	}
 	
 	private boolean validateSearchExpression(String expression){
