@@ -20,7 +20,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 	private String company;
 	private List<Role> roles;
 	@JsonIgnore private List<Membership> memberships;
-	private boolean valid;
+	@JsonIgnore private boolean valid;
 	
 	/**
 	 * Default constructor needed
