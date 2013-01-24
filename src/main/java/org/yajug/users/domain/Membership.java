@@ -25,6 +25,10 @@ public class Membership  extends DomainObject {
 	public Membership(){
 	}
 	
+	public Membership(long key) {
+		super(key);
+	}
+
 	/**
 	 * @return the year
 	 */

@@ -10,8 +10,6 @@ import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.WriteResult;
 
 @Singleton
 public class MemberMongoDao extends MongoDao{
@@ -33,6 +31,21 @@ public class MemberMongoDao extends MongoDao{
 		return members;
 	}
 	
+	public Member getOne(long key){
+		Member member = null;
+		if(key > 0){
+			DBCursor cursor = getCollection("members").find(new BasicDBObject("key", key)).limit(1);
+			try {
+	            while(cursor.hasNext()) {
+	            	member = map(Member.class, (BasicDBObject)cursor.next());
+	            }
+	        } finally {
+	            cursor.close();
+	        }
+		}
+		return member;
+	}
+	
 	public List<Member> search(String expression){
 		
 		//create a mongo search query
@@ -44,22 +57,29 @@ public class MemberMongoDao extends MongoDao{
 			"]}";
 		
 		return Lists.newArrayList(
-				getCollection("members").find(query).as(Member.class)
+			//	getCollection("members").find(query)
 			);
 	}
 	
 	public boolean insert(Member member){
 		boolean saved = false;
 		if(member != null){
-			saved = handleWriteResult(
-						getCollection("members").insert(
-							"{key: #, firstName: #, lastName: #, email: #, company: #, roles: #roles}", 
-							member
-						)
-					);
-			if(member.getMemberships() != null){
-				
+			//get next key
+			if(member.getKey() <= 0){
+				member.setKey(getNextKey("members"));
 			}
+			BasicDBObject doc =  new BasicDBObject("key", member.getKey())
+                    .append("firstName", member.getFirstName())
+                    .append("lastName",  member.getLastName())
+                    .append("company",  member.getCompany())
+                    .append("email", member.getEmail());
+			if(member.getRoles() != null){
+				doc.append("roles", enumsToStrings(member.getRoles()));
+			}
+			if(member.getMemberships() != null){
+				doc.append("memberShips", domainToIds(member.getMemberships()));
+			}
+			saved = handleWriteResult(getCollection("members").insert(doc));
 		}
 		
 		return saved;
@@ -67,14 +87,14 @@ public class MemberMongoDao extends MongoDao{
 	
 	public boolean save(Member member){
 		boolean saved = false;
-		if(member != null){
-			WriteResult wr = getCollection("members").save(member);
-			saved = wr.getError() != null;
-			if(member.getMemberships() != null){
-				
-			}
-			
-		}
+//		if(member != null){
+//			WriteResult wr = getCollection("members").save(member);
+//			saved = wr.getError() != null;
+//			if(member.getMemberships() != null){
+//				
+//			}
+//			
+//		}
 		
 		return saved;
 	}
@@ -82,8 +102,7 @@ public class MemberMongoDao extends MongoDao{
 	public boolean remove(Member member){
 		boolean removed = false;
 		if(member != null && member.getKey() > 0){
-			WriteResult wr = getCollection("members").remove("{key:#}", member.getKey());
-			removed = wr.getError() != null;
+			removed = handleWriteResult(getCollection("members").remove(new BasicDBObject("key", member.getKey())));
 		}
 		return removed;
 	}

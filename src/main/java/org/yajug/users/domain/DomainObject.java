@@ -35,4 +35,12 @@ public abstract class DomainObject {
 	public void setKey(long key) {
 		this.key = key;
 	}
+	
+	public String _getId() {
+		return _id;
+	}
+
+	public void _setId(String _id) {
+		this._id = _id;
+	}
 }
