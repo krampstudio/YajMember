@@ -42,6 +42,16 @@ public class MemberDaoTest {
 		assertNotNull(inserted);
 		assertEquals("doe", inserted.getLastName());
 		
+		inserted.setEmail("jdoe2@gmail.com");
+		inserted.setMemberships(Lists.newArrayList(new Membership(24), new Membership(25)));
+		assertTrue(dao.update(inserted));
+		
+		List<Member> searched = dao.search("jdoe2@gmail.com");
+		assertNotNull(searched);
+		assertTrue(searched.size() > 0);
+		assertEquals("jdoe2@gmail.com", searched.get(0).getEmail());
+		assertEquals(2, searched.get(0).getMemberships().size());
+		
 		assertTrue(dao.remove(m));
 		Member deleted = dao.getOne(m.getKey());
 		assertNull(deleted);

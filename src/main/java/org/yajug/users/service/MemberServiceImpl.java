@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.yajug.users.domain.Member;
 import org.yajug.users.persistence.dao.MemberMongoDao;
 
@@ -101,10 +102,20 @@ public class MemberServiceImpl implements MemberService {
 			throw new DataException("Cannot save null members");
 		}
 		
+		int expected = members.size();
+		int saved = 0;
 		for(Member member : members){
-			memberMongoDao.save(member);
+			if(StringUtils.isNotBlank(member._getId())){
+				if(memberMongoDao.update(member)){
+					saved++;
+				}
+			} else {
+				if(memberMongoDao.insert(member)){
+					saved++;
+				}
+			}
 		}
-		return true;
+		return saved == expected;
 	}
 
 	/**
