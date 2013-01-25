@@ -27,6 +27,7 @@ import com.mongodb.util.JSON;
 
 /**
  * Common DAO that provides utilities to handle Mongo data
+ * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 public abstract class MongoDao {
