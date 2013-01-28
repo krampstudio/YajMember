@@ -2,6 +2,9 @@ package org.yajug.users.persistence;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +35,8 @@ import com.mongodb.util.JSON;
  */
 public abstract class MongoDao {
 
+	private final static String DATE_PATTERN = "yyyy-MM-dd";
+	
 	@Inject private MongoConnector connector;
 	
 	/**
@@ -68,17 +73,48 @@ public abstract class MongoDao {
 	protected Gson getDeSerializer(){
 		return new GsonBuilder()
 					.serializeNulls()
-					.setDateFormat("yyyy-MM-dd")
+					
+					//manages dates
+					.setDateFormat(DATE_PATTERN)
+					.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+
+
+						//create an other parser to avoid stack overflow with context parser
+						private Gson gson =  new GsonBuilder().setDateFormat(DATE_PATTERN).create();
+						
+						@Override
+						public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+								throws JsonParseException {
+							Date date = null;
+							
+							if(json.isJsonPrimitive()){	//{date : "2012-06-01"} we use common parsing 
+								date = gson.fromJson(json, Date.class);
+							} else if(json.isJsonObject() //{date : {$date : "2012-06-01"}} we retrieve the string
+								&& json.getAsJsonObject().getAsJsonPrimitive("date") != null){
+								
+								String jsonDate = json.getAsJsonObject().getAsJsonPrimitive("date").getAsString();
+								try {
+									return new SimpleDateFormat(DATE_PATTERN).parse(jsonDate);
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+							}
+							return date;
+						}
+						
+					})
+					
+					//manage domains lists
 					.registerTypeAdapter(
 							List.class, 
 							new JsonDeserializer<List<? extends DomainObject>>() {
 						
+						//create an other parser to avoid stack overflow with context parser
+						private Gson gson =  new GsonBuilder().create();
+						
 						@Override
 						public List<? extends DomainObject> deserialize(JsonElement json, final Type typeOfT, JsonDeserializationContext context)
 								throws JsonParseException {
-							
-							//create an other parser to avoid stack overflow
-							Gson gson =  new GsonBuilder().create();
 							
 							//TODO handle the case where a generic is not defined 
 							boolean domainList = false;
@@ -126,11 +162,14 @@ public abstract class MongoDao {
 		if(dbObject != null){
 			
 			ObjectId id = null;
+			//getting the ObjectId to assign it manually after to simplify JSON parsing
 			if(dbObject.containsField("_id")){
 				id = dbObject.getObjectId("_id");
 				dbObject.remove("_id");
 			}
+			
 			T domain = getDeSerializer().fromJson(JSON.serialize(dbObject), clazz);
+			
 			if(id != null){
 				domain._setId(id.toString());
 			}
@@ -146,13 +185,12 @@ public abstract class MongoDao {
 	 */
 	protected long getNextKey(String collectionName){
 		
-		long next = 0l;
+		long next = 1l;
 		
-		DBCursor cursor = getCollection("members").find().sort(new BasicDBObject("key", "1")).limit(1);
+		DBCursor cursor = getCollection(collectionName).find().sort(new BasicDBObject("key", "1")).limit(1);
 		try{
 			while(cursor.hasNext()){
 				BasicDBObject dbObject = ((BasicDBObject)cursor.next());
-				System.out.println(dbObject.toString());
 				next = dbObject.getLong("key", 0) + 1;
 			}
 		} finally {

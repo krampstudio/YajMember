@@ -19,7 +19,7 @@ import org.supercsv.prefs.CsvPreference;
 import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.Membership;
+import org.yajug.users.domain.MemberShip;
 import org.yajug.users.domain.Role;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
@@ -102,9 +102,9 @@ public class CsvMemberReader implements DomainReader<Member> {
             while( (member = beanReader.read(Member.class, headers, processors)) != null ) {
                 
             	//update memberships of the member
-            	Membership currentMembership = null;
-            	for(Membership membership : member.getMemberships()){
-            		membership.setAmount(Membership.ANNUAL_FEE);
+            	MemberShip currentMembership = null;
+            	for(MemberShip membership : member.getMemberships()){
+            		membership.setAmount(MemberShip.ANNUAL_FEE);
             		membership.setMember(member);
             		if(currentYear == membership.getYear()){
             			currentMembership = membership;

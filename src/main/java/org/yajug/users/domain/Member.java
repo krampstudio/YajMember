@@ -17,7 +17,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 	private String email;
 	private String company;
 	private List<Role> roles;
-	private List<Membership> memberships;
+	private List<MemberShip> memberships;
 	private boolean valid;
 	
 	/**
@@ -50,7 +50,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 		this.roles = roles;
 	}
 	
-	public Member(String firstName, String lastName ,String email, String company, List<Role> roles ,List<Membership> memberships) {
+	public Member(String firstName, String lastName ,String email, String company, List<Role> roles ,List<MemberShip> memberships) {
 		this(firstName, lastName, email, company, roles);
 		this.setMemberships(memberships);
 	}
@@ -137,7 +137,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 	/**
 	 * @return the memberships
 	 */
-	public List<Membership> getMemberships() {
+	public List<MemberShip> getMemberships() {
 		return memberships;
 	}
 	
@@ -145,9 +145,9 @@ public class Member extends DomainObject implements Comparable<Member>{
 	 * 
 	 * @param membership
 	 */
-	public void setMembership(Membership membership){
+	public void setMembership(MemberShip membership){
 		if(this.memberships == null){
-			this.memberships = new ArrayList<Membership>();
+			this.memberships = new ArrayList<MemberShip>();
 		}
 		this.memberships.add(membership);
 		if(Calendar.getInstance().get(Calendar.YEAR) == membership.getYear()){
@@ -158,7 +158,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 	/**
 	 * @param memberships the memberships to set
 	 */
-	public void setMemberships(List<Membership> memberships) {
+	public void setMemberships(List<MemberShip> memberships) {
 		this.memberships = memberships;
 		if(memberships != null){
 			this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
@@ -198,7 +198,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 		if(this.memberships == null){
 			validFor = false;
 		} else {
-			for(Membership ms : this.memberships){
+			for(MemberShip ms : this.memberships){
 				if(ms.getYear() == year){
 					validFor = true;
 					break;

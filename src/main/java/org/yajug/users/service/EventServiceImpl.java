@@ -74,10 +74,20 @@ public class EventServiceImpl implements EventService {
 			throw new DataException("Cannot save null events");
 		}
 		
+		int expected = events.size();
+		int saved = 0;
 		for (Event event : events) {
-			eventMongoDao.save(event);
-		} 
-		return true;
+			if(StringUtils.isNotBlank(event._getId())){
+				if(eventMongoDao.update(event)){
+					saved++;
+				}
+			} else {
+				if(eventMongoDao.insert(event)){
+					saved++;
+				}
+			}
+		}
+		return saved == expected;
 	}
 	
 	/**
