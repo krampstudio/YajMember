@@ -102,9 +102,6 @@ public class MemberMongoDao extends MongoDao{
 			if(member.getRoles() != null){
 				doc.append("roles", enumsToStrings(member.getRoles()));
 			}
-			if(member.getMemberships() != null){
-				doc.append("memberships", domainToIds(member.getMemberships()));
-			}
 			saved = handleWriteResult(
 						members().insert(doc)
 					);
@@ -126,9 +123,6 @@ public class MemberMongoDao extends MongoDao{
 		                    .append("email", member.getEmail());
 				if(member.getRoles() != null){
 					doc.append("roles", enumsToStrings(member.getRoles()));
-				}
-				if(member.getMemberships() != null){
-					doc.append("memberships", domainToIds(member.getMemberships()));
 				}
 				saved = handleWriteResult(
 						members().update(query, doc)

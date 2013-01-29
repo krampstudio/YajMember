@@ -22,9 +22,12 @@ public class MemberCellProcessor implements DomainCellProcessor {
                 new NotNull(), 							// firstname
                 new Optional(), 						// company
                 new Optional(),							// email
-                new Optional(new ParseMembership(2010)),
-                new Optional(new ParseMembership(2011)),
-                new Optional(new ParseMembership(2012)),
+                null,
+                null,
+                null,
+//                new Optional(new ParseMembership(2010)),
+//                new Optional(new ParseMembership(2011)),
+//                new Optional(new ParseMembership(2012)),
                 null,
                 null,
                 null,

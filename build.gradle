@@ -1,3 +1,23 @@
+/**
+ * Build 
+ * 
+ * @requires gradle >= 1.2
+ * 
+ * Tasks:
+ * 
+ * - compile: 				gradle compileJava
+ * - test: 					gradle test
+ * - single unit test: 		gradle test -Dtest.single=TestClassName
+ * - run the app in dev: 	gradle jettyRun
+ * - data import:			gradle bulk -Ptarget=event
+ * 							gradle bulk -Ptarget=member
+ * 
+ * Debug:
+ * To remote debug when running the web server using jettyRun, export the following variable:
+ * 		export GRADLE_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=9999,server=y"
+ * To debug a bulk task, set the debug option to true
+ */
+
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'jetty'
@@ -5,21 +25,12 @@ apply plugin: 'jetty'
 //yes, we use the current stable version of Java ;)
 sourceCompatibility = 1.7
 
-configurations {
-	//create a configuration that reference the openjpa agent
-	javaAgentOpenJpa
-}
-
 //depdency management
 repositories { mavenCentral() }
 
 dependencies {
-//	javaAgentOpenJpa "org.apache.openjpa:openjpa-all:$openjpaVersion"
-//	compile "org.apache.openjpa:openjpa-all:$openjpaVersion"
 	compile 'org.mongodb:mongo-java-driver:2.10.1'
-//	compile 'org.jongo:jongo:0.3'
 	compile 'org.apache.commons:commons-lang3:3.1'
-//	compile "com.h2database:h2:$h2Version"
 	compile "javax.servlet:servlet-api:$servletVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
 	compile "com.google.inject:guice:$guiceVersion"
@@ -44,37 +55,6 @@ stopKey = 'stopMe'
 jettyRun{
 	webDefaultXml = file('src/main/config/webdefault.xml')
 }
-//to do remote debugging, set the following opts:
-//	export GRADLE_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=9999,server=y"
-
-
-/*
- * Uncomment to generate the meta model from gradle :compileJava
- * it adds the OpenJPA Annotation Processor for Metamodel Generation 
- * to the javac compiler
- */
-//compileJava.options.compilerArgs.add('-Aopenjpa.metamodel=true')
-//compileJava.options.compilerArgs.add('-Aopenjpa.log=TRACE')
-
-/*
- * Enhance (weaving) classes at build time as required by openjpa
-
-task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA at build time") << {
-	ant.taskdef(name: 'openjpac', classname: 'org.apache.openjpa.ant.PCEnhancerTask'){
-		 classpath{
-			 pathelement(location: sourceSets.main.output.classesDir)
-			 pathelement(location: sourceSets.main.output.resourcesDir)
-			 pathelement(location: configurations.javaAgentOpenJpa.asPath)
-		 }
-	}
-	ant.openjpac(){
-		 classpath{
-			 pathelement(location: sourceSets.main.output.classesDir)
-			 pathelement(location: sourceSets.main.output.resourcesDir)
-			 pathelement(location: configurations.javaAgentOpenJpa.asPath)
-		 }
-	}
-} */
 
 /*
  * task used to import data 
@@ -112,7 +92,3 @@ task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data impo
 		}
 	}
 }
-
-//make some tasks to depends on enhance
-//[bulk, test, war, jettyRun].each{ it.dependsOn enhance }
-

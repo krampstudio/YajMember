@@ -7,7 +7,6 @@ import org.yajug.users.domain.MemberShip;
 import org.yajug.users.persistence.MongoDao;
 
 import com.google.inject.Singleton;
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -47,15 +46,11 @@ public class MemberShipMongoDao extends MongoDao{
 		return memberships;
 	}
 	
-	public List<MemberShip> getAllIn(List<Long> keys){
+	public List<MemberShip> getAllByMember(long memberKey){
 		List<MemberShip> memberships = new ArrayList<>();
-		if(keys != null && keys.size() > 0){
-			BasicDBList search = new BasicDBList();
-			for(Long key : keys){
-				search.add(key);
-			}
-			BasicDBObject query = new BasicDBObject("$in", search);
-			DBCursor cursor = memberShips().find(query);
+		
+		if(memberKey > 0){
+			DBCursor cursor = memberShips().find(new BasicDBObject("member", memberKey));
 			try {
 	            while(cursor.hasNext()) {
 	            	MemberShip membership = map(MemberShip.class, (BasicDBObject)cursor.next());

@@ -73,9 +73,7 @@ public abstract class MongoDao {
 	protected Gson getDeSerializer(){
 		return new GsonBuilder()
 					.serializeNulls()
-					
 					//manages dates
-					.setDateFormat(DATE_PATTERN)
 					.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
 
 
@@ -90,20 +88,18 @@ public abstract class MongoDao {
 							if(json.isJsonPrimitive()){	//{date : "2012-06-01"} we use common parsing 
 								date = gson.fromJson(json, Date.class);
 							} else if(json.isJsonObject() //{date : {$date : "2012-06-01"}} we retrieve the string
-								&& json.getAsJsonObject().getAsJsonPrimitive("date") != null){
+								&& json.getAsJsonObject().getAsJsonPrimitive("$date") != null){
 								
-								String jsonDate = json.getAsJsonObject().getAsJsonPrimitive("date").getAsString();
+								String jsonDate = json.getAsJsonObject().getAsJsonPrimitive("$date").getAsString();
 								try {
-									return new SimpleDateFormat(DATE_PATTERN).parse(jsonDate);
+									date = new SimpleDateFormat(DATE_PATTERN).parse(jsonDate);
 								} catch (ParseException e) {
 									e.printStackTrace();
 								}
 							}
 							return date;
 						}
-						
 					})
-					
 					//manage domains lists
 					.registerTypeAdapter(
 							List.class, 

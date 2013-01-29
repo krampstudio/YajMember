@@ -6,12 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.io.CsvBeanReader;
@@ -19,7 +17,6 @@ import org.supercsv.prefs.CsvPreference;
 import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.MemberShip;
 import org.yajug.users.domain.Role;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
@@ -38,7 +35,7 @@ public class CsvMemberReader implements DomainReader<Member> {
 	
 	private EventService eventService;
 	
-	private int currentYear;
+//	private int currentYear;
 	
 	private Map<String, Event> events;
 	
@@ -51,7 +48,7 @@ public class CsvMemberReader implements DomainReader<Member> {
 		this.eventService = eventService;
 		
 		//init the current year to be consistent across the imports
-		this.currentYear = Calendar.getInstance().get(Calendar.YEAR);
+//		this.currentYear = Calendar.getInstance().get(Calendar.YEAR);
 		
 		//we get the list of event to do the mapping from what's on the file
 		try {
@@ -102,28 +99,28 @@ public class CsvMemberReader implements DomainReader<Member> {
             while( (member = beanReader.read(Member.class, headers, processors)) != null ) {
                 
             	//update memberships of the member
-            	MemberShip currentMembership = null;
-            	for(MemberShip membership : member.getMemberships()){
-            		membership.setAmount(MemberShip.ANNUAL_FEE);
-            		membership.setMember(member);
-            		if(currentYear == membership.getYear()){
-            			currentMembership = membership;
-            		}
-            	}
-            	//check if the member has subscribed during an event for the current year
-            	if(currentMembership != null){
-            		member.setRole(Role.MEMBER);
-            		 for(int i = 7; i < 12; i++){
-            			 String eventMembership = beanReader.get(i+1);
-            			 if(StringUtils.isNotBlank(eventMembership)
-            					 && "MBR".equalsIgnoreCase(eventMembership)){
-            				 Event event = events.get(baseHeaders[i]);
-            				 currentMembership.setEvent(event);
-            			 }
-                     }
-            	} else{
+//            	MemberShip currentMembership = null;
+//            	for(MemberShip membership : member.getMemberships()){
+//            		membership.setAmount(MemberShip.ANNUAL_FEE);
+//            		membership.setMember(member);
+//            		if(currentYear == membership.getYear()){
+//            			currentMembership = membership;
+//            		}
+//            	}
+//            	//check if the member has subscribed during an event for the current year
+//            	if(currentMembership != null){
+//            		member.setRole(Role.MEMBER);
+//            		 for(int i = 7; i < 12; i++){
+//            			 String eventMembership = beanReader.get(i+1);
+//            			 if(StringUtils.isNotBlank(eventMembership)
+//            					 && "MBR".equalsIgnoreCase(eventMembership)){
+//            				 Event event = events.get(baseHeaders[i]);
+//            				 currentMembership.setEvent(event);
+//            			 }
+//                     }
+//            	} else{
             		member.setRole(Role.OLD_MEMBER);
-            	}
+//	         	}
             	
                 members.add(member);
             }

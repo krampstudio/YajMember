@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -37,7 +36,6 @@ public class CsvEventReader implements DomainReader<Event> {
             
             // the header elements are used to map the values to the bean (names must match)
             final String[] header = beanReader.getHeader(true);
-            System.out.println(Arrays.deepToString(header));
             final CellProcessor[] processors = cellProcessor.getProcessors();
             
             Event event;
