@@ -47,7 +47,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 		this.roles = roles;
 	}
 	
-//	public Member(String firstName, String lastName ,String email, String company, List<Role> roles ,List<MemberShip> memberships) {
+//	public Member(String firstName, String lastName ,String email, String company, List<Role> roles ,List<Membership> memberships) {
 //		this(firstName, lastName, email, company, roles);
 //		this.setMemberships(memberships);
 //	}
@@ -136,9 +136,9 @@ public class Member extends DomainObject implements Comparable<Member>{
 	 * 
 	 * @param membership
 	 */
-//	public void setMembership(MemberShip membership){
+//	public void setMembership(Membership membership){
 //		if(this.memberships == null){
-//			this.memberships = new ArrayList<MemberShip>();
+//			this.memberships = new ArrayList<Membership>();
 //		}
 //		this.memberships.add(membership);
 //		if(Calendar.getInstance().get(Calendar.YEAR) == membership.getYear()){
@@ -149,7 +149,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 	/**
 	 * @param memberships the memberships to set
 	 */
-//	public void setMemberships(List<MemberShip> memberships) {
+//	public void setMemberships(List<Membership> memberships) {
 //		this.memberships = memberships;
 //		if(memberships != null){
 //			this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
@@ -189,7 +189,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 		if(this.memberships == null){
 			validFor = false;
 		} else {
-			for(MemberShip ms : this.memberships){
+			for(Membership ms : this.memberships){
 				if(ms.getYear() == year){
 					validFor = true;
 					break;

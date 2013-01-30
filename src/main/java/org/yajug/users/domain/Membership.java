@@ -10,7 +10,7 @@ import java.util.Date;
  */
 //	name="Membership.getAllByMember", 
 //	query="select ms from Membership ms where ms.member = :member"
-public class MemberShip  extends DomainObject {
+public class Membership  extends DomainObject {
 
 	public static final int ANNUAL_FEE = 40;
 	private int year;
@@ -22,10 +22,10 @@ public class MemberShip  extends DomainObject {
 	/**
 	 * Default constructor
 	 */
-	public MemberShip(){
+	public Membership(){
 	}
 	
-	public MemberShip(long key) {
+	public Membership(long key) {
 		super(key);
 	}
 

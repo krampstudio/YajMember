@@ -2,9 +2,8 @@ package org.yajug.users.service;
 
 
 import java.util.Collection;
-import java.util.List;
-
 import org.yajug.users.domain.Member;
+import org.yajug.users.domain.Membership;
 
 /**
  * The service provides common management of {@link Member}s
@@ -18,7 +17,7 @@ public interface MemberService {
 	 * @return a list of members
 	 * @throws DataException
 	 */
-	List<Member> getAll() throws DataException;
+	Collection<Member> getAll() throws DataException;
 	
 	/**
 	 * Get all the members
@@ -26,7 +25,7 @@ public interface MemberService {
 	 * @return a list of members
 	 * @throws DataException
 	 */
-	List<Member> getAll(boolean checkValidy) throws DataException;
+	Collection<Member> getAll(boolean checkValidy) throws DataException;
 	
 	/**
 	 * Textual search in the members  
@@ -34,7 +33,7 @@ public interface MemberService {
 	 * @return a list of members
 	 * @throws DataException
 	 */
-	List<Member> findAll(String expression) throws DataException;
+	Collection<Member> findAll(String expression) throws DataException;
 	
 	/**
 	 * Textual search in the members  
@@ -43,7 +42,7 @@ public interface MemberService {
 	 * @return a list of members
 	 * @throws DataException
 	 */
-	List<Member> findAll(boolean checkValidy, String expression) throws DataException;
+	Collection<Member> findAll(boolean checkValidy, String expression) throws DataException;
 	
 	/**
 	 * Save a member
@@ -54,12 +53,28 @@ public interface MemberService {
 	boolean save(Member member) throws DataException;
 	
 	/**
-	 * Save  members
+	 * Get the member's {@link Membership}
+	 * @param member the member to get the membership from
+	 * @return
+	 * @throws DataException
+	 */
+	Collection<Membership> getMemberships(Member member) throws DataException;
+	
+	/**
+	 * Save  a collection of {@link Members}
 	 * @param members the members to save
-	 * @return true if save
+	 * @return true if saved
 	 * @throws DataException
 	 */
 	boolean save(Collection<Member> members) throws DataException;
+	
+	/**
+	 * Save a collection of {@link Membership}
+	 * @param memberships
+	 * @return true if saved
+	 * @throws DataException
+	 */
+	boolean saveMemberships(Collection<Membership> memberships) throws DataException;
 	
 	/**
 	 * Remove a member

@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.yajug.users.domain.Member;
+import org.yajug.users.domain.Membership;
 import org.yajug.users.persistence.dao.MemberMongoDao;
+import org.yajug.users.persistence.dao.MembershipMongoDao;
 
 import com.google.inject.Inject;
 
@@ -20,6 +22,7 @@ public class MemberServiceImpl implements MemberService {
 
 	
 	@Inject private MemberMongoDao memberMongoDao;
+	@Inject private MembershipMongoDao membershipMongoDao;
 	
 	private List<Member> setUp(List<Member> members, boolean checkValidy){
 		if(members != null){
@@ -84,6 +87,17 @@ public class MemberServiceImpl implements MemberService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public Collection<Membership> getMemberships(Member member) throws DataException {
+		Collection<Membership> memberships = null;
+		
+		return memberships;
+	}
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean save(Member member) throws DataException{
 		
 		if(member == null){
@@ -115,6 +129,29 @@ public class MemberServiceImpl implements MemberService {
 				}
 			} else {
 				if(memberMongoDao.insert(member)){
+					saved++;
+				}
+			}
+		}
+		return saved == expected;
+	}
+	
+	@Override
+	public boolean saveMemberships(Collection<Membership> memberships) throws DataException {
+		
+		if(memberships == null){
+			throw new DataException("Cannot save null memberships");
+		}
+		
+		int expected = memberships.size();
+		int saved = 0;
+		for(Membership membership : memberships){
+			if(StringUtils.isNotBlank(membership._getId())){
+				if(membershipMongoDao.update(membership)){
+					saved++;
+				}
+			} else {
+				if(membershipMongoDao.insert(membership)){
 					saved++;
 				}
 			}

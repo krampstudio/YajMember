@@ -65,6 +65,7 @@ task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data impo
 	ext{
 		event = relativePath('src/main/scripts/events.csv')
 		member = relativePath('src/main/scripts/member.csv')
+		membership = relativePath('src/main/scripts/membership.csv')
 	}
 	
 	//check the target is set 

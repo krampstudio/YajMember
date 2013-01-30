@@ -4,10 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.util.CsvContext;
-import org.yajug.users.domain.MemberShip;
+import org.yajug.users.domain.Membership;
 
 /**
- * Custom cell processor that creates a  {@link MemberShip} from a cell (in  a particular context)
+ * Custom cell processor that creates a  {@link Membership} from a cell (in  a particular context)
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
@@ -32,7 +32,7 @@ public class ParseMembership extends CellProcessorAdaptor {
 		
 		if(value != null && StringUtils.isNotBlank(value.toString())){
 			
-			MemberShip membership = new MemberShip();
+			Membership membership = new Membership();
 			membership.setYear(year);
 			
 			return next.execute(membership, context);

@@ -13,6 +13,7 @@ import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
 import org.yajug.users.domain.Member;
+import org.yajug.users.domain.Membership;
 
 import com.google.inject.Inject;
 
@@ -21,16 +22,16 @@ import com.google.inject.Inject;
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-public class CsvMemberReader implements DomainReader<Member> {
+public class CsvMembershipReader implements DomainReader<Membership> {
 
 	@Inject
 	private DomainCellProcessor cellProcessor;
 	
-	
 	@Override
-	public Collection<Member> read(String fileName) {
-		Collection<Member> members = new ArrayList<Member>();
-        try(ICsvBeanReader  beanReader = new CsvBeanReader(
+	public Collection<Membership> read(String fileName) {
+		System.out.println(fileName);
+		Collection<Membership> memberships = new ArrayList<>();
+        try( ICsvBeanReader  beanReader = new CsvBeanReader(
         			new BufferedReader(new InputStreamReader(new FileInputStream(fileName), CHARSET)), 
             		CsvPreference.STANDARD_PREFERENCE
             	)){
@@ -38,13 +39,17 @@ public class CsvMemberReader implements DomainReader<Member> {
             final String[] headers = beanReader.getHeader(true);
             final CellProcessor[] processors = cellProcessor.getProcessors();
             
-            Member member;
-            while( (member = beanReader.read(Member.class, headers, processors)) != null ) {
-                members.add(member);
+            Membership membership;
+            while( (membership = beanReader.read(Membership.class, headers, processors)) != null ) {
+            	
+            	System.out.println(membership);
+            	
+                memberships.add(membership);
             }
+            
         } catch(IOException e) {
         	e.printStackTrace();
         } 
-		return members;
+		return memberships;
 	}
 }

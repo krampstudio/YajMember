@@ -163,7 +163,7 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 			 */
 			serializeMember : function($form){
 				var member = {},
-					memberShip  = {};
+					membership  = {};
 				if($form){
 					if($form.prop('tagName') !== 'FORM'){
 						$.error('Invalid jQuery element for $form. It much match a form tag.')
@@ -181,23 +181,23 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 								}
 							}
 						} else {
-							memberShip[elt.name.replace(/^membership-/, '')] = elt.value;
+							membership[elt.name.replace(/^membership-/, '')] = elt.value;
 						}
 					});
 					if(member.roles && !$.isArray(member.roles)){
 						member.roles = [member.roles];
 					}
 					
-					if($('#membership', $form).val() === true || memberShip['key']){
+					if($('#membership', $form).val() === true || membership['key']){
 						member['memberships'] = [{}];
-						if(memberShip['key']){
-							member['memberships'][0]['key'] = memberShip['key'];
+						if(membership['key']){
+							member['memberships'][0]['key'] = membership['key'];
 						}
-						if(memberShip['paiementDate']){
-							member['memberships'][0]['paiementDate'] = memberShip['paiementDate'];
+						if(membership['paiementDate']){
+							member['memberships'][0]['paiementDate'] = membership['paiementDate'];
 						}
-						if(memberShip['event']){
-							member['memberships'][0]['event'] = {'key' : memberShip['event'] };
+						if(membership['event']){
+							member['memberships'][0]['event'] = {'key' : membership['event'] };
 						}
 					}
 				}

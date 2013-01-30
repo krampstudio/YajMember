@@ -1,6 +1,7 @@
 package org.yajug.users.api;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.yajug.users.service.DataException;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.vo.GridVo;
 
+import com.google.common.collect.Lists;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -55,7 +57,7 @@ public class MemberController extends RestController {
 		try {
 			List<Member> membersList = null;
 			if(StringUtils.isNotBlank(search)){
-				membersList = memberService.findAll(true, search);
+				membersList = Lists.newArrayList(memberService.findAll(true, search));
 			} else {
 				membersList = getMembersList(getMembers());
 			}
@@ -199,7 +201,7 @@ public class MemberController extends RestController {
 				.serializeNulls()
 				.setDateFormat("yyyy-MM-dd")
 				.setExclusionStrategies(new ExclusionStrategy() {
-					//prevent circular references serialization of : Member <-> MemberShip <-> Member
+					//prevent circular references serialization of : Member <-> Membership <-> Member
 					@Override public boolean shouldSkipField(FieldAttributes f) {
 						return Member.class.equals(f.getDeclaredClass());
 					}
@@ -218,7 +220,7 @@ public class MemberController extends RestController {
 	 */
 	private Map<Long, Member> getMembers() throws DataException{
 		if(this.members == null){
-			List<Member> membersList = memberService.getAll(true);
+			Collection<Member> membersList = memberService.getAll(true);
 			
 			//needs of thread safety
 			this.members = new ConcurrentHashMap<Long, Member>(membersList.size());

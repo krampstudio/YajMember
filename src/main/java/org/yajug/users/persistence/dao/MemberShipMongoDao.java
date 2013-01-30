@@ -3,7 +3,7 @@ package org.yajug.users.persistence.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.yajug.users.domain.MemberShip;
+import org.yajug.users.domain.Membership;
 import org.yajug.users.persistence.MongoDao;
 
 import com.google.inject.Singleton;
@@ -17,25 +17,25 @@ import com.mongodb.DBCursor;
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Singleton
-public class MemberShipMongoDao extends MongoDao{
+public class MembershipMongoDao extends MongoDao{
 	
-	private final static String COLLECTION_NAME = "memberShips";
+	private final static String COLLECTION_NAME = "memberships";
 	
 	/**
 	 * Get the members collection (ie. db.members in mongo)
 	 * @return the collection
 	 */
-	private DBCollection memberShips(){
+	private DBCollection memberships(){
 		return getCollection(COLLECTION_NAME);
 	}
 
-	public List<MemberShip> getAll(){
-		List<MemberShip> memberships = new ArrayList<>();
+	public List<Membership> getAll(){
+		List<Membership> memberships = new ArrayList<>();
 		
-		DBCursor cursor = memberShips().find();
+		DBCursor cursor = memberships().find();
 		try {
             while(cursor.hasNext()) {
-            	MemberShip membership = map(MemberShip.class, (BasicDBObject)cursor.next());
+            	Membership membership = map(Membership.class, (BasicDBObject)cursor.next());
                 if(membership != null){
                 	memberships.add(membership);
                 }
@@ -46,14 +46,14 @@ public class MemberShipMongoDao extends MongoDao{
 		return memberships;
 	}
 	
-	public List<MemberShip> getAllByMember(long memberKey){
-		List<MemberShip> memberships = new ArrayList<>();
+	public List<Membership> getAllByMember(long memberKey){
+		List<Membership> memberships = new ArrayList<>();
 		
 		if(memberKey > 0){
-			DBCursor cursor = memberShips().find(new BasicDBObject("member", memberKey));
+			DBCursor cursor = memberships().find(new BasicDBObject("member", memberKey));
 			try {
 	            while(cursor.hasNext()) {
-	            	MemberShip membership = map(MemberShip.class, (BasicDBObject)cursor.next());
+	            	Membership membership = map(Membership.class, (BasicDBObject)cursor.next());
 	                if(membership != null){
 	                	memberships.add(membership);
 	                }
@@ -65,13 +65,13 @@ public class MemberShipMongoDao extends MongoDao{
 		return memberships;
 	}
 	
-	public MemberShip getOne(long key){
-		MemberShip membership = null;
+	public Membership getOne(long key){
+		Membership membership = null;
 		if(key > 0){
-			DBCursor cursor = memberShips().find(new BasicDBObject("key", key)).limit(1);
+			DBCursor cursor = memberships().find(new BasicDBObject("key", key)).limit(1);
 			try {
 	            while(cursor.hasNext()) {
-	            	membership = map(MemberShip.class, (BasicDBObject)cursor.next());
+	            	membership = map(Membership.class, (BasicDBObject)cursor.next());
 	            }
 	        } finally {
 	            cursor.close();
@@ -80,7 +80,7 @@ public class MemberShipMongoDao extends MongoDao{
 		return membership;
 	}
 	
-	public boolean insert(MemberShip membership){
+	public boolean insert(Membership membership){
 		boolean saved = false;
 		if(membership != null){
 			//get next key
@@ -99,14 +99,14 @@ public class MemberShipMongoDao extends MongoDao{
 				doc.append("member", membership.getMember().getKey());
 			}
 			saved = handleWriteResult(
-						memberShips().insert(doc)
+						memberships().insert(doc)
 					);
 		}
 		
 		return saved;
 	}
 	
-	public boolean update(MemberShip membership){
+	public boolean update(Membership membership){
 		boolean saved = false;
 		if(membership != null){
 			//get next key
@@ -119,18 +119,18 @@ public class MemberShipMongoDao extends MongoDao{
 							.append("member", ( membership.getMember() != null) ? membership.getMember().getKey() : null);
 				
 				saved = handleWriteResult(
-						memberShips().update(query, doc)
+						memberships().update(query, doc)
 					);
 			}
 		}
 		return saved;
 	}
 	
-	public boolean remove(MemberShip member){
+	public boolean remove(Membership member){
 		boolean removed = false;
 		if(member != null && member.getKey() > 0){
 			removed = handleWriteResult(
-						memberShips().remove(new BasicDBObject("key", member.getKey()))
+						memberships().remove(new BasicDBObject("key", member.getKey()))
 					);
 		}
 		return removed;
