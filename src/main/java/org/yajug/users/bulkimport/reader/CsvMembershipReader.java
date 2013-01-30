@@ -12,13 +12,12 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
-import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 
 import com.google.inject.Inject;
 
 /**
- * Reads {@link Member} from CSV
+ * Reads {@link Membership} from CSV
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
@@ -29,7 +28,7 @@ public class CsvMembershipReader implements DomainReader<Membership> {
 	
 	@Override
 	public Collection<Membership> read(String fileName) {
-		System.out.println(fileName);
+	
 		Collection<Membership> memberships = new ArrayList<>();
         try( ICsvBeanReader  beanReader = new CsvBeanReader(
         			new BufferedReader(new InputStreamReader(new FileInputStream(fileName), CHARSET)), 
@@ -41,9 +40,6 @@ public class CsvMembershipReader implements DomainReader<Membership> {
             
             Membership membership;
             while( (membership = beanReader.read(Membership.class, headers, processors)) != null ) {
-            	
-            	System.out.println(membership);
-            	
                 memberships.add(membership);
             }
             

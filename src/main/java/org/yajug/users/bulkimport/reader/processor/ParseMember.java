@@ -6,6 +6,11 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.util.CsvContext;
 import org.yajug.users.domain.Member;
 
+/**
+ * Parse and generate a member instance from an email field
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class ParseMember extends CellProcessorAdaptor {
 
 	public ParseMember() {
@@ -15,6 +20,9 @@ public class ParseMember extends CellProcessorAdaptor {
 		super(next);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Object execute(Object value, CsvContext context) {
 		if(value != null && StringUtils.isNotBlank(value.toString())){

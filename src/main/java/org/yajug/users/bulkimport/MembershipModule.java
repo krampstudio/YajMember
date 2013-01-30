@@ -16,7 +16,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
 /**
- * Guice module that bind implementations for an event import
+ * Guice module that bind implementations for a membership import
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
