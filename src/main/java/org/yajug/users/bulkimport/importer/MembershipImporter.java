@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.yajug.users.bulkimport.reader.DomainReader;
+import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 import org.yajug.users.service.DataException;
+import org.yajug.users.service.EventService;
 import org.yajug.users.service.MemberService;
 
 import com.google.inject.Inject;
@@ -19,11 +21,9 @@ import com.google.inject.Inject;
  */
 public class MembershipImporter implements DomainImporter {
 
-	@Inject
-	private DomainReader<Membership> reader;
-	
-	@Inject
-	private MemberService memberService;
+	@Inject private DomainReader<Membership> reader;
+	@Inject private MemberService memberService;
+	@Inject private EventService eventService;
 	
 	@Override
 	public int doImport(String fileName) {
@@ -32,8 +32,10 @@ public class MembershipImporter implements DomainImporter {
 		
 		Collection<Membership> memberships = new ArrayList<>();
 		try {
+			
+			Collection<Event> events = eventService.getAll();
+			
 			memberships = reader.read(fileName);
-		
 			for(Membership membership : memberships){
 				if(membership.getMember() != null){
 					//get member
@@ -48,6 +50,13 @@ public class MembershipImporter implements DomainImporter {
 							System.out.println("Invalid key " + member.getKey() + " for member " + membership.getMember().getEmail() + ", skipped.");
 						} else {
 							membership.setMember(member);
+						}
+					}
+					//get event if paiementDate match
+					for(Event event : events){
+						if(event.getDate() != null && event.getDate().compareTo(membership.getPaiementDate()) == 0){
+							membership.setEvent(event);
+							break;
 						}
 					}
 				}

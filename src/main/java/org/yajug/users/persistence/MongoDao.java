@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.bson.types.ObjectId;
 import org.yajug.users.domain.DomainObject;
@@ -76,26 +77,28 @@ public abstract class MongoDao {
 					//manages dates
 					.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
 
-
-						//create an other parser to avoid stack overflow with context parser
-						private Gson gson =  new GsonBuilder().setDateFormat(DATE_PATTERN).create();
+						private SimpleDateFormat formatter;
 						
 						@Override
 						public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 								throws JsonParseException {
-							Date date = null;
 							
-							if(json.isJsonPrimitive()){	//{date : "2012-06-01"} we use common parsing 
-								date = gson.fromJson(json, Date.class);
-							} else if(json.isJsonObject() //{date : {$date : "2012-06-01"}} we retrieve the string
-								&& json.getAsJsonObject().getAsJsonPrimitive("$date") != null){
-								
-								String jsonDate = json.getAsJsonObject().getAsJsonPrimitive("$date").getAsString();
+							if(formatter == null){
+								formatter = new SimpleDateFormat(DATE_PATTERN);
+								formatter.setTimeZone(TimeZone.getTimeZone("GMT-00:00"));
+							}
+							Date date = null;
 								try {
-									date = new SimpleDateFormat(DATE_PATTERN).parse(jsonDate);
-								} catch (ParseException e) {
-									e.printStackTrace();
+								if(json.isJsonPrimitive()){	//{date : "2012-06-01"} we use common parsing 
+									date = formatter.parse(json.getAsString());
+								} else if(json.isJsonObject() //{date : {$date : "2012-06-01"}} we retrieve the string
+									&& json.getAsJsonObject().getAsJsonPrimitive("$date") != null){
+									
+									String jsonDate = json.getAsJsonObject().getAsJsonPrimitive("$date").getAsString();
+									date = formatter.parse(jsonDate);
 								}
+							} catch (ParseException e) {
+								e.printStackTrace();
 							}
 							return date;
 						}
