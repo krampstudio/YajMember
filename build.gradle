@@ -9,8 +9,7 @@
  * - test: 					gradle test
  * - single unit test: 		gradle test -Dtest.single=TestClassName
  * - run the app in dev: 	gradle jettyRun
- * - data import:			gradle bulk -Ptarget=event
- * 							gradle bulk -Ptarget=member
+ * - data import:			gradle bulk
  * 
  * Debug:
  * To remote debug when running the web server using jettyRun, export the following variable:
@@ -29,8 +28,8 @@ sourceCompatibility = 1.7
 repositories { mavenCentral() }
 
 dependencies {
-	compile 'org.mongodb:mongo-java-driver:2.10.1'
-	compile 'org.apache.commons:commons-lang3:3.1'
+	compile "org.mongodb:mongo-java-driver:$mongoDriverVersion"
+	compile "org.apache.commons:commons-lang3:$commonsLangVersion"
 	compile "javax.servlet:servlet-api:$servletVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
 	compile "com.google.inject:guice:$guiceVersion"
@@ -41,7 +40,7 @@ dependencies {
 	compile "net.sf.supercsv:super-csv:$superCsvVersion"
 	compile "org.imgscalr:imgscalr-lib:$scalrVersion"
 	testCompile "junit:junit:$junitVersion"
-	testCompile "org.jukito:jukito:1.1"
+	testCompile "org.jukito:jukito:$jukitoVersion"
 }
 
 
@@ -57,39 +56,24 @@ jettyRun{
 }
 
 /*
- * task used to import data 
+ * Bulk import 
  */
-task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data import on a target (defined by -Ptarget=[event|member|...]]') {
+task("bulk", description : "Bulk data import");
+['event','member','membership'].each {target ->
+	//create a task for each bulk import
+	task("bulk${target}", type: JavaExec, dependsOn: 'classes', description : "Bulk data import of ${target}s") {
 
-	//available imports
-	ext{
-		event = relativePath('src/main/scripts/events.csv')
-		member = relativePath('src/main/scripts/member.csv')
-		membership = relativePath('src/main/scripts/membership.csv')
-	}
-	
-	//check the target is set 
-	doFirst {
-		if(!project.hasProperty('target')){
-		
-			println "\nUsage:"
-			println "\tgradle bulk -Ptarget=[event|member|...]"
-			println "where target is : "
-			bulk.ext.each{ println it }
-			
-			throw new GradleException('Target argument required')
-		} else {
+		doFirst {
 			println "\nBulk import of  $target\n"
 		}
+		
+		main = 'org.yajug.users.bulkimport.BulkImport'
+		classpath = sourceSets.main.runtimeClasspath
+		args target
+		args relativePath("src/main/scripts/${target}.csv")
+		debug false
+			
 	}
-	
-	main = 'org.yajug.users.bulkimport.BulkImport'
-	classpath = sourceSets.main.runtimeClasspath
-	if(project.hasProperty('target')){
-		bulk{
-			args target
-			args bulk.ext[target]
-			debug false
-		}
-	}
+	//add a dependency to the bulk task
+	bulk.dependsOn("bulk${target}")
 }
