@@ -25,23 +25,37 @@ import org.yajug.users.service.MemberService;
 import org.yajug.users.vo.GridVo;
 
 import com.google.common.collect.Lists;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 
+/**
+ * This controller expose the Member API over HTTP
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 @Path("member")
 public class MemberController extends RestController {
 
-	@Inject
-	private MemberService memberService;
+	@Inject private MemberService memberService;
 	
-	/** cache of member list */
+	/**
+	 * TODO remove and use a cache at the service layer
+	 * Cache of member list 
+	 */
 	private Map<Long, Member> members;
 	
+	/**
+	 * List {@link Member}s regarding some filerting and ordering parameters
+	 * 
+	 * @param callback the JSONP callback
+	 * @param sortName the attribute used to sort
+	 * @param sortOrder the sort direction
+	 * @param search to filter the list based on this expression
+	 * @param page the page to get (based on a paginated list)
+	 * @param rows the rows to get (based on a paginated list)
+	 * @return a JSON representation of the {@link Member}s
+	 */
 	@GET
 	@Path("list")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -97,7 +111,8 @@ public class MemberController extends RestController {
 	}
 	
 	/**
-	 * Search members from a string
+	 * Search {@link Member}s from a string, used to get autocompleted field
+	 * 
 	 * @param term the string 
 	 * @return a JSON string that contains an array of matching members 
 	 * 			in a particular format : {@code [{label: name, value : key}, ...]
@@ -127,6 +142,12 @@ public class MemberController extends RestController {
 		return response;
 	}
 	
+	/**
+	 * Get a {@link Member} from it's identifier 
+	 * 
+	 * @param id the {@link Member} id : {@link Member#getKey()}
+	 * @return a JSON representation of the {@link Member}
+	 */
 	@GET
 	@Path("getOne")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -151,6 +172,11 @@ public class MemberController extends RestController {
 		return response;
 	}
 	
+	/**
+	 * Insert a {@link Member}
+	 * @param member the JSON representation of the {@link Member} to insert
+	 * @return a JSON response : {@code {saved: true|false}
+	 */
 	@PUT
 	@Path("add")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -159,6 +185,11 @@ public class MemberController extends RestController {
 		return saveMember(member);
 	}
 	
+	/**
+	 * Update a {@link Member}
+	 * @param member the JSON representation of the {@link Member} to update
+	 * @return a JSON response : {@code {saved: true|false}
+	 */
 	@POST
 	@Path("update")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -168,9 +199,9 @@ public class MemberController extends RestController {
 	}
 	
 	/**
-	 * Save a member
-	 * @param memberData
-	 * @return the json response 
+	 * Save a {@link Member}
+	 * @param memberData the JSON representation of the {@link Member} to update
+	 * @return a JSON response : {@code {saved: true|false}
 	 */
 	private String saveMember(String memberData){
 		JsonObject response = new JsonObject();
@@ -192,27 +223,6 @@ public class MemberController extends RestController {
 		return getSerializer().toJson(response);
 	}
 	
-	/**
-	 * use a custom serializer for Members
-	 */
-	@Override
-	protected Gson getSerializer() {
-		return new GsonBuilder()
-				.serializeNulls()
-				.setDateFormat("yyyy-MM-dd")
-				.setExclusionStrategies(new ExclusionStrategy() {
-					//prevent circular references serialization of : Member <-> Membership <-> Member
-					@Override public boolean shouldSkipField(FieldAttributes f) {
-						return Member.class.equals(f.getDeclaredClass());
-					}
-					
-					@Override public boolean shouldSkipClass(Class<?> clazz) {
-						return false;
-					}
-				})
-				.create();
-	}
-
 	/**
 	 * get the members (from cache or the service layer)
 	 * @return the map of members, with the member's id as key
@@ -251,9 +261,5 @@ public class MemberController extends RestController {
 			}
 		}
 		return membersList;
-	}
-	
-	public void setMemberService(MemberService memberService) {
-		this.memberService = memberService;
 	}
 }

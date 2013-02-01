@@ -74,7 +74,7 @@ public class EventController extends RestController {
 	public String list(@QueryParam("current") Boolean current, @QueryParam("year") Integer year){
 		
 		String response = "";
-		Collection<Event> events = Lists.newArrayList();
+		Collection<Event> events = new ArrayList<>();
 		
 		try {
 			if(BooleanUtils.isTrue(current)){
@@ -87,7 +87,6 @@ public class EventController extends RestController {
 				
 				//we filter events based on the event year
 				final int yearFilter = year.intValue();
-				
 				events = ImmutableList.copyOf(
 							Iterables.filter(
 									allEvents, 
