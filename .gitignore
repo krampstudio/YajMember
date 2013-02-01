@@ -1,24 +1,23 @@
-*.class
+#ignore project config
 src/main/resources/config.properties
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# eclipse meta
-.project
-.settings
-.classpath
-.metadata
-bin
 
 # gradle
 build
 .gradle
 
-#netbeans
-/nbproject/private/
+# git
+*.orig
 
-#config
-src/main/resources/config.properties
+# java
+*.jar
+*.war
+*.ear
+*.class
+
+# ide meta
+.project
+.settings
+.classpath
+.metadata
+bin
+/nbproject/private/
