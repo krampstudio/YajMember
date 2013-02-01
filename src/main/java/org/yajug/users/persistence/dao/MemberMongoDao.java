@@ -95,7 +95,7 @@ public class MemberMongoDao extends MongoDao{
 	public List<Member> search(String expression){
 		List<Member> members = new ArrayList<>();
 		
-		BasicDBObject searchExpression = new BasicDBObject("$regex", expression);
+		BasicDBObject searchExpression = new BasicDBObject("$regex", expression).append("$options", "-i");
 		BasicDBList search = new BasicDBList();
 		search.add(new BasicDBObject("firstName", searchExpression));
 		search.add(new BasicDBObject("lastName", searchExpression));
