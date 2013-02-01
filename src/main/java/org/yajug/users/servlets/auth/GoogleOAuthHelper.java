@@ -3,7 +3,7 @@ package org.yajug.users.servlets.auth;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.yajug.users.domain.User;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
