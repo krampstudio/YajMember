@@ -1,3 +1,22 @@
+/**
+ * Build 
+ * 
+ * @requires gradle >= 1.2
+ * 
+ * Tasks:
+ * 
+ * - compile: 				gradle compileJava
+ * - test: 					gradle test
+ * - single unit test: 		gradle test -Dtest.single=TestClassName
+ * - run the app in dev: 	gradle jettyRun
+ * - data import:			gradle bulk
+ * 
+ * Debug:
+ * To remote debug when running the web server using jettyRun, export the following variable:
+ * 		export GRADLE_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=9999,server=y"
+ * To debug a bulk task, set the debug option to true
+ */
+
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'jetty'
@@ -5,111 +24,54 @@ apply plugin: 'jetty'
 //yes, we use the current stable version of Java ;)
 sourceCompatibility = 1.7
 
-configurations {
-	//create a configuration that reference the openjpa agent
-	javaAgentOpenJpa
-}
-
 //depdency management
 repositories { mavenCentral() }
 
 dependencies {
-	javaAgentOpenJpa "org.apache.openjpa:openjpa-all:$openjpaVersion"
-	compile "org.apache.openjpa:openjpa-all:$openjpaVersion"
-	compile "com.h2database:h2:$h2Version"
+	compile "org.mongodb:mongo-java-driver:$mongoDriverVersion"
+	compile "org.apache.commons:commons-lang3:$commonsLangVersion"
 	compile "javax.servlet:servlet-api:$servletVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
 	compile "com.google.inject:guice:$guiceVersion"
+	compile "com.google.guava:guava:$guavaVersion"
 	compile "com.sun.jersey:jersey-bundle:$jerseyVersion"
 	compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
+	compile "com.sun.jersey.contribs:jersey-multipart:$jerseyVersion"
 	compile "com.google.api-client:google-api-client:$googleApiClientVersion"
 	compile "com.google.oauth-client:google-oauth-client:$googleApiClientVersion"
 	compile "com.google.oauth-client:google-oauth-client-servlet:$googleApiClientVersion"
 	compile "com.google.http-client:google-http-client-gson:$googleApiClientVersion"
 	compile "net.sf.supercsv:super-csv:$superCsvVersion"
+	compile "org.imgscalr:imgscalr-lib:$scalrVersion"
 	testCompile "junit:junit:$junitVersion"
+	testCompile "org.jukito:jukito:$jukitoVersion"
 }
-
-
-//jetty conf
-httpPort = 8000
-stopPort = 8989
-stopKey = 'stopMe'
 
 //in development, we use a different jetty webdefault.xml to set the useFileMappedBuffer to false
 //to enable file modification when the in place server is running
 jettyRun{
 	webDefaultXml = file('src/main/config/webdefault.xml')
 }
-//to do remote debugging, set the following opts:
-//	export GRADLE_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=9999,server=y"
-
 
 /*
- * Uncomment to generate the meta model from gradle :compileJava
- * it adds the OpenJPA Annotation Processor for Metamodel Generation 
- * to the javac compiler
+ * Bulk import 
  */
-//compileJava.options.compilerArgs.add('-Aopenjpa.metamodel=true')
-//compileJava.options.compilerArgs.add('-Aopenjpa.log=TRACE')
+task("bulk", description : "Bulk data import");
+['event','member','membership'].each {target ->
+	//create a task for each bulk import
+	task("bulk${target}", type: JavaExec, dependsOn: 'classes', description : "Bulk data import of ${target}s") {
 
-/*
- * Enhance (weaving) classes at build time as required by openjpa
- */
-task enhance(dependsOn: 'classes', description: "Enhance domain classes for JPA at build time") << {
-	ant.taskdef(name: 'openjpac', classname: 'org.apache.openjpa.ant.PCEnhancerTask'){
-		 classpath{
-			 pathelement(location: sourceSets.main.output.classesDir)
-			 pathelement(location: sourceSets.main.output.resourcesDir)
-			 pathelement(location: configurations.javaAgentOpenJpa.asPath)
-		 }
-	}
-	ant.openjpac(){
-		 classpath{
-			 pathelement(location: sourceSets.main.output.classesDir)
-			 pathelement(location: sourceSets.main.output.resourcesDir)
-			 pathelement(location: configurations.javaAgentOpenJpa.asPath)
-		 }
-	}
-}
-
-/*
- * task used to import data 
- */
-task('bulk', type: JavaExec, dependsOn: 'classes', description : 'Bulk data import on a target (defined by -Ptarget=[event|member|...]]') {
-
-	//available imports
-	ext{
-		event = relativePath('src/main/scripts/events.csv')
-		member = relativePath('src/main/scripts/member.csv')
-	}
-	
-	//check the target is set 
-	doFirst {
-		if(!project.hasProperty('target')){
-		
-			println "\nUsage:"
-			println "\tgradle bulk -Ptarget=[event|member|...]"
-			println "where target is : "
-			bulk.ext.each{ println it }
-			
-			throw new GradleException('Target argument required')
-		} else {
+		doFirst {
 			println "\nBulk import of  $target\n"
 		}
+		
+		main = 'org.yajug.users.bulkimport.BulkImport'
+		classpath = sourceSets.main.runtimeClasspath
+		args target
+		args relativePath("src/main/scripts/${target}.csv")
+		debug false
+			
 	}
-	
-	main = 'org.yajug.users.bulkimport.BulkImport'
-	classpath = sourceSets.main.runtimeClasspath
-	if(project.hasProperty('target')){
-		bulk{
-			args target
-			args bulk.ext[target]
-			debug false
-		}
-	}
+	//add a dependency to the bulk task
+	bulk.dependsOn("bulk${target}")
 }
-
-//make some tasks to depends on enhance
-[bulk, test, war, jettyRun].each{ it.dependsOn enhance }
-

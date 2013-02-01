@@ -1,4 +1,4 @@
-define(function(){
+define(['modernizr', 'notify'], function(Modernizr, notify){
 	/**
 	 * TODO creates a Form objects that can be used by both the event and the user forms
 	 */
@@ -16,13 +16,12 @@ define(function(){
 			/**
 			 * Initialize the controls behavior
 			 */
-			initControls : function(){
+			initControls : function(callback){
+				
+				var self = this;
 				
 				//submit button
-				$('#submiter').button().click(function(event){
-					event.preventDefault();
-					$('#member-editor').submit();
-				});
+				$('#submiter').button({label: $('#submiter').val()});
 				
 				//valid membership display/hide sections
 				$('#membership').change(function() {
@@ -65,6 +64,10 @@ define(function(){
 					
 					return false;
 				});
+				
+				if(typeof callback === 'function'){
+					callback();
+				}
 			},
 			
 			/**
@@ -160,40 +163,41 @@ define(function(){
 			 */
 			serializeMember : function($form){
 				var member = {},
-					memberShip  = {};
+					membership  = {};
 				if($form){
 					if($form.prop('tagName') !== 'FORM'){
 						$.error('Invalid jQuery element for $form. It much match a form tag.')
 					}
 					$.map($form.serializeArray(), function(elt, index){
 						if(!/^membership/.test(elt.name)){
-							if(member[elt.name] === undefined){
-								member[elt.name] = elt.value;
-							} else {
-								if(!$.isArray(member[elt.name])){
-									member[elt.name] = [member[elt.name]];
+							if(elt.value && elt.value.trim().length > 0){
+								if(member[elt.name] === undefined){
+									member[elt.name] = elt.value;
+								} else {
+									if(!$.isArray(member[elt.name])){
+										member[elt.name] = [member[elt.name]];
+									}
+									member[elt.name].push(elt.value);
 								}
-								member[elt.name].push(elt.value);
 							}
-							
 						} else {
-							memberShip[elt.name.replace(/^membership-/, '')] = elt.value;
+							membership[elt.name.replace(/^membership-/, '')] = elt.value;
 						}
 					});
 					if(member.roles && !$.isArray(member.roles)){
 						member.roles = [member.roles];
 					}
 					
-					if($('#membership', $form).val() === true || memberShip['key']){
+					if($('#membership', $form).val() === true || membership['key']){
 						member['memberships'] = [{}];
-						if(memberShip['key']){
-							member['memberships'][0]['key'] = memberShip['key'];
+						if(membership['key']){
+							member['memberships'][0]['key'] = membership['key'];
 						}
-						if(memberShip['paiementDate']){
-							member['memberships'][0]['paiementDate'] = memberShip['paiementDate'];
+						if(membership['paiementDate']){
+							member['memberships'][0]['paiementDate'] = membership['paiementDate'];
 						}
-						if(memberShip['event']){
-							member['memberships'][0]['event'] = {'key' : memberShip['event'] };
+						if(membership['event']){
+							member['memberships'][0]['event'] = {'key' : membership['event'] };
 						}
 					}
 				}

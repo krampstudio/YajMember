@@ -1,4 +1,12 @@
-<ul id="events"></ul>
+<div id="events"></div>
+<script id="events-acc-template" type="text/x-jquery-tmpl">
+{{each years}}
+<h3><a href="#${$value}">${$value}</a></h3>
+<div id='event-list-${$index}'>
+	<ul></ul>
+</div>
+{{/each}}
+</script>
 <script id="event-item-template" type="text/x-jquery-tmpl">
 <li class='event' id="event-${key}">
 	<h1>${title}</h1>

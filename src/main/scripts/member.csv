@@ -1,2 +1,2 @@
-"lastName","firstName","company","email","membership","membership","membership","2012-01-17","2012-03-20","2012-04-16","2012-06-13","2012-06-26","Payé 2012","Non payé 2012","Commentaire","Mail alternatif","Removed from mailing list"
-"Chevrier","Bertrand","Logica","chevrier.bertrand@gmail.com",1,1,1,,"Mbr",,,,1,"",,,
+"key","lastName","firstName","company","email"
+1, "Chevrier","Bertrand","Logica","chevrier.bertrand@gmail.com"

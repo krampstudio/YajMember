@@ -18,80 +18,104 @@ requirejs.config({
 
 //The main entry point
 requirejs(	
-		['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store'],  
-		function($, ui, tmpl, notify, store){
+	['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store'],  
+	function($, ui, tmpl, notify, store){
 
-	$(function() {
-		var firstFormLoad = true;
+	$(function(){
 		
-		//initialize the tabs
+		var initialized = {
+			user : false,
+			event : false
+		};
+		
+		//create the tabs
 		$('#actions').tabs({
+			cache: true,
 			create: function(event, ui) {
 				//unload splash and display screen
 				$('#splash').fadeOut();
 				$('#main').show('slow');
 			},
 			load : function(event, ui) {
-				if (ui.index === 0) {
-					requirejs(['user/list'], function(list) {
-						//build the member list
-						list.build();
-					});
-				} else if (ui.index === 1) {
-					requirejs(['user/form'], function(form) {
-						
-						/**
-						 * Load member's data in the form.
-						 * The member's id is given by a data attribute bound to the body tag
-						 * @param {Function} callback executed without parameter when the member is loaded
-						 */
-						var loadMember = function(callback){
-							if(store.isset('member')){
-								form.loadMember(store.get('member'), callback);
-							}
-						};
-						
-						if(firstFormLoad === true){
-							//we initialise the form the first time
-							form.initControls();
-							form.loadEvents(function(){
-								//we load the member only once the events are loaded
-								loadMember(function(){
-									firstFormLoad = false;
+				
+				//Do the initializations by tab, once loaded
+				switch(ui.index) {
+					case 0 : 
+						requirejs(['user/list'], function(list) {
+							//build the member list
+							list.build();
+						});
+						break;
+					case 1:
+						requirejs(['user/form'], function(userForm) {
+							userForm.initControls(function(){
+								userForm.loadEvents(function(){
+									if(!initialized['member']){
+										if(store.isset('member')){
+											userForm.loadMember(store.get('member'));	
+										}
+										initialized['member'] = true;
+									}
 								});
 							});
-						} else {
-							loadMember();
-						}
-					});
-				} else if (ui.index === 2){
-					requirejs(['event/list'], function(list) {
-						list.load(function(){
-							list.setUpControls();
 						});
-					});
-					
-				} 
+						break;
+					case 2:
+						requirejs(['event/list'], function(eventList) {
+							eventList.setUp();
+						});
+						break;
+					case 3:
+						requirejs(['event/form'], function(eventForm) {
+							eventForm.initFormControls(function(){
+								if(!initialized['event']){
+									if( store.isset('event')){
+										eventForm.loadEvent(store.get('event'));
+									}
+									initialized['event'] = true;
+								}
+							});
+						});
+						break;
+				}
 			},
+			
+			//do some clean and load at each tab opening
 			show : function(event, ui) {
-				
-				if (ui.index !== 1){
-					//clean up the form
-					requirejs(['user/form'], function(form) {
-						form.clear();
-						store.rm('member');
-					});
-				}
-				if (ui.index !== 3){
-					//clean up the form
-					requirejs(['event/form'], function(form) {
-						form.clear();
-						store.rm('event');
-					});
-				}
-				//rename the tab if we are add or editing a member
+
+				//User
+				requirejs(['user/form'], function(userForm) {
+					if(initialized['member']){
+						if(ui.index === 1 && store.isset('member')){
+							//load the member
+							userForm.loadMember(store.get('member'));	
+						} else {
+							//clean up
+							userForm.clear();
+							store.rm('member');
+						}
+					}
+				});
+				//rename the tab if we are add or editing
 				$('#actions ul:first li:nth-child(2) a').text(
 					(ui.index === 1 && store.isset('member')) ? 'Edit member' : 'Add a member'
+				);
+				
+				//Event
+				requirejs(['event/form'], function(eventForm) {
+					if(initialized['event']){
+						if(ui.index === 3 && store.isset('event')){
+							eventForm.loadEvent(store.get('event'));
+						} else {
+							//clean up
+							eventForm.clear();
+							store.rm('event');
+						}
+					}
+				});
+				//rename the tab if we are add or editing
+				$('#actions ul:first li:nth-child(4) a').text(
+					(ui.index === 3 && store.isset('event')) ? 'Edit event' : 'Add an event'
 				);
 			}
 		});

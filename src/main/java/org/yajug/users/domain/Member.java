@@ -1,73 +1,34 @@
 package org.yajug.users.domain;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
-import org.apache.bval.constraints.Email;
 
 /**
  * This domain pojo represent a member of the jug.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-@Entity
-@Access(AccessType.FIELD)
-@Inheritance(strategy=InheritanceType.JOINED)
-@NamedQueries({
-	@NamedQuery(name="Member.findAll", query="select m from Member m")
-})
 public class Member extends DomainObject implements Comparable<Member>{
 
-	@Basic 
-	@NotNull
-	@Pattern(regexp=DomainObject.TEXT_PATTERN)
 	private String firstName;
-	
-	@Basic 
-	@NotNull
-	@Pattern(regexp=DomainObject.TEXT_PATTERN)
 	private String lastName;
-	
-	@Basic 
-	@Email	//apache bval constraint
 	private String email;
-	
-	@Basic 
-	@Pattern(regexp=DomainObject.TEXT_PATTERN)
 	private String company;
-	
-	@ElementCollection(targetClass=Role.class, fetch=FetchType.EAGER)
-	@Enumerated(EnumType.STRING)
 	private List<Role> roles;
-	
-	@ManyToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
-	private List<Membership> memberships;
-	
-	@Transient private boolean valid;
+	private boolean valid;
 	
 	/**
-	 * Default constructor needed by openjpa.
+	 * Default constructor needed
 	 */
 	public Member() {
+	}
+	
+	/**
+	 * Key based constructor
+	 * @param key
+	 */
+	public Member(long key){
+		super(key);
 	}
 	
 	/**
@@ -84,11 +45,6 @@ public class Member extends DomainObject implements Comparable<Member>{
 		this.email = email;
 		this.company = company;
 		this.roles = roles;
-	}
-	
-	public Member(String firstName, String lastName ,String email, String company, List<Role> roles ,List<Membership> memberships) {
-		this(firstName, lastName, email, company, roles);
-		this.setMemberships(memberships);
 	}
 	
 	/**
@@ -154,12 +110,29 @@ public class Member extends DomainObject implements Comparable<Member>{
 		return roles;
 	}
 	
+	/**
+	 * @param role
+	 */
 	public void setRole(Role role){
 		if(this.roles == null){
 			this.roles = new ArrayList<Role>();
 		}
 		if(!this.roles.contains(role)){
 			this.roles.add(role);
+			
+			//try to keep some consistency between the roles when updated by the app
+			if(role.equals(Role.MEMBER) && roles.contains(Role.OLD_MEMBER)){
+				roles.remove(Role.OLD_MEMBER);
+			}
+			if(role.equals(Role.OLD_MEMBER) && roles.contains(Role.MEMBER)){
+				roles.remove(Role.MEMBER);
+			}
+			if(role.equals(Role.BOARD) && roles.contains(Role.OLD_BOARD)){
+				roles.remove(Role.OLD_BOARD);
+			}
+			if(role.equals(Role.OLD_BOARD) && roles.contains(Role.BOARD)){
+				roles.remove(Role.BOARD);
+			}
 		}
 	}
 	
@@ -168,37 +141,6 @@ public class Member extends DomainObject implements Comparable<Member>{
 	 */
 	public void setRoles(List<Role> role) {
 		this.roles = role;
-	}
-
-	/**
-	 * @return the memberships
-	 */
-	public List<Membership> getMemberships() {
-		return memberships;
-	}
-	
-	/**
-	 * 
-	 * @param membership
-	 */
-	public void setMembership(Membership membership){
-		if(this.memberships == null){
-			this.memberships = new ArrayList<Membership>();
-		}
-		this.memberships.add(membership);
-		if(Calendar.getInstance().get(Calendar.YEAR) == membership.getYear()){
-			this.valid = true;
-		}
-	}
-
-	/**
-	 * @param memberships the memberships to set
-	 */
-	public void setMemberships(List<Membership> memberships) {
-		this.memberships = memberships;
-		if(memberships != null){
-			this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
-		}
 	}
 
 	/**
@@ -211,45 +153,18 @@ public class Member extends DomainObject implements Comparable<Member>{
 	}
 	
 	/**
-	 * Check if this member instance has 
-	 * a valid membership for the current year.
-	 * 
-	 * @return true if valid
+	 * Set the membership status for the current year.
+	 * @param valid if the user is a valid member
 	 */
-	public boolean checkValidity(){
-		this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
-		return this.valid;
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
-	
-	/**
-	 * Check if this member instance has 
-	 * a valid membership for the specified year.
-	 * 
-	 * @param year the year we check for validity
-	 * @return true if valid
-	 */
-	public boolean isValidFor(int year) {
-		boolean validFor = false;
-		
-		if(this.memberships == null){
-			validFor = false;
-		} else {
-			for(Membership ms : this.memberships){
-				if(ms.getYear() == year){
-					validFor = true;
-					break;
-				}
-			}
-		}
-		return validFor;
-	}
-
 	
 	@Override
 	public String toString() {
 		return "Member [firstName=" + firstName + ", lastName=" + lastName
 				+ ", email=" + email + ", company=" + company + ", roles="
-				+ roles + ", memberships=" + memberships + ", valid=" + valid
+				+ roles + ", valid=" + valid
 				+ "]";
 	}
 	

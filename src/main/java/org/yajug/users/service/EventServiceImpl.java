@@ -1,39 +1,50 @@
 package org.yajug.users.service;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
+import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.StringUtils;
+import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
+import org.yajug.users.domain.Flyer;
+import org.yajug.users.domain.utils.MappingHelper;
+import org.yajug.users.persistence.dao.EventMongoDao;
+import org.yajug.users.persistence.dao.MemberMongoDao;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-public class EventServiceImpl extends JPAService implements EventService {
+public class EventServiceImpl implements EventService {
 
+	@Inject private EventMongoDao eventMongoDao;
+	@Inject private MemberMongoDao memberMongoDao;
+	@Inject private MappingHelper mappingHelper;
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public Collection<Event> getAll() throws DataException {
-		
-		List<Event> events = new ArrayList<Event>();
-		EntityManager em = getEntityManager();
-		try{
-			TypedQuery<Event> tq = em.createNamedQuery("Event.findAll", Event.class);
-			events = tq.getResultList();
-		} catch(PersistenceException pe){
-			throw new DataException("", pe);
-		} finally {
-			em.close();
-		}
-		return events;
+		Collection<Event> events = eventMongoDao.getAll();
+		return Collections2.transform(events, new Function<Event, Event>(){
+			@Override public Event apply(Event input) {
+				return loadParticipants(input);
+			}
+		});
 	}
 	
 	/**
@@ -42,17 +53,27 @@ public class EventServiceImpl extends JPAService implements EventService {
 	@Override
 	public Event getOne(long key) throws DataException {
 		
-		Event event = null;
-		EntityManager em = getEntityManager();
-		try{
-			TypedQuery<Event> tq = em.createNamedQuery("Event.getOne", Event.class);
-			tq.setParameter("key", key);
-			event = tq.getSingleResult();
-			
-		} catch(PersistenceException pe){
-			throw new DataException("", pe);
-		} finally {
-			em.close();
+		if (key <= 0) {
+			throw new DataException("Unable to retrieve an event from a wrong id");
+		}
+		return loadParticipants(eventMongoDao.getOne(key));
+	}
+	
+	/**
+	 * The participants and registrants comes with only the key field set, 
+	 * so we initialize those lists
+	 * 
+	 * @param event 
+	 * @return the event
+	 */
+	private Event loadParticipants(Event event){
+		if(event.getParticipants() != null && event.getParticipants().size() > 0){
+			Set<Long> participantKeys = mappingHelper.extractKeys(event.getParticipants());
+			event.setParticipants(memberMongoDao.getAllIn(participantKeys));
+		}
+		if(event.getRegistrants() != null && event.getRegistrants().size() > 0){
+			Set<Long> registrantKeys = mappingHelper.extractKeys(event.getRegistrants());
+			event.setRegistrants(memberMongoDao.getAllIn(registrantKeys));
 		}
 		return event;
 	}
@@ -63,7 +84,7 @@ public class EventServiceImpl extends JPAService implements EventService {
 	@Override
 	public boolean save(Event event) throws DataException{
 		
-		if(event == null){
+		if (event == null) {
 			throw new DataException("Cannot save a null event");
 		}
 		
@@ -79,23 +100,72 @@ public class EventServiceImpl extends JPAService implements EventService {
 	@Override
 	public boolean save(Collection<Event> events) throws DataException {
 		
-		if(events == null){
+		if (events == null) {
 			throw new DataException("Cannot save null events");
 		}
 		
-		EntityManager em = getEntityManager();
-		try{
-			em.getTransaction().begin();
-			for(Event event : events){
-				em.persist(event);
+		int expected = events.size();
+		int saved = 0;
+		for (Event event : events) {
+			if(StringUtils.isNotBlank(event._getId())){
+				if(eventMongoDao.update(event)){
+					saved++;
+				}
+			} else {
+				if(eventMongoDao.insert(event)){
+					saved++;
+				}
 			}
-			em.getTransaction().commit();
-		} catch(PersistenceException pe){
-			pe.printStackTrace();
-			//throw new DataException("", pe);
-		} finally{
-			em.close();
 		}
-		return true;
+		return saved == expected;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean remove(Event event) throws DataException {
+
+		if (event == null || event.getKey() <= 0) {
+			throw new DataException("Trying to remove a null or non-identified event.");
+		}
+		
+		return eventMongoDao.remove(event);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean saveFlyer(InputStream input, String format, Flyer flyer) throws DataException {
+		boolean saved = false;
+
+		//validate input format
+		final List<String> allowedFormat = Lists.newArrayList("png", "jpg", "jpeg", "gif");
+		
+		if(StringUtils.isBlank(format) || !allowedFormat.contains(format.toLowerCase())){
+			throw new ValidationException("Unsupported flyer format :" + format );
+		}
+		
+		try {
+			//save base flyer to format
+			BufferedImage img = ImageIO.read(input);
+			saved = ImageIO.write(img, Flyer.TYPE, flyer.getFile());
+			
+			//and creates the thumbnail
+			BufferedImage thumbnail = Scalr.resize(
+					img, 
+					Scalr.Method.SPEED, 
+					Scalr.Mode.FIT_TO_WIDTH, 
+					181, 
+					256, 
+					Scalr.OP_ANTIALIAS
+				);
+			saved = saved && ImageIO.write(thumbnail, Flyer.TYPE, flyer.getThumbnail().getFile());
+			
+		} catch (IOException e) {
+			throw new DataException("An error occured while saving the flyer", e);
+		}
+		return saved;
 	}
 }

@@ -7,8 +7,6 @@ import org.yajug.users.bulkimport.reader.DomainReader;
 import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
 import org.yajug.users.bulkimport.reader.processor.MemberCellProcessor;
 import org.yajug.users.domain.Member;
-import org.yajug.users.service.EventService;
-import org.yajug.users.service.EventServiceImpl;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.service.MemberServiceImpl;
 
@@ -31,7 +29,6 @@ public class MemberModule extends AbstractModule {
 		
 		//bind services
 		bind(MemberService.class).to(MemberServiceImpl.class);
-        bind(EventService.class).to(EventServiceImpl.class);
 	}
 
 }

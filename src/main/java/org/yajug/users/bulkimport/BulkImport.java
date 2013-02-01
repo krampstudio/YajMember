@@ -27,6 +27,7 @@ public class BulkImport {
 		switch(args[0].toLowerCase()){
 			case "event" : module = new EventModule(); break;
 			case "member" : module = new MemberModule(); break;
+			case "membership" : module = new MembershipModule(); break;
 		}
 		
 		if(module != null){

@@ -2,59 +2,82 @@ package org.yajug.users.service;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
+import org.apache.commons.lang3.StringUtils;
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.Member_;
 import org.yajug.users.domain.Membership;
-import org.yajug.users.domain.Event;
+import org.yajug.users.domain.Role;
+import org.yajug.users.persistence.dao.MemberMongoDao;
+import org.yajug.users.persistence.dao.MembershipMongoDao;
+
+import com.google.inject.Inject;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-public class MemberServiceImpl extends JPAService implements MemberService {
+public class MemberServiceImpl implements MemberService {
 
 	
+	@Inject private MemberMongoDao memberMongoDao;
+	@Inject private MembershipMongoDao membershipMongoDao;
+	
+	public void checkValidity(Collection<Member> members, boolean updateRole) throws DataException{
+		if(members != null){
+			Collection<Member> membersToUpdate = new ArrayList<>();
+			int currentYear  = Calendar.getInstance().get(Calendar.YEAR);
+			
+			for(Member member : members){
+				boolean saveMember = false;
+				Collection<Membership> memberships = getMemberships(member);
+				
+				for(Membership membership : memberships){
+					if(membership.getYear() > 0 && membership.getYear() == currentYear){
+						//the member is valid
+						member.setValid(true);
+						
+						//we check if the roles are consistents
+						if(updateRole && !member.getRoles().contains(Role.MEMBER)){
+							member.setRole(Role.MEMBER);
+							saveMember = true;
+						}
+						break;
+					}
+				}
+				if(updateRole && memberships.size() > 0 && !member.isValid()){
+					member.setRole(Role.OLD_MEMBER);
+					saveMember = true;
+				}
+				if(saveMember){
+					membersToUpdate.add(member);
+				}
+			}
+			
+			if(updateRole && membersToUpdate.size() > 0){
+				this.save(membersToUpdate);
+			}
+		}
+	}
+	
 	/**
-	 * {@inheritDoc}
+	 * Validate search expression: only alpha num chars, dot and \@ are allowed
+	 * @param expression
+	 * @return
 	 */
-	@Override
-	public List<Member> getAll() throws DataException {
-		return getAll(false);
+	private boolean validateSearchExpression(String expression){
+		return Pattern.compile("^[\\p{Alnum}.@]*$").matcher(expression).find();
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Member> getAll(boolean checkValidy) throws DataException {
-		
-		List<Member> members = new ArrayList<Member>();
-		EntityManager em = getEntityManager();
-		try{
-			TypedQuery<Member> tq = em.createNamedQuery("Member.findAll", Member.class);
-			members = tq.getResultList();
-			
-			if(checkValidy && members != null){
-				for(Member member : members){
-					member.checkValidity();
-				}
-			}
-		} finally{
-			em.close();
-		}
-		return members;
+	public List<Member> getAll() throws DataException {
+		return memberMongoDao.getAll();
 	}
 	
 	/**
@@ -62,54 +85,31 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 	 */
 	@Override
 	public List<Member> findAll(String expression) throws DataException {
-		return findAll(false, expression);
+		List<Member> members = new ArrayList<Member>();
+		
+		if(StringUtils.isNotBlank(expression)){
+			
+			//expression validated against a pattern
+			if(!validateSearchExpression(expression)){
+				throw new DataException("invalid search pattern");
+			}
+			members = memberMongoDao.search(expression);
+		}
+		return members;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Member> findAll(boolean checkValidy, String expression) throws DataException {
-		List<Member> members = new ArrayList<Member>();
-		
-		if(!validateSearchExpression(expression)){
-			throw new DataException("invalid search pattern");
+	public Collection<Membership> getMemberships(Member member) throws DataException {
+		Collection<Membership> memberships = new ArrayList<>();
+		if(member != null && member.getKey() > 0){
+			memberships = membershipMongoDao.getAllByMember(member.getKey());
 		}
-		
-		EntityManager em = getEntityManager();
-		try{
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Member> query = cb.createQuery(Member.class);
-			Root<Member> member = query.from(Member.class);
-
-			String exp = "%" + expression.toLowerCase() + "%";
-			
-			query
-				.select(member)
-				.where(
-					cb.or(
-						cb.like(cb.lower(member.get(Member_.firstName)), exp),
-						cb.like(cb.lower(member.get(Member_.lastName)), exp),
-						cb.like(cb.lower(member.get(Member_.email)), exp),
-						cb.like(cb.lower(member.get(Member_.company)), exp)
-					)
-				);
-			
-			TypedQuery<Member> tq = em.createQuery(query);
-			members = tq.getResultList();
-			
-			if(checkValidy && members != null){
-				for(Member m : members){
-					m.checkValidity();
-				}
-			}
-			
-		} finally{
-			em.close();
-		}
-		
-		return members;
+		return memberships;
 	}
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -137,48 +137,43 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 			throw new DataException("Cannot save null members");
 		}
 		
-		EntityManager em = getEntityManager();
-		try{
-			em.getTransaction().begin();
-			for(Member member : members){
-				
-				Member previousMember = em.find(Member.class, member.getKey());
-				if(previousMember != null){
-					
-					previousMember.setFirstName(member.getFirstName());
-					previousMember.setLastName(member.getLastName());
-					previousMember.setCompany(member.getCompany());
-					previousMember.setRoles(member.getRoles());
-					previousMember.setEmail(member.getEmail());
-					
-					for(Membership membership : member.getMemberships()){
-						if(membership.getKey() > 0){
-							for(Membership entityMembership : previousMember.getMemberships()){
-								if(entityMembership.getKey() == membership.getKey()){
-									if(membership.getPaiementDate() != null){
-										entityMembership.setPaiementDate(membership.getPaiementDate());
-									}
-									if(membership.getEvent() != null && membership.getEvent().getKey() > 0){
-										entityMembership.setEvent(em.find(Event.class, membership.getEvent().getKey()));
-									}
-									break; //there is only one membership
-								}
-							}
-						}
-					}
-					em.merge(previousMember);
-					
-				} else {
-					em.persist(member);
+		int expected = members.size();
+		int saved = 0;
+		for(Member member : members){
+			if(StringUtils.isNotBlank(member._getId())){
+				if(memberMongoDao.update(member)){
+					saved++;
+				}
+			} else {
+				if(memberMongoDao.insert(member)){
+					saved++;
 				}
 			}
-			em.getTransaction().commit();
-		} catch(PersistenceException pe){
-			pe.printStackTrace();
-		} finally{
-			em.close();
 		}
-		return true;
+		return saved == expected;
+	}
+	
+	@Override
+	public boolean saveMemberships(Collection<Membership> memberships) throws DataException {
+		
+		if(memberships == null){
+			throw new DataException("Cannot save null memberships");
+		}
+		
+		int expected = memberships.size();
+		int saved = 0;
+		for(Membership membership : memberships){
+			if(StringUtils.isNotBlank(membership._getId())){
+				if(membershipMongoDao.update(membership)){
+					saved++;
+				}
+			} else {
+				if(membershipMongoDao.insert(membership)){
+					saved++;
+				}
+			}
+		}
+		return saved == expected;
 	}
 
 	/**
@@ -190,19 +185,6 @@ public class MemberServiceImpl extends JPAService implements MemberService {
 			throw new DataException("Cannot save a null member");
 		}
 		
-		EntityManager em = getEntityManager();
-		try{
-			em.getTransaction().begin();
-			em.remove(member);
-			em.getTransaction().commit();
-		} finally{
-			em.close();
-		}
-		return true;
+		return  memberMongoDao.remove(member);
 	}
-	
-	private boolean validateSearchExpression(String expression){
-		return Pattern.compile("^[\\p{Alnum}.@]*$").matcher(expression).find();
-	}
-	
 }

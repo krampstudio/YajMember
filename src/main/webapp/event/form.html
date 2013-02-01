@@ -1,18 +1,68 @@
 <div>
-	<form id="event-editor">
-		<input type="hidden" name="key" id="key" value="" />
-		<div>
-			<label for="title">Title</label>
-			<input id="title" name="title" type="text" required="required" />
-		</div>
-		<div>
-			<label for="date">Date</label>
-			<input id="date" name="date" type="date" required="required" />
-		</div>
-		<div>
-			<label for="description">Description</label>
-			<textarea id="description" name="description"></textarea>>
-		</div>
-		<a id="submiter" href="#" >Save</a>
+	<form id="event-infos-editor">
+		<fieldset>
+			<legend>Infos</legend>
+			<input type="hidden" name="key" id="key" value="" />
+			<div>
+				<label for="title">Title</label>
+				<input id="title" name="title" type="text" required="required" />
+			</div>
+			<div>
+				<label for="date">Date</label>
+				<input id="date" name="date" type="date" required="required" />
+			</div>
+			<div>
+				<label for="description">Description</label>
+				<textarea id="description" name="description" rows="8" style="width:550px"></textarea>
+			</div>
+			<input type="submit" class="submiter" value="Save" />
+		</fieldset>
+	</form>
+</div>
+<div>
+	<form id="event-flyer-editor"  style="display:none;">
+		<fieldset>
+			<legend>Flyer</legend>
+			<div>
+				<label for="flyer">Image file</label>
+				<input id="flyer" name="flyer" type="file" />
+			</div>
+			<div class="current-flyer-field">
+				<label for="current-flyer">Current</label>
+				<img id="current-flyer" name="current-flyer" src="" alt="none" />
+				<a id="flyer-remover" href="#" >Remove flyer</a>
+				<a id="flyer-viewer" href="#" >View full size</a>
+			</div>
+			<input type="submit" class="submiter" value="Upload" />
+		</fieldset>
+	</form>
+</div>
+<div>
+	<form id="event-participant-editor">
+		<fieldset>
+			<legend>Participants</legend>
+			<div>
+				<label for="registrants">Add registrants</label>
+				<input id="registrants" name="registrants" type="text" style="width:40%;" />
+				<a href="#registrants" id="expand-registrants">Expand</a>
+			</div>
+			<div>
+				<div class="list-box">
+					<div>Registered</div>
+					<ul id="registered"></ul>
+					<span class="help">Hold CTRL to select multiples</span>
+				</div>
+				<div class="list-box-ctrl">
+					<a href="#" class="ltr">Add participant(s) from registered(s)</a><br />
+					<a href="#" class="rtl">Remove participant(s)</a><br />
+					<a href="#" class="rml">Remove registered(s)</a><br />
+				</div>
+				<div class="list-box">
+					<div>Participant</div>
+					<ul id="participant"></ul>
+				</div>
+			</div>
+			<input type="submit" class="submiter" value="Save" />
+		</fieldset>
 	</form>
 </div>

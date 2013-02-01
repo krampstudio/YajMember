@@ -31,8 +31,8 @@ public class EventTest {
 	@Parameters
  	public static Collection<Object[]> data() {
  		return Arrays.asList(new Object[][] {
- 			{ new Event("Scala", "Play2", new Date(), null) },
- 			{ new Event("Stress tests", "JMeter and Gatling", new Date(), null) },
+ 			{ new Event("Scala", "Play2", new Date()) },
+ 			{ new Event("Stress tests", "JMeter and Gatling", new Date()) },
  		});
  	}
 	

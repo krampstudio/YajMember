@@ -1,6 +1,5 @@
 package org.yajug.users.bulkimport.reader.processor;
 
-import org.supercsv.cellprocessor.ParseDate;
 import org.supercsv.cellprocessor.ParseLong;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.constraint.UniqueHashCode;
@@ -20,7 +19,7 @@ public class EventCellProcessor implements DomainCellProcessor {
                 new UniqueHashCode(new ParseLong()), 	// key (must be unique)
                 new NotNull(), 							// title
                 new NotNull(), 							// description
-                new ParseDate("yyyy-MM-dd") 			// date
+                new ParseGMTDate("yyyy-MM-dd") 			// date
         };
 	}
 	

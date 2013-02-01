@@ -4,6 +4,7 @@ body {
    padding:0;
    height:100%;
    color:#333;
+   font-size:14px;
 }
 #splash{
 	position:relative;
@@ -56,16 +57,24 @@ body {
 	color:#C85408;
 }
 
-form div{
+form fieldset{
+	border:solid 1px #C8D8E2;
+	margin-bottom:1em;
+}
+form fieldset legend{
+	color: #88A9BD;
+	font-size:.8em;
+}
+form > div, form fieldset > div{
 	width:75%;
 	margin:5px 0;
 	padding:5px;
 	border-radius:3px;
 }
-form div:hover{
+form > div:hover, form fieldset > div:hover{
 	background-color: #C8D8E2;
 }
-form div:last:hover{
+form > div:last:hover, form fieldset > div:last:hover{
 	background-color: #fff;
 }
 form label{
@@ -78,9 +87,15 @@ form input[type=text],
 form input[type=email], 
 form input[type=password], 
 form input[type=radio], 
+form input[type=file],
 form select, 
 form textarea{
 	width: 49%;
+}
+
+form .help{
+	font-size: .7em;
+	font-style: italic;
 }
 
 /* gridy fix */
@@ -128,6 +143,12 @@ li.event > img {
 li.event .event-ctrl{
 	margin:.5em;
 }
+.ui-button .ui-icon.icon-expand{
+	background-image: url('../img/expand_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-expand{
+	background-image: url('../img/expand.png');
+}
 .ui-button .ui-icon.icon-evt-edit{
 	background-image: url('../img/event_edit_high.png');
 }
@@ -139,6 +160,70 @@ li.event .event-ctrl{
 }
 .ui-button.ui-state-hover .ui-icon.icon-evt-delete{
 	background-image: url('../img/event_delete.png');
+}
+.ui-button .ui-icon.icon-delete{
+	background-image: url('../img/delete_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-delete{
+	background-image: url('../img/delete.png');
+}
+.ui-button .ui-icon.icon-image{
+	background-image: url('../img/image_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-image{
+	background-image: url('../img/image.png');
+}
+.current-flyer-field{
+	position:relative;
+}
+.current-flyer-field #flyer-remover{
+	position:absolute;
+}
+.current-flyer-field #flyer-viewer{
+	position:absolute;
+	top:36px;
+}
+#registrants{
+	width:40%;
+}
+.list-box, .list-box-ctrl{
+	display:inline-block;
+	vertical-align: top;
+}
+.list-box{
+	width:40%;
+}
+.list-box-ctrl{
+	width:10%;
+	text-align: center;
+	margin:50px auto;
+}
+.list-box-ctrl a{
+	margin-bottom:.1em;
+}
+.list-box > div{
+	font-weight: bold;
+}
+.list-box ul{
+	height:175px;
+	overflow-y:scroll;
+	border: solid 1px #ddd;
+	border-radius: 3px;
+	background-color: #fff;
+	padding:0;
+	margin:0;
+	list-style-type: none;
+}
+.list-box ul li{
+	padding: .1em;
+	margin: .1em;
+	cursor:pointer;
+}
+.list-box ul .ui-selecting{
+	border-style: dashed;
+}
+.list-box ul .ui-selected{
+	background-color:#C8D8E2;
 }
 
 /* login */
