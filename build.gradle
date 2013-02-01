@@ -47,6 +47,11 @@ dependencies {
 	testCompile "org.jukito:jukito:$jukitoVersion"
 }
 
+//jetty conf
+httpPort = 8000
+stopPort = 8989
+stopKey = 'stopMe'
+
 //in development, we use a different jetty webdefault.xml to set the useFileMappedBuffer to false
 //to enable file modification when the in place server is running
 jettyRun{
