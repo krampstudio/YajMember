@@ -63,5 +63,3 @@ $ gradle jettyRun
 ## There is still a lot to do
 
 Check my personnal [TODO List](TODO.md) or the [issues list](https://github.com/krampstudio/YajMember/issues)
-
-:white_square:
