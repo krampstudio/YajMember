@@ -198,29 +198,4 @@ public abstract class MongoDao {
 		return next;
 	}
 	
-	/**
-	 * Convenient transform method from a list of {@link DomainObject}  to a list of it's ids
-	 * @param domains
-	 * @return the list of POJOs ids
-	 */
-	protected List<Long> domainToIds(List<? extends DomainObject> domains){
-		return Lists.transform(domains, new Function<DomainObject, Long>() {
-			@Override public Long apply(DomainObject input) {
-				return (input != null) ? input.getKey() : null;
-			}
-		});
-	}
-	
-	/**
-	 * Map a list of enums to it's string equivalent
-	 * @param enums the enums list
-	 * @return the list of string
-	 */
-	protected <E extends Enum<E>> List<String> enumsToStrings(List<E> enums){
-		return Lists.transform(enums, new Function<E, String>() {
-			@Override public String apply(E input) {
-				return (input != null) ? input.name() : null;
-			}
-		});
-	}
 }

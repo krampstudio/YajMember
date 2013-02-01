@@ -20,29 +20,12 @@ public interface MemberService {
 	Collection<Member> getAll() throws DataException;
 	
 	/**
-	 * Get all the members
-	 * @param checkValidy check for each member the valid status
-	 * @return a list of members
-	 * @throws DataException
-	 */
-	Collection<Member> getAll(boolean checkValidy) throws DataException;
-	
-	/**
 	 * Textual search in the members  
 	 * @param expression to look for 
 	 * @return a list of members
 	 * @throws DataException
 	 */
 	Collection<Member> findAll(String expression) throws DataException;
-	
-	/**
-	 * Textual search in the members  
-	 * @param checkValidy check for each member the valid status
-	 * @param expression to look for 
-	 * @return a list of members
-	 * @throws DataException
-	 */
-	Collection<Member> findAll(boolean checkValidy, String expression) throws DataException;
 	
 	/**
 	 * Save a member

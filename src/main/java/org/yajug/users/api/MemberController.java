@@ -57,7 +57,7 @@ public class MemberController extends RestController {
 		try {
 			List<Member> membersList = null;
 			if(StringUtils.isNotBlank(search)){
-				membersList = Lists.newArrayList(memberService.findAll(true, search));
+				membersList = Lists.newArrayList(memberService.findAll(search));
 			} else {
 				membersList = getMembersList(getMembers());
 			}
@@ -220,7 +220,7 @@ public class MemberController extends RestController {
 	 */
 	private Map<Long, Member> getMembers() throws DataException{
 		if(this.members == null){
-			Collection<Member> membersList = memberService.getAll(true);
+			Collection<Member> membersList = memberService.getAll();
 			
 			//needs of thread safety
 			this.members = new ConcurrentHashMap<Long, Member>(membersList.size());

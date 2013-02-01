@@ -2,15 +2,19 @@ package org.yajug.users.persistence.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.yajug.users.domain.Member;
+import org.yajug.users.domain.utils.MappingHelper;
 import org.yajug.users.persistence.MongoDao;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 /**
  * Manage members data from/to the Mongo collection
@@ -21,6 +25,8 @@ import com.mongodb.DBCursor;
 public class MemberMongoDao extends MongoDao{
 	
 	private final static String COLLECTION_NAME = "members";
+	
+	@Inject private MappingHelper mappingHelper;
 	
 	/**
 	 * Get the members collection (ie. db.members in mongo)
@@ -47,6 +53,30 @@ public class MemberMongoDao extends MongoDao{
 		return members;
 	}
 	
+	public List<Member> getAllIn(Set<Long> keys){
+		List<Member> members = new ArrayList<>();
+		if(keys != null && keys.size() > 0){
+			
+			BasicDBList docKeys = new BasicDBList();
+			docKeys.addAll(keys);
+			DBObject query = new BasicDBObject("key", new BasicDBObject("$in", docKeys));
+			
+			
+			DBCursor cursor = members().find(query);
+			try {
+	            while(cursor.hasNext()) {
+	            	Member member = map(Member.class, (BasicDBObject)cursor.next());
+	                if(member != null){
+	                	members.add(member);
+	                }
+	            }
+	        } finally {
+	            cursor.close();
+	        }
+		}
+		return members;
+	}
+	
 	public Member getOne(long key){
 		Member member = null;
 		if(key > 0){
@@ -65,11 +95,12 @@ public class MemberMongoDao extends MongoDao{
 	public List<Member> search(String expression){
 		List<Member> members = new ArrayList<>();
 		
+		BasicDBObject searchExpression = new BasicDBObject("$regex", expression);
 		BasicDBList search = new BasicDBList();
-		search.add(new BasicDBObject("firstName", expression));
-		search.add(new BasicDBObject("lastName", expression));
-		search.add(new BasicDBObject("email", expression));
-		search.add(new BasicDBObject("company", expression));
+		search.add(new BasicDBObject("firstName", searchExpression));
+		search.add(new BasicDBObject("lastName", searchExpression));
+		search.add(new BasicDBObject("email", searchExpression));
+		search.add(new BasicDBObject("company", searchExpression));
 		
 		//create a mongo search query document
 		BasicDBObject query = new BasicDBObject("$or", search);
@@ -100,7 +131,7 @@ public class MemberMongoDao extends MongoDao{
                     .append("company",  member.getCompany())
                     .append("email", member.getEmail());
 			if(member.getRoles() != null){
-				doc.append("roles", enumsToStrings(member.getRoles()));
+				doc.append("roles", mappingHelper.enumsToStrings(member.getRoles()));
 			}
 			saved = handleWriteResult(
 						members().insert(doc)
@@ -122,7 +153,7 @@ public class MemberMongoDao extends MongoDao{
 		                    .append("company",  member.getCompany())
 		                    .append("email", member.getEmail());
 				if(member.getRoles() != null){
-					doc.append("roles", enumsToStrings(member.getRoles()));
+					doc.append("roles", mappingHelper.enumsToStrings(member.getRoles()));
 				}
 				saved = handleWriteResult(
 						members().update(query, doc)

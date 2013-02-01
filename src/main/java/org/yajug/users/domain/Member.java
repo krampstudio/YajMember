@@ -47,11 +47,6 @@ public class Member extends DomainObject implements Comparable<Member>{
 		this.roles = roles;
 	}
 	
-//	public Member(String firstName, String lastName ,String email, String company, List<Role> roles ,List<Membership> memberships) {
-//		this(firstName, lastName, email, company, roles);
-//		this.setMemberships(memberships);
-//	}
-	
 	/**
 	 * @return the firstName
 	 */
@@ -115,12 +110,29 @@ public class Member extends DomainObject implements Comparable<Member>{
 		return roles;
 	}
 	
+	/**
+	 * @param role
+	 */
 	public void setRole(Role role){
 		if(this.roles == null){
 			this.roles = new ArrayList<Role>();
 		}
 		if(!this.roles.contains(role)){
 			this.roles.add(role);
+			
+			//try to keep some consistency between the roles when updated by the app
+			if(role.equals(Role.MEMBER) && roles.contains(Role.OLD_MEMBER)){
+				roles.remove(Role.OLD_MEMBER);
+			}
+			if(role.equals(Role.OLD_MEMBER) && roles.contains(Role.MEMBER)){
+				roles.remove(Role.MEMBER);
+			}
+			if(role.equals(Role.BOARD) && roles.contains(Role.OLD_BOARD)){
+				roles.remove(Role.OLD_BOARD);
+			}
+			if(role.equals(Role.OLD_BOARD) && roles.contains(Role.BOARD)){
+				roles.remove(Role.BOARD);
+			}
 		}
 	}
 	
@@ -130,31 +142,6 @@ public class Member extends DomainObject implements Comparable<Member>{
 	public void setRoles(List<Role> role) {
 		this.roles = role;
 	}
-
-	
-	/**
-	 * 
-	 * @param membership
-	 */
-//	public void setMembership(Membership membership){
-//		if(this.memberships == null){
-//			this.memberships = new ArrayList<Membership>();
-//		}
-//		this.memberships.add(membership);
-//		if(Calendar.getInstance().get(Calendar.YEAR) == membership.getYear()){
-//			this.valid = true;
-//		}
-//	}
-
-	/**
-	 * @param memberships the memberships to set
-	 */
-//	public void setMemberships(List<Membership> memberships) {
-//		this.memberships = memberships;
-//		if(memberships != null){
-//			this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
-//		}
-//	}
 
 	/**
 	 * Get the membership status for the current year.
@@ -166,39 +153,12 @@ public class Member extends DomainObject implements Comparable<Member>{
 	}
 	
 	/**
-	 * Check if this member instance has 
-	 * a valid membership for the current year.
-	 * 
-	 * @return true if valid
+	 * Set the membership status for the current year.
+	 * @param valid if the user is a valid member
 	 */
-//	public boolean checkValidity(){
-//		this.valid = isValidFor(Calendar.getInstance().get(Calendar.YEAR));
-//		return this.valid;
-//	}
-	
-	/**
-	 * Check if this member instance has 
-	 * a valid membership for the specified year.
-	 * 
-	 * @param year the year we check for validity
-	 * @return true if valid
-	 */
-	/*public boolean isValidFor(int year) {
-		boolean validFor = false;
-		
-		if(this.memberships == null){
-			validFor = false;
-		} else {
-			for(Membership ms : this.memberships){
-				if(ms.getYear() == year){
-					validFor = true;
-					break;
-				}
-			}
-		}
-		return validFor;
-	}*/
-
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
 	
 	@Override
 	public String toString() {

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -13,8 +14,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
+import org.yajug.users.domain.utils.MappingHelper;
 import org.yajug.users.persistence.dao.EventMongoDao;
+import org.yajug.users.persistence.dao.MemberMongoDao;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -26,14 +31,20 @@ import com.google.inject.Inject;
 public class EventServiceImpl implements EventService {
 
 	@Inject private EventMongoDao eventMongoDao;
+	@Inject private MemberMongoDao memberMongoDao;
+	@Inject private MappingHelper mappingHelper;
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public Collection<Event> getAll() throws DataException {
-		
-		return eventMongoDao.getAll();
+		Collection<Event> events = eventMongoDao.getAll();
+		return Collections2.transform(events, new Function<Event, Event>(){
+			@Override public Event apply(Event input) {
+				return loadParticipants(input);
+			}
+		});
 	}
 	
 	/**
@@ -45,7 +56,26 @@ public class EventServiceImpl implements EventService {
 		if (key <= 0) {
 			throw new DataException("Unable to retrieve an event from a wrong id");
 		}
-		return eventMongoDao.getOne(key);
+		return loadParticipants(eventMongoDao.getOne(key));
+	}
+	
+	/**
+	 * The participants and registrants comes with only the key field set, 
+	 * so we initialize those lists
+	 * 
+	 * @param event 
+	 * @return the event
+	 */
+	private Event loadParticipants(Event event){
+		if(event.getParticipants() != null && event.getParticipants().size() > 0){
+			Set<Long> participantKeys = mappingHelper.extractKeys(event.getParticipants());
+			event.setParticipants(memberMongoDao.getAllIn(participantKeys));
+		}
+		if(event.getRegistrants() != null && event.getRegistrants().size() > 0){
+			Set<Long> registrantKeys = mappingHelper.extractKeys(event.getRegistrants());
+			event.setRegistrants(memberMongoDao.getAllIn(registrantKeys));
+		}
+		return event;
 	}
 
 	/**

@@ -2,12 +2,14 @@ package org.yajug.users.service;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
+import org.yajug.users.domain.Role;
 import org.yajug.users.persistence.dao.MemberMongoDao;
 import org.yajug.users.persistence.dao.MembershipMongoDao;
 
@@ -24,13 +26,41 @@ public class MemberServiceImpl implements MemberService {
 	@Inject private MemberMongoDao memberMongoDao;
 	@Inject private MembershipMongoDao membershipMongoDao;
 	
-	private List<Member> setUp(List<Member> members, boolean checkValidy){
+	public void checkValidity(Collection<Member> members, boolean updateRole) throws DataException{
 		if(members != null){
-			if(checkValidy){
-				//TODO implement this.checkValidity(members);
+			Collection<Member> membersToUpdate = new ArrayList<>();
+			int currentYear  = Calendar.getInstance().get(Calendar.YEAR);
+			
+			for(Member member : members){
+				boolean saveMember = false;
+				Collection<Membership> memberships = getMemberships(member);
+				
+				for(Membership membership : memberships){
+					if(membership.getYear() > 0 && membership.getYear() == currentYear){
+						//the member is valid
+						member.setValid(true);
+						
+						//we check if the roles are consistents
+						if(updateRole && !member.getRoles().contains(Role.MEMBER)){
+							member.setRole(Role.MEMBER);
+							saveMember = true;
+						}
+						break;
+					}
+				}
+				if(updateRole && memberships.size() > 0 && !member.isValid()){
+					member.setRole(Role.OLD_MEMBER);
+					saveMember = true;
+				}
+				if(saveMember){
+					membersToUpdate.add(member);
+				}
+			}
+			
+			if(updateRole && membersToUpdate.size() > 0){
+				this.save(membersToUpdate);
 			}
 		}
-		return members;
 	}
 	
 	/**
@@ -47,15 +77,7 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public List<Member> getAll() throws DataException {
-		return getAll(false);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Member> getAll(boolean checkValidy) throws DataException {
-		return setUp(memberMongoDao.getAll(), checkValidy);
+		return memberMongoDao.getAll();
 	}
 	
 	/**
@@ -63,23 +85,16 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public List<Member> findAll(String expression) throws DataException {
-		return findAll(false, expression);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Member> findAll(boolean checkValidy, String expression) throws DataException {
 		List<Member> members = new ArrayList<Member>();
 		
-		if(!validateSearchExpression(expression)){
-			throw new DataException("invalid search pattern");
+		if(StringUtils.isNotBlank(expression)){
+			
+			//expression validated against a pattern
+			if(!validateSearchExpression(expression)){
+				throw new DataException("invalid search pattern");
+			}
+			members = memberMongoDao.search(expression);
 		}
-		
-		//TODO validate expression against javascript injections
-		members = setUp(memberMongoDao.search(expression), checkValidy);
-		
 		return members;
 	}
 	
@@ -88,8 +103,10 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public Collection<Membership> getMemberships(Member member) throws DataException {
-		Collection<Membership> memberships = null;
-		
+		Collection<Membership> memberships = new ArrayList<>();
+		if(member != null && member.getKey() > 0){
+			memberships = membershipMongoDao.getAllByMember(member.getKey());
+		}
 		return memberships;
 	}
 	

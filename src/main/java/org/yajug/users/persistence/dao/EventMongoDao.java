@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.yajug.users.domain.Event;
+import org.yajug.users.domain.utils.MappingHelper;
 import org.yajug.users.persistence.MongoDao;
 
+import com.google.inject.Inject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -13,6 +15,8 @@ import com.mongodb.DBCursor;
 public class EventMongoDao extends MongoDao {
 
 	private final static String COLLECTION_NAME = "events";
+	
+	@Inject private MappingHelper mappingHelper;
 	
 	/**
 	 * Get the events collection (ie. db.members in mongo)
@@ -25,7 +29,7 @@ public class EventMongoDao extends MongoDao {
 	public List<Event> getAll(){
 		List<Event> events = new ArrayList<>();
 		
-		DBCursor cursor = events().find();
+		DBCursor cursor = events().find().sort(new BasicDBObject("date", -1));
 		try {
             while(cursor.hasNext()) {
             	Event event = map(Event.class, (BasicDBObject)cursor.next());
@@ -66,10 +70,10 @@ public class EventMongoDao extends MongoDao {
                     .append("description",  event.getDescription())
                     .append("date",  event.getDate());
 			if(event.getParticipants() != null){
-				doc.append("participants", domainToIds(event.getParticipants()));
+				doc.append("participants", mappingHelper.extractKeys(event.getParticipants()));
 			}
 			if(event.getRegistrants() != null){
-				doc.append("registrants", domainToIds(event.getRegistrants()));
+				doc.append("registrants", mappingHelper.extractKeys(event.getRegistrants()));
 			}
 			saved = handleWriteResult(
 						events().insert(doc)
@@ -89,10 +93,10 @@ public class EventMongoDao extends MongoDao {
                     .append("description",  event.getDescription())
                     .append("date",  event.getDate());
 				if(event.getParticipants() != null){
-					doc.append("participants", domainToIds(event.getParticipants()));
+					doc.append("participants", mappingHelper.extractKeys(event.getParticipants()));
 				}
 				if(event.getRegistrants() != null){
-					doc.append("registrants", domainToIds(event.getRegistrants()));
+					doc.append("registrants", mappingHelper.extractKeys(event.getRegistrants()));
 				}
 				saved = handleWriteResult(
 						events().update(query, doc)
