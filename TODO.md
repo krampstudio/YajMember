@@ -7,7 +7,7 @@
  - [ ] Save event participants
  - [ ] Participants matching list from RSVP or full text list
  - [ ] Manage authentication error messages (ie. when user is already logged to google but with another account)
- - [ ] Add slf4j and logback!
+ - [x] Add slf4j and logback!
  - [ ] Add grunt to build the client side (to manage the require.js optimizer) and link it to gradle
  - [ ] Persist the logged users to mongo 
  - [ ] Events/years stats would be great

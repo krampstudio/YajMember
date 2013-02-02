@@ -1,6 +1,9 @@
 package org.yajug.users.bulkimport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yajug.users.bulkimport.importer.DomainImporter;
+import org.yajug.users.bulkimport.importer.MembershipImporter;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -13,6 +16,8 @@ import com.google.inject.Injector;
  */
 public class BulkImport {
 
+	private final static Logger logger = LoggerFactory.getLogger(BulkImport.class);
+	
 	/**
 	 * @param args path target
 	 */
@@ -36,7 +41,7 @@ public class BulkImport {
 		
 			int imported = importer.doImport(args[1]);
 			
-			System.out.println(imported + " " + args[0] + " imported");
+			logger.info(imported + " " + args[0] + " imported");
 		}
 	}
 

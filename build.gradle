@@ -43,6 +43,10 @@ dependencies {
 	compile "com.google.http-client:google-http-client-gson:$googleApiClientVersion"
 	compile "net.sf.supercsv:super-csv:$superCsvVersion"
 	compile "org.imgscalr:imgscalr-lib:$scalrVersion"
+	compile "org.slf4j:slf4j-api:$slf4jVersion"
+	compile "ch.qos.logback:logback-core:$logbackVersion"
+	compile "ch.qos.logback:logback-classic:$logbackVersion"
+	runtime "org.codehaus.groovy:groovy:1.8.6"
 	testCompile "junit:junit:$junitVersion"
 	testCompile "org.jukito:jukito:$jukitoVersion"
 }

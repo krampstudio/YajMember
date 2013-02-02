@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yajug.users.bulkimport.reader.DomainReader;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Member;
@@ -21,6 +23,8 @@ import com.google.inject.Inject;
  */
 public class MembershipImporter implements DomainImporter {
 
+	private final static Logger logger = LoggerFactory.getLogger(MembershipImporter.class);
+	
 	@Inject private DomainReader<Membership> reader;
 	@Inject private MemberService memberService;
 	@Inject private EventService eventService;
@@ -41,13 +45,13 @@ public class MembershipImporter implements DomainImporter {
 					//get member
 					Collection<Member> foundMembers = memberService.findAll(membership.getMember().getEmail());
 					if(foundMembers.size() == 0){
-						System.out.println("No members found for email " + membership.getMember().getEmail() + ", skipped.");
+						logger.warn("No members found for email " + membership.getMember().getEmail() + ", skipped.");
 					} else if(foundMembers.size() > 1){
-						System.out.println("Multiple members found for email " + membership.getMember().getEmail() + ", skipped.");
+						logger.warn("Multiple members found for email " + membership.getMember().getEmail() + ", skipped.");
 					} else {
 						Member member = foundMembers.iterator().next();
 						if(member.getKey() <= 0){
-							System.out.println("Invalid key " + member.getKey() + " for member " + membership.getMember().getEmail() + ", skipped.");
+							logger.warn("Invalid key " + member.getKey() + " for member " + membership.getMember().getEmail() + ", skipped.");
 						} else {
 							membership.setMember(member);
 						}
