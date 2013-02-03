@@ -21,10 +21,13 @@ To start coding, you need:
  2. Update the mongo connection settings
  3. Disable the authentication in the config file (`auth.enabled=false`) or ask me for the Google API identifier.
 * Import the data into mongo (the data are contained into CSV files under `src/main/scripts`), by running: 
+
 ```bash
 $ gradle bulk
 ```
+
 * Once the data is imported, you can start the web app:
+
 ```bash
 $ gradle jettyRun
 ```
@@ -59,4 +62,4 @@ $ gradle jettyRun
 
 ## There is still a lot to do
 
-Check my personnal [TODO List](TODO.md) or the [issues list}(https://github.com/krampstudio/YajMember/issues)
+Check my personnal [TODO List](TODO.md) or the [issues list](https://github.com/krampstudio/YajMember/issues)
