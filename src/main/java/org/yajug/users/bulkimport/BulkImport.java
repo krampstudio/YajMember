@@ -3,7 +3,6 @@ package org.yajug.users.bulkimport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yajug.users.bulkimport.importer.DomainImporter;
-import org.yajug.users.bulkimport.importer.MembershipImporter;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;

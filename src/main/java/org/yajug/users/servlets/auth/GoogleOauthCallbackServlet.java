@@ -39,9 +39,15 @@ public class GoogleOauthCallbackServlet extends AbstractAuthorizationCodeCallbac
 			resp.sendRedirect("index.html");
 			return;
 		} 
-		
 		logoutHelper.logout(req);
-		resp.sendRedirect("login.html?error=user not allowed");
+		
+		String error = "You are not allowed with this account"; 
+		if(user != null){
+			error += ": " + user.getEmail();
+		}
+		error += ". Only users with a yajug.org account are allowed.";
+		
+		resp.sendRedirect("login.html?error=" + error);
 	}
 	
 	@Override

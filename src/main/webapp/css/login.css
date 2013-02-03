@@ -1,0 +1,39 @@
+#login-box{
+	width:30em;
+	border: solid 1px #E77124;
+	border-radius:5px;
+	margin:auto;
+	padding:.5em;
+	color:#fff;
+	font-weight:bold;
+	text-align:center;
+	background-color:#E77124;
+	background: -moz-linear-gradient(top, #FCB689, #E77124);
+}
+#login-box #login{
+	display: inline-block;
+	border: solid 1px #999;
+	border-bottom-color:#666;
+	border-right-color:#666;
+	border-radius:4px;
+	padding:.3em .5em .3em 2em;
+	margin:.1em;
+	color:#444;
+	font-weight:bold;
+	text-decoration: none;
+	background-color:#eee;
+	/** css trick to support bg image and gradient: works only for moz and webkit */
+	background-image: url('../img/google.png'), -moz-linear-gradient(top,  #eee,  #999);
+	background-image: url('../img/google.png'), -webkit-gradient(linear, left top, left bottom, from(#eee), to(#999));
+	background-repeat: no-repeat;
+	background-position: .3em .3em;
+}
+#login-box #login:hover{
+	color:#999;	
+}
+#login-box a{
+	color:#FFF;
+}
+#login-box a:hover{
+	text-decoration: none;
+}
