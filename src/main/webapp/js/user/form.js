@@ -25,7 +25,7 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 				
 				//valid membership display/hide sections
 				$('#membership').change(function() {
-					if ($(this).val() === 'true') {
+					if ($(this).attr('checked') === 'checked') {
 						$('#membership-event').closest('div').show();
 						$('#membership-paiementDate').closest('div').show();
 					} else {
