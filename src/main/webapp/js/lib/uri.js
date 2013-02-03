@@ -6,7 +6,8 @@ define(['jquery'], function($){
 	'use strict';
 	
 	/**
-	 * @exports uri
+	 * @constructor
+	 * @alias module:uri
 	 */
 	var URI = {
 			

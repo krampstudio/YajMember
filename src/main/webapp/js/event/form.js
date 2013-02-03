@@ -2,79 +2,29 @@
  * Manage event's Form UI and IO
  * @module event/form
  */
-define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify, store){
+define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(MultiForm, Modernizr, notify, store){
 	
 	/**
-	 * @todo creates a Form objects that can be used by both the event and the user forms
+	 * The EventForm extends from the Form object
 	 * @constructor
+	 * @see module:multiform 
 	 * @alias module:event/form
 	 */
-	var EventForm = {
+	var EventForm = $.extend({}, MultiForm, {
 		
 		/**
-		 * List of  sub forms
 		 * @private 
 		 * @memberOf module:event/form
+		 * @see module:form#_id
+		 */
+		_id : 'event',
+		
+		/**
+		 * @private 
+		 * @memberOf module:event/form
+		 * @see module:form#_id
 		 */
 		_formNames	: ['infos', 'flyer', 'participant'],
-		
-		/**
-		 * Stores the forms refs
-		 * @private
-		 * @memberOf module:event/form
-		 */
-		_forms		: {},
-		
-		/**
-		 * Get an event's editor form from it's name
-		 * @memberOf module:event/form
-		 * @param {String} name
-		 * @return {Object} the jQuery element that match the form
-		 */
-		getForm : function(name){
-			
-			if($.inArray(name, this._formNames) < 0){
-				return;
-			}
-			if(this._forms[name] === undefined || ($.isArray(this._forms[name]) && this._forms[name].length === 0)){
-				if($('#event-'+name+'-editor').length > 0){
-					this._forms[name] = $('#event-'+name+'-editor');
-				}
-			}
-			
-			return this._forms[name];
-		},
-		
-		/**
-		 * Get all the event's editor forms
-		 * @memberOf module:event/form
-		 * @returns {Array} of jQuery elements that match each form
-		 */
-		getForms : function(){
-			var i, forms = [];
-			for(i in this._formNames){
-				forms.push(this.getForm(this._formNames[i]));
-			}
-			return forms;
-		},
-		
-		/**
-		 * Enable/Disable the form fields
-		 * @deprecated
-		 * @memberOf module:event/form
-		 */
-		toggleForm : function(){
-			var $submiter, isDisabled, i, 
-				forms = this.getForms();
-			
-			for(i in forms){
-				$submiter = $('.submiter', forms[i]);
-				isDisabled = $submiter.button('option', 'disabled');
-				
-				$(':input', forms[i]).attr('disabled', !isDisabled);
-				$submiter.button(isDisabled ? 'enable' : 'disable');
-			}
-		},
 		
 		/**
 		 * Initialize the controls behaviors, including form submit event handlers
@@ -83,7 +33,7 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 		 */
 		initFormControls : function(callback){
 			var i, $submiter, 
-				forms 		= this.getForms();
+				forms = this.getForms();
 			
 			//setup forms submit buttons
 			for(i in forms){
@@ -470,7 +420,6 @@ define(['modernizr', 'notify', 'store', 'jhtmlarea'], function(Modernizr, notify
 			$('#description', this.getForm('infos')).htmlarea('updateHtmlArea');
 			$('#current-flyer',  this.getForm('flyer')).removeAttr('src');
 		}
-	};
-	
+	});
 	return EventForm;
 });

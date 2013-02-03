@@ -1,51 +1,62 @@
 <div>
 	<form id="member-editor">
-		<input type="hidden" name="key" id="key" value="" />
-		<input type="hidden" name="membership-key" id="membership-key" value="" />
-		<div>
-			<label for="firstName">First Name</label>
-			<input id="firstName" name="firstName" type="text" required />
-		</div>
-		<div>
-			<label for="lastName">Last Name</label>
-			<input id="lastName" name="lastName" type="text" required />
-		</div>
-		<div>
-			<label for="email">Email</label>
-			<input id="email" name="email" type="email" required />
-		</div>
-		<div>
-			<label for="company">Company</label>
-			<input id="company" name="company" type="text" />
-		</div>
-		<div>
-			<label for="membership">Valid Membership ?</label>
-			<input id="membership" name="membership" type="checkbox" value="true" />
-		</div>
-		<div style="display:none;">
-			<label for="membership-event">Subscribed during an event :</label>
-			<select id="membership-event" name="membership-event">
-				<option value=""></option>
-			</select>
-		</div>
-		<div style="display:none;">
-			<label for="membership-paiementDate">Subscribed the :</label>
-			<input id="membership-paiementDate" name="membership-paiementDate" type="date" />
-		</div>
-		<div>
-			<label for="roles">Role</label>
-			<select id="roles" name="roles" multiple="multiple">
-				<option value="PRESIDENT">President</option>
-				<option value="SECRETARY">Secretary</option>
-				<option value="TREASURER">Treasurer</option>
-				<option value="BOARD">Board Member</option>
-				<option value="OLD_BOARD">Old Board Member</option>
-				<option value="MEMBER">Member</option>
-				<option value="OLD_MEMBER">Old Member</option>
-				<option value="SPONSOR">Sponsor</option>
-				<option value="VISITOR">Visitor</option>
-			</select>
-		</div>
-		<input type="submit" id="submiter" value="Save" />
+		<fieldset>
+			<legend>Details</legend>
+			<input type="hidden" name="key" id="key" value="" />
+			<div>
+				<label for="firstName">First Name</label>
+				<input id="firstName" name="firstName" type="text" required />
+			</div>
+			<div>
+				<label for="lastName">Last Name</label>
+				<input id="lastName" name="lastName" type="text" required />
+			</div>
+			<div>
+				<label for="email">Email</label>
+				<input id="email" name="email" type="email" required />
+			</div>
+			<div>
+				<label for="company">Company</label>
+				<input id="company" name="company" type="text" />
+			</div>
+			<div>
+				<label for="roles">Role</label>
+				<select id="roles" name="roles" multiple="multiple">
+					<option value="PRESIDENT">President</option>
+					<option value="SECRETARY">Secretary</option>
+					<option value="TREASURER">Treasurer</option>
+					<option value="BOARD">Board Member</option>
+					<option value="OLD_BOARD">Old Board Member</option>
+					<option value="MEMBER">Member</option>
+					<option value="OLD_MEMBER">Old Member</option>
+					<option value="SPONSOR">Sponsor</option>
+					<option value="VISITOR">Visitor</option>
+				</select>
+			</div>
+			<input type="submit" class="submiter" value="Save" />
+		</fieldset>
+	</form>
+	<form id="membership-editor">
+		<fieldset>
+			<legend>Membership</legend>
+			<div>
+				<div class="list-box">
+					<div>Registered</div>
+					<ul id="membership-year"></ul>
+				</div>
+				<div class="list-box-form">
+					<div>
+						<label for="membership-event">Subscribed during an event :</label>
+						<select id="membership-event" name="membership-event">
+							<option value=""></option>
+						</select>
+					</div>
+					<div>
+						<label for="membership-paiementDate">Subscribed the :</label>
+						<input id="membership-paiementDate" name="membership-paiementDate" type="date" />
+					</div>
+				</div>
+			</div>
+		</fieldset>
 	</form>
 </div>
