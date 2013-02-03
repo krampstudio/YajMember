@@ -27,6 +27,8 @@ define(['store', 'notify'], function(store, notify){
 					$.error("Error : " + (data.error ? data.error : "unknown"));
 				} else {
 					
+					$('#events').empty();
+					
 					//create the HTML structure for the years accordion
 					var template = $('#events-acc-template');
 					$.tmpl(template, {years: data}).appendTo('#events');
@@ -39,15 +41,14 @@ define(['store', 'notify'], function(store, notify){
 						//load the event list by activating a 
 					    changestart: function(event, ui ){
 					    	 var $eventList = ui.newContent.find('ul');
-					    	 if($eventList.find('li').length === 0){
-					    		 self.loadEvents(
-					    			 ui.newContent.find('ul'), 
-					    			 ui.newHeader.find('a').attr('href').replace('#', ''),
-					    			 function(){
-					    				 self._setUpEventsControls($eventList);
-					    			 }
-					    		);
-					    	 }
+					    	 $eventList.find('li').remove('li');
+				    		 self.loadEvents(
+				    			 ui.newContent.find('ul'), 
+				    			 ui.newHeader.find('a').attr('href').replace('#', ''),
+				    			 function(){
+				    				 self._setUpEventsControls($eventList);
+				    			 }
+				    		);
 						}
 					});
 				}

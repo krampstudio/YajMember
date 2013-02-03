@@ -84,8 +84,8 @@ requirejs(
 			show : function(event, ui) {
 
 				//User
-				requirejs(['user/form'], function(userForm) {
-					if(initialized['member']){
+				if(initialized['member']){
+					requirejs(['user/form'], function(userForm) {
 						if(ui.index === 1 && store.isset('member')){
 							//load the member
 							userForm.loadMember(store.get('member'));	
@@ -94,16 +94,22 @@ requirejs(
 							userForm.clear();
 							store.rm('member');
 						}
+					});
+					if(ui.index === 0){
+						requirejs(['user/list'], function(userList) {
+							userList.reload();
+						});
 					}
-				});
+				}
+				
 				//rename the tab if we are add or editing
 				$('#actions ul:first li:nth-child(2) a').text(
 					(ui.index === 1 && store.isset('member')) ? 'Edit member' : 'Add a member'
 				);
 				
 				//Event
-				requirejs(['event/form'], function(eventForm) {
-					if(initialized['event']){
+				if(initialized['event']){
+					requirejs(['event/form'], function(eventForm) {
 						if(ui.index === 3 && store.isset('event')){
 							eventForm.loadEvent(store.get('event'));
 						} else {
@@ -111,8 +117,8 @@ requirejs(
 							eventForm.clear();
 							store.rm('event');
 						}
-					}
-				});
+					});
+				}
 				//rename the tab if we are add or editing
 				$('#actions ul:first li:nth-child(4) a').text(
 					(ui.index === 3 && store.isset('event')) ? 'Edit event' : 'Add an event'

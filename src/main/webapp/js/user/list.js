@@ -1,5 +1,18 @@
+/**
+ * Manage the users list widget
+ * @module user/list
+ */
 define( ['store', 'gridy'], function(store){
+	
+	/**
+	 * @exports user/list
+	 */
 	return {
+		
+		/**
+		 * Build the list
+		 * @memberOf user/list
+		 */
 		build: function(){
 			$("#users").gridy({
 				url		: 'api/member/list',
@@ -41,6 +54,14 @@ define( ['store', 'gridy'], function(store){
 					{ name: 'Actions', width: 200 }
 				]
 			});
+		},
+		
+		/**
+		 * Reload the list
+		 * @memberOf user/list
+		 */
+		reload : function(){
+			$("#users").gridy('reload');
 		}
 	}
 });
