@@ -1,46 +1,56 @@
-define(['modernizr', 'notify'], function(Modernizr, notify){
+/**
+ * Manage user's Form UI and IO
+ * @module event/form
+ */
+define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, notify){
+
 	/**
-	 * TODO creates a Form objects that can be used by both the event and the user forms
+	 * The UserForm is a MultiForm that manages widgets for the user's forms
+	 * @constructor
+	 * @see module:multiform 
+	 * @alias module:user/form
 	 */
-	var UserForm = {
-			/**
-			 * Enable/Disable the form fields
-			 */
-			toggleForm : function(){
-				var $submiter = $('#submiter'),
-					isDisabled = $submiter.button('option', 'disabled');
-				$('input, select',$('#member-editor')).attr('disabled', !isDisabled);
-				$submiter.button(isDisabled ? 'enable' : 'disable');
-			},
+	var UserForm = $.extend({}, MultiForm, {
 			
+		/**
+		 * @private 
+		 * @memberOf module:event/form
+		 * @see module:form#_id
+		 */
+		_id : 'member',
+		
+		/**
+		 * @private 
+		 * @memberOf module:event/form
+		 * @see module:form#_id
+		 */
+		_formNames	: ['details', 'membership'],
+		
+		
 			/**
 			 * Initialize the controls behavior
 			 */
-			initControls : function(callback){
+		_initDetailsControls : function($form){
 				
-				var self = this;
 				
-				//submit button
-				$('#submiter').button({label: $('#submiter').val()});
+//				//valid membership display/hide sections
+//				$('#membership').change(function() {
+//					if ($(this).attr('checked') === 'checked') {
+//						$('#membership-event').closest('div').show();
+//						$('#membership-paiementDate').closest('div').show();
+//					} else {
+//						$('#membership-event').closest('div').hide();
+//						$('#membership-paiementDate').closest('div').hide();
+//					}
+//				});
 				
-				//valid membership display/hide sections
-				$('#membership').change(function() {
-					if ($(this).attr('checked') === 'checked') {
-						$('#membership-event').closest('div').show();
-						$('#membership-paiementDate').closest('div').show();
-					} else {
-						$('#membership-event').closest('div').hide();
-						$('#membership-paiementDate').closest('div').hide();
-					}
-				});
-				
-				//the date picker
-				$('#membership-paiementDate').datepicker({
-					'dateFormat': 'yy-mm-dd'
-				});
+//				//the date picker
+//				$('#membership-paiementDate').datepicker({
+//					'dateFormat': 'yy-mm-dd'
+//				});
 				
 				//on form submit
-				$('#member-editor').submit(function(event){
+				$form.submit(function(event){
 					event.preventDefault();
 					
 					var member = self.serializeMember($(this)),
@@ -64,10 +74,6 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 					
 					return false;
 				});
-				
-				if(typeof callback === 'function'){
-					callback();
-				}
 			},
 			
 			/**
@@ -91,12 +97,12 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 						if(!data || data.error){
 							$.error("Error : " + (data.error ? data.error : "unknown"));
 						} else {
-							$('#member-editor :input').each(function(){
+							$(':input', self.getForm('details')).each(function(){
 								if(data[$(this).attr('id')]){
 									$(this).val(data[$(this).attr('id')]);
 								}
 							});
-							if(data['valid'] && data['valid'] === true){
+							/*if(data['valid'] && data['valid'] === true){
 								$('#membership').prop('checked', true);
 								$('#membership-event').closest('div').show();
 								$('#membership-paiementDate').closest('div').show();
@@ -120,7 +126,7 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 										}
 									}
 								}
-							}
+							}*/
 							if(typeof callback === 'function'){
 								callback();
 							}
@@ -132,29 +138,29 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 			/**
 			 * Load the list of events
 			 */
-			loadEvents : function (callback){
-				//load events
-				$.ajax({
-					type 		: 'GET',
-					url 		: 'api/event/list',
-					dataType 	: 'json',
-					data		: {
-						current : true
-					}
-				}).done(function(data) {	
-					if(!data || data.error){
-						$.error("Error : " + (data.error ? data.error : "unknown"));
-					} else if(!data.length){
-						//data is empty no event
-					} else {
-						var template = "<option value='${key}'>${date} - ${title}</option>";
-						$.tmpl(template, data).appendTo('#membership-event');
-					}
-					if(typeof callback === 'function'){
-						callback();
-					}
-				});
-			},
+//			loadEvents : function (callback){
+//				//load events
+//				$.ajax({
+//					type 		: 'GET',
+//					url 		: 'api/event/list',
+//					dataType 	: 'json',
+//					data		: {
+//						current : true
+//					}
+//				}).done(function(data) {	
+//					if(!data || data.error){
+//						$.error("Error : " + (data.error ? data.error : "unknown"));
+//					} else if(!data.length){
+//						//data is empty no event
+//					} else {
+//						var template = "<option value='${key}'>${date} - ${title}</option>";
+//						$.tmpl(template, data).appendTo('#membership-event');
+//					}
+//					if(typeof callback === 'function'){
+//						callback();
+//					}
+//				});
+//			},
 			
 			/**
 			 * Serialize the form to a JSON format that match the REST objects
@@ -169,7 +175,7 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 						$.error('Invalid jQuery element for $form. It much match a form tag.')
 					}
 					$.map($form.serializeArray(), function(elt, index){
-						if(!/^membership/.test(elt.name)){
+						//if(!/^membership/.test(elt.name)){
 							if(elt.value && elt.value.trim().length > 0){
 								if(member[elt.name] === undefined){
 									member[elt.name] = elt.value;
@@ -180,36 +186,36 @@ define(['modernizr', 'notify'], function(Modernizr, notify){
 									member[elt.name].push(elt.value);
 								}
 							}
-						} else {
-							membership[elt.name.replace(/^membership-/, '')] = elt.value;
-						}
+//						} else {
+//							membership[elt.name.replace(/^membership-/, '')] = elt.value;
+//						}
 					});
 					if(member.roles && !$.isArray(member.roles)){
 						member.roles = [member.roles];
 					}
 					
-					if($('#membership', $form).val() === true || membership['key']){
-						member['memberships'] = [{}];
-						if(membership['key']){
-							member['memberships'][0]['key'] = membership['key'];
-						}
-						if(membership['paiementDate']){
-							member['memberships'][0]['paiementDate'] = membership['paiementDate'];
-						}
-						if(membership['event']){
-							member['memberships'][0]['event'] = {'key' : membership['event'] };
-						}
-					}
+//					if($('#membership', $form).val() === true || membership['key']){
+//						member['memberships'] = [{}];
+//						if(membership['key']){
+//							member['memberships'][0]['key'] = membership['key'];
+//						}
+//						if(membership['paiementDate']){
+//							member['memberships'][0]['paiementDate'] = membership['paiementDate'];
+//						}
+//						if(membership['event']){
+//							member['memberships'][0]['event'] = {'key' : membership['event'] };
+//						}
+//					}
 				}
 				return member;
 			},
 			
 			clear : function(){
-				$('#member-editor').each(function(){
-					this.reset();
-				});
+//				this.getForms().each(function(){
+//					this.reset();
+//				});
 			}
-		};
+		});
 	
 	return UserForm;
 });

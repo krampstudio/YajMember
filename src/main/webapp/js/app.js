@@ -48,15 +48,13 @@ requirejs(
 						break;
 					case 1:
 						requirejs(['user/form'], function(userForm) {
-							userForm.initControls(function(){
-								userForm.loadEvents(function(){
-									if(!initialized['member']){
-										if(store.isset('member')){
-											userForm.loadMember(store.get('member'));	
-										}
-										initialized['member'] = true;
+							userForm.initFormControls(function(){
+								if(!initialized['member']){
+									if(store.isset('member')){
+										userForm.loadMember(store.get('member'));	
 									}
-								});
+									initialized['member'] = true;
+								}
 							});
 						});
 						break;

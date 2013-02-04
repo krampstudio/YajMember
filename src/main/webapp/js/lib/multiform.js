@@ -65,7 +65,6 @@ define(['jquery'], function($){
 						this._forms[name] = $(formId);
 					}
 				}
-				
 				return this._forms[name];
 			},
 			
@@ -98,7 +97,37 @@ define(['jquery'], function($){
 					$(':input', forms[i]).attr('disabled', !isDisabled);
 					$submiter.button(isDisabled ? 'enable' : 'disable');
 				}
-			}
+			},
+			
+			/**
+			 * Calls dynamically the sub forms initializer based on naming convention:
+			 * _initFormnameControls(Object) 
+			 * where Formname is the name of the subform as defined by the _formNames array
+			 * 
+			 * @memberOf module:multiform
+			 * @param {Function} a callback executed once the controls are initialized
+			 */
+			initFormControls : function(callback){
+				var i, $submiter, name, init;
+				
+				for(i in this._formNames){
+					name = this._formNames[i];
+					
+					//setup forms submit buttons
+					$submiter  = $('.submiter', this.getForm(name));
+					$submiter.button({label : $submiter.val(), disabled : false});
+					
+					//setup form controls based on method name
+					init = '_init' + name[0].toUpperCase() + name.slice(1) + 'Controls';
+					if(this[init] !== undefined && typeof this[init] === 'function'){
+						this[init].apply(this, [this.getForm(name)]);
+					}
+				}
+				
+				if(typeof callback === 'function'){
+					callback();
+				}
+			},
 	}
 	return MultiForm;
 });

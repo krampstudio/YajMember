@@ -27,29 +27,6 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		_formNames	: ['infos', 'flyer', 'participant'],
 		
 		/**
-		 * Initialize the controls behaviors, including form submit event handlers
-		 * @memberOf module:event/form
-		 * @param {Function} a callback executed once the controls are initialized
-		 */
-		initFormControls : function(callback){
-			var i, $submiter, 
-				forms = this.getForms();
-			
-			//setup forms submit buttons
-			for(i in forms){
-				$submiter  = $('.submiter', forms[i]);
-				$submiter.button({label : $submiter.val(), disabled : false});
-			}
-			this._initInfosControls(this.getForm('infos'));
-			this._initFlyerControls(this.getForm('flyer'));
-			this._initParticipantControls(this.getForm('participant'));
-			
-			if(typeof callback === 'function'){
-				callback();
-			}
-		},
-		
-		/**
 		 * Initialize the controls for the Infos form.
 		 * @private
 		 * @memberOf module:event/form
@@ -85,7 +62,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 			});
 			
 			// on form submit
-			$form.submit(function(e){
+			$form.bind('submit', function(e){
 				e.preventDefault();
 				
 				var udpate = $('#key', $(this)).val().length > 0;
