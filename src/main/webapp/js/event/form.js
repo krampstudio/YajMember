@@ -28,6 +28,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		
 		/**
 		 * Initialize the controls for the Infos form.
+		 * @see module:multiform#initFormControls
 		 * @private
 		 * @memberOf module:event/form
 		 * @param {Object} the jquery element the reference the form
@@ -89,6 +90,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		
 		/**
 		 * Initialize the controls for the Flyer form.
+		 * @see module:multiform#initFormControls
 		 * @private
 		 * @memberOf module:event/form
 		 * @param {Object} the jquery element the reference the form
@@ -151,6 +153,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		
 		/**
 		 * Initialize the controls for the Participant form.
+		 * @see module:multiform#initFormControls
 		 * @private
 		 * @memberOf module:event/form
 		 * @param {Object} the jquery element the reference the form
@@ -387,15 +390,23 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		},
 		
 		/**
-		 * Clear the event forms
+		 * Clear description field manually
+		 * @see module:multiform#clear
+		 * @private
 		 * @memberOf module:event/form
 		 */
-		clear : function(){
-			$.each(this.getForms(), function(index, elt){
-				$(':input', elt).val('');
-			});
-			$('#description', this.getForm('infos')).htmlarea('updateHtmlArea');
-			$('#current-flyer',  this.getForm('flyer')).removeAttr('src');
+		_clearInfosForm : function($form){
+			$('#description', $form).htmlarea('updateHtmlArea');
+		},
+		
+		/**
+		 * Clear the flyer field manually
+		 * @see module:multiform#clear
+		 * @private
+		 * @memberOf module:event/form
+		 */
+		_clearFlyerForm: function($form){
+			$('#current-flyer', $form).removeAttr('src');
 		}
 	});
 	return EventForm;

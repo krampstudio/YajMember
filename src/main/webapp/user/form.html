@@ -40,23 +40,38 @@
 		<fieldset>
 			<legend>Membership</legend>
 			<div>
-				<div class="list-box">
-					<div>Registered</div>
-					<ul id="membership-year"></ul>
-				</div>
-				<div class="list-box-form">
-					<div>
-						<label for="membership-event">Subscribed during an event :</label>
-						<select id="membership-event" name="membership-event">
-							<option value=""></option>
-						</select>
-					</div>
-					<div>
-						<label for="membership-paiementDate">Subscribed the :</label>
-						<input id="membership-paiementDate" name="membership-paiementDate" type="date" />
-					</div>
-				</div>
+				<ul id="memberships">
+					<li><span class="ui-icon ui-icon-cirle-plus">Add</span></li>
+				</ul>
 			</div>
+			<input type="submit" class="submiter" value="Save" />
 		</fieldset>
 	</form>
 </div>
+<script id="membership-tab-template" type="text/x-jquery-tmpl">
+<li><a href="#membership-${year}">${year}</a></li>
+</script>
+<script id="membership-form-template" type="text/x-jquery-tmpl">
+<div id="membership-${year}">
+	<div>
+		<label for="membership-${year}-type">Type</label>
+		<select id="membership-${year}-type" name="membership-${year}-type">
+			<option>Personnal membership</option>
+			<option>Sponsored membership</option>
+		</select>
+	</div>
+	<div>
+		<label for="membership-${year}-event">Type</label>
+		<select id="membership-${year}-event" name="membership-${year}-event">
+		</select>
+	</div>
+	<div>
+		<label for="membership-${year}-date">Paiement date</label>
+		<input id="membership-${year}-date" name="membership-${year}-date" type="date" required />
+	</div>
+	<div>
+		<label for="membership-${year}-type">Amount</label>
+		<input id="membership-${year}-type" name="membership-${year}-type" type="text" required />
+	</div>
+</div>
+</script>

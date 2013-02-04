@@ -89,8 +89,9 @@ requirejs(
 							userForm.loadMember(store.get('member'));	
 						} else {
 							//clean up
-							userForm.clear();
-							store.rm('member');
+							userForm.clearForms(function(){
+								store.rm('member');
+							});
 						}
 					});
 					if(ui.index === 0){
@@ -112,8 +113,9 @@ requirejs(
 							eventForm.loadEvent(store.get('event'));
 						} else {
 							//clean up
-							eventForm.clear();
-							store.rm('event');
+							eventForm.clearForms(function(){
+								store.rm('event');
+							});
 						}
 					});
 				}

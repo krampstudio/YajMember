@@ -128,6 +128,35 @@ define(['jquery'], function($){
 					callback();
 				}
 			},
+			
+			/**
+			 * Clear the sub forms and call specific clear method based on naming convention:
+			 * _clearFormnameForm
+			 * where Formname is the name of the subform as defined by the _formNames array
+			 * 
+			 * @memberOf module:multiform
+			 * @param {Function} a callback executed once the forms are cleared
+			 */
+			clearForms : function(callback){
+				var i, $form, name, clearForm;
+				
+				for(i in this._formNames){
+					name = this._formNames[i];
+					$form = this.getForm(name);
+					if($form.length){
+						$form.each(function(){
+							this.reset();
+						});
+						clearForm = '_clear' + name[0].toUpperCase() + name.slice(1) + 'Form';
+						if(this[clearForm] !== undefined && typeof this[clearForm] === 'function'){
+							this[clearForm].call(this, $form);
+						}
+					}
+				}
+				if(typeof callback === 'function'){
+					callback();
+				}
+			}
 	}
 	return MultiForm;
 });
