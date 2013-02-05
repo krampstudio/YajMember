@@ -58,6 +58,12 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 			});
 		},
 		
+		_initMembershipControls: function($form){
+			var self = this;
+			
+			
+		},
+		
 		/**
 		 * Load the member data
 		 * @param {Number} the identifier of the member to load
@@ -84,6 +90,49 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 								$(this).val(data[$(this).attr('id')]);
 							}
 						});
+						if(typeof callback === 'function'){
+							callback();
+						}
+					}
+				});
+			}
+		},
+		
+		loadMemberships: function(memberId, callback){
+			var self = this;
+			if(memberId && memberId > 0){
+				self.toggleForm();
+				
+				$.ajax({
+					type 		: 'GET',
+					url 		: 'api/member/getMemberships',
+					dataType 	: 'json',
+					data		: {
+						id : memberId
+					}
+				}).done(function(data) {	
+					var i, membership, 
+						memberships = {},
+						$form = self.getForm('membership'),
+						tabTmpl = $('#membership-tab-template'),
+						formTmpl = $('#membership-form-template');
+					
+					self.toggleForm();
+					if(!data || data.error){
+						$.error("Error : " + (data.error ? data.error : "unknown"));
+					} else {
+						
+						if(data.length > 0 ){
+							//build the form
+							for(i in data){
+								membership = data[i];
+								if(membership.year){
+									$('#memberships > ul', $form).prepend($.tmpl(tabTmpl, {'year' : membership.year}));
+									$('#memberships > ul', $form).after($.tmpl(formTmpl, membership));
+								}
+							}
+						}
+						
 						if(typeof callback === 'function'){
 							callback();
 						}

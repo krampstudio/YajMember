@@ -39,9 +39,9 @@
 	<form id="member-membership-editor">
 		<fieldset>
 			<legend>Membership</legend>
-			<div>
-				<ul id="memberships">
-					<li><span class="ui-icon ui-icon-cirle-plus">Add</span></li>
+			<div id="memberships">
+				<ul>
+					<li><span class="ui-icon ui-icon-circle-plus" />Add</li>
 				</ul>
 			</div>
 			<input type="submit" class="submiter" value="Save" />
@@ -49,29 +49,33 @@
 	</form>
 </div>
 <script id="membership-tab-template" type="text/x-jquery-tmpl">
-<li><a href="#membership-${year}">${year}</a></li>
+<li class="memebership-year"><a href="#membership-${year}">${year}</a></li>
 </script>
 <script id="membership-form-template" type="text/x-jquery-tmpl">
-<div id="membership-${year}">
+<div id="membership-form-${year}" class="memebership-form">
 	<div>
-		<label for="membership-${year}-type">Type</label>
-		<select id="membership-${year}-type" name="membership-${year}-type">
-			<option>Personnal membership</option>
-			<option>Sponsored membership</option>
+		<label for="membership-${year}-event">Type of membership</label>
+		<div id="membership-${year}-type">
+			<input id="membership-${year}-type-perso" name="membership-${year}-type" type="radio" checked="checked"><label for="membership-${year}-type-perso" >Personnal</label>
+			<input id="membership-${year}-type-sponsored" name="membership-${year}-type" type="radio" checked="checked"><label for="membership-${year}-type-sponsored" >Sponsored</label>
 		</select>
 	</div>
-	<div>
-		<label for="membership-${year}-event">Type</label>
+	<div class="sponsored-mb">
+		<label for="membership-${year}-company">Company</label>
+		<input id="membership-${year}-company" name="membership-${year}-company" type="text" />
+	</div>
+	<div class="perso-mb">
+		<label for="membership-${year}-event">Event</label>
 		<select id="membership-${year}-event" name="membership-${year}-event">
 		</select>
 	</div>
-	<div>
+	<div class="perso-mb">
 		<label for="membership-${year}-date">Paiement date</label>
-		<input id="membership-${year}-date" name="membership-${year}-date" type="date" required />
+		<input id="membership-${year}-date" name="membership-${year}-date" type="date" required value="${paiementDate}" />
 	</div>
-	<div>
+	<div class="perso-mb">
 		<label for="membership-${year}-type">Amount</label>
-		<input id="membership-${year}-type" name="membership-${year}-type" type="text" required />
+		<input id="membership-${year}-type" name="membership-${year}-type" type="text" value="${amount}" />
 	</div>
 </div>
 </script>

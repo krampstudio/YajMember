@@ -110,8 +110,8 @@ public class Membership  extends DomainObject {
 	 */
 	@Override
 	public String toString() {
-		return "Membership [year=" + year + ", paiementDate=" + paiementDate
-				+ ", amount=" + amount + ", event=" + event + "]";
+		return "Membership [key = " + key + ", year=" + year + ", paiementDate=" + paiementDate
+				+ ", amount=" + amount + ", event=" + event +  ", member=" + member + "]";
 	}
 	
 	

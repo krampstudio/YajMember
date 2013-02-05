@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.yajug.users.domain.Member;
+import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.utils.MemberComparator;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.MemberService;
@@ -163,6 +164,37 @@ public class MemberController extends RestController {
 			//check the cache
 			if(getMembers().containsKey(id)){
 				response = getSerializer().toJson(getMembers().get(id));
+			}
+			
+		} catch (DataException e) {
+			e.printStackTrace();
+			response = serializeException(e);
+		} 
+		return response;
+	}
+	
+	/**
+	 * Get the {@link Membership}s of a {@link Member} from it's identifier 
+	 * 
+	 * @param id the {@link Member} id : {@link Member#getKey()}
+	 * @return a JSON representation of the {@link Membership}s 
+	 */
+	@GET
+	@Path("getMemberships")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String getMemberships(@QueryParam("id") Long id){
+		String response = "";
+		
+		try {
+			
+			if(id == null || id.longValue() <= 0){
+				throw new DataException("Unable to retrieve member from a wrong id");
+			}
+			
+			//check the cache
+			if(getMembers().containsKey(id)){
+				Member member = getMembers().get(id);
+				response = getSerializer().toJson(memberService.getMemberships(member));
 			}
 			
 		} catch (DataException e) {

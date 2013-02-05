@@ -51,7 +51,9 @@ requirejs(
 							userForm.initFormControls(function(){
 								if(!initialized['member']){
 									if(store.isset('member')){
-										userForm.loadMember(store.get('member'));	
+										userForm.loadMember(store.get('member'), function(){
+											userForm.loadMemberships(store.get('member'));
+										});	
 									}
 									initialized['member'] = true;
 								}

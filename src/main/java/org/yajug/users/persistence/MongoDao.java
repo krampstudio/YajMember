@@ -166,7 +166,7 @@ public abstract class MongoDao {
 				id = dbObject.getObjectId("_id");
 				dbObject.remove("_id");
 			}
-			
+			System.out.println(JSON.serialize(dbObject));
 			T domain = getDeSerializer().fromJson(JSON.serialize(dbObject), clazz);
 			
 			if(id != null){
