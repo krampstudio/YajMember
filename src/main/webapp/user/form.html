@@ -41,24 +41,23 @@
 			<legend>Membership</legend>
 			<div id="memberships">
 				<ul>
-					<li><span class="ui-icon ui-icon-circle-plus" />Add</li>
+					<li><a href="#new-membership"><span class="ui-icon ui-icon-circle-plus"></span>Add</a></li>
 				</ul>
+				<div id="new-membership">New</div>
 			</div>
 			<input type="submit" class="submiter" value="Save" />
 		</fieldset>
 	</form>
 </div>
 <script id="membership-tab-template" type="text/x-jquery-tmpl">
-<li class="memebership-year"><a href="#membership-${year}">${year}</a></li>
+<li class="memebership-year"><a href="#membership-form-${year}">${year}</a></li>
 </script>
 <script id="membership-form-template" type="text/x-jquery-tmpl">
 <div id="membership-form-${year}" class="memebership-form">
-	<div>
-		<label for="membership-${year}-event">Type of membership</label>
-		<div id="membership-${year}-type">
-			<input id="membership-${year}-type-perso" name="membership-${year}-type" type="radio" checked="checked"><label for="membership-${year}-type-perso" >Personnal</label>
-			<input id="membership-${year}-type-sponsored" name="membership-${year}-type" type="radio" checked="checked"><label for="membership-${year}-type-sponsored" >Sponsored</label>
-		</select>
+	<div class="membership-type">
+			<span class="label">Type of membership</span>
+				<input id="membership-${year}-type-perso" name="membership-${year}-type" type="radio" checked="checked"><label for="membership-${year}-type-perso" >Personnal</label>
+				<input id="membership-${year}-type-sponsored" name="membership-${year}-type" type="radio" checked="checked"><label for="membership-${year}-type-sponsored" >Sponsored</label>
 	</div>
 	<div class="sponsored-mb">
 		<label for="membership-${year}-company">Company</label>

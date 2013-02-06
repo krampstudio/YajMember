@@ -79,9 +79,9 @@ form > div:hover, form fieldset > div:hover{
 	background-color: #C8D8E2;
 }
 form > div:last:hover, form fieldset > div:last:hover{
-	background-color: #fff;
+	background-color: inherit;
 }
-form label{
+form label, form .label{
 	display:inline-block;
 	width:49%;
 	vertical-align: top;
@@ -101,6 +101,47 @@ form .help{
 	font-size: .7em;
 	font-style: italic;
 }
+
+/* membership */
+form fieldset > div#memberships:hover{
+	background-color: inherit;
+}
+#memberships li a .ui-icon{
+	float:left;
+	margin-right:3px;
+	vertical-align: baseline;
+}
+#memberships .memebership-form > div{
+	width:100%;
+	margin:5px 0;
+	padding:5px;
+	border-radius:3px;
+}
+#memberships .memebership-form > div:hover{
+	background-color: #C8D8E2;
+}
+#memberships .membership-type label{
+	width:10em;
+	background-color:#eee;
+}
+#memberships .membership-type .ui-button-text{
+	background-color:#eee;
+}
+#memberships .membership-type .ui-button-text:hover{
+	color:#E77124;
+}
+#memberships .membership-type .ui-state-active .ui-button-text{
+	background-color:#fff;
+}
+
+/* vertical tabs */
+.ui-tabs-vertical { width: 65em; }
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 10em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .1em 0 !important;  }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav li.ui-state-active { padding-bottom: 0; padding-right: .1em; border-right-width: 0 !important; right: -0.1em;}
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 52em;}
+
 
 /* gridy fix */
 .gridy-table .gridy-header th{

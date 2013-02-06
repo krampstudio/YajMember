@@ -133,6 +133,11 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 							}
 						}
 						
+						$('#memberships').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
+						$('#memberships li').removeClass('ui-corner-top').addClass('ui-corner-left');
+						
+						$('.membership-type').buttonset();
+						
 						if(typeof callback === 'function'){
 							callback();
 						}
