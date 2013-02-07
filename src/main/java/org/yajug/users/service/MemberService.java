@@ -27,6 +27,8 @@ public interface MemberService {
 	 */
 	Collection<Member> findAll(String expression) throws DataException;
 	
+	Collection<String> findCompanies(String expression) throws DataException;
+	
 	/**
 	 * Save a member
 	 * @param member the member to save

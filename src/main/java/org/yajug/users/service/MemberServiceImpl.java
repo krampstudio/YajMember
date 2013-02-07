@@ -85,7 +85,7 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public List<Member> findAll(String expression) throws DataException {
-		List<Member> members = new ArrayList<Member>();
+		List<Member> members = new ArrayList<>();
 		
 		if(StringUtils.isNotBlank(expression)){
 			
@@ -96,6 +96,21 @@ public class MemberServiceImpl implements MemberService {
 			members = memberMongoDao.search(expression);
 		}
 		return members;
+	}
+	
+	@Override
+	public List<String> findCompanies(String expression) throws DataException {
+		List<String> companies = new ArrayList<>();
+		
+		if(StringUtils.isNotBlank(expression)){
+			
+			//expression validated against a pattern
+			if(!validateSearchExpression(expression)){
+				throw new DataException("invalid search pattern");
+			}
+			companies = memberMongoDao.getCompanies(expression);
+		}
+		return companies;
 	}
 	
 	/**

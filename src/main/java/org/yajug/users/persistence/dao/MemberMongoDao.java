@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.utils.MappingHelper;
 import org.yajug.users.persistence.MongoDao;
@@ -116,6 +117,24 @@ public class MemberMongoDao extends MongoDao{
             cursor.close();
         }
 		return members;
+	}
+	
+	public List<String> getCompanies(String expression){
+		List<String> companies = new ArrayList<>();
+		
+		BasicDBObject searchExpression = new BasicDBObject("$regex", expression).append("$options", "-i");
+		DBCursor cursor = members().find(new BasicDBObject("company", searchExpression));
+		try {
+            while(cursor.hasNext()) {
+            	String company = ((BasicDBObject)cursor.next()).getString("company");
+                if(StringUtils.isNotBlank(company)){
+                	companies.add(company);
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+		return companies;
 	}
 	
 	public boolean insert(Member member){

@@ -143,6 +143,22 @@ public class MemberController extends RestController {
 		return response;
 	}
 	
+	@GET
+	@Path("acCompaniesSearch")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String acCompaniesSearch( @QueryParam("term") String term){
+		String response = "";
+		try {
+			if(StringUtils.isNotBlank(term)){
+				response = getSerializer().toJson(memberService.findCompanies(term));
+			}
+		} catch (DataException e) {
+			e.printStackTrace();
+			response = serializeException(e);
+		} 
+		return response;
+	}
+	
 	/**
 	 * Get a {@link Member} from it's identifier 
 	 * 
