@@ -11,6 +11,15 @@ module.exports = function(grunt) {
 			];
 
 	grunt.initConfig({
+		bower: {
+			install: {
+				options: {
+					targetDir: basePath + 'js/libs',
+					cleanup: false,
+					install: true
+				}
+			}
+		},
 		jsdoc : {
 			dist: {
 				src: sources,
@@ -31,6 +40,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jsdoc');
+  grunt.loadNpmTasks('grunt-bower-task');
 
   // Default task.
   grunt.registerTask('default', ['jshint']);
