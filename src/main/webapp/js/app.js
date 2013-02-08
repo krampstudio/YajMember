@@ -52,7 +52,9 @@ requirejs(
 								if(!initialized['member']){
 									if(store.isset('member')){
 										userForm.loadMember(store.get('member'), function(){
-											userForm.loadMemberships(store.get('member'));
+											userForm.loadMemberships(store.get('member'), function(){
+												
+											});
 										});	
 									}
 									initialized['member'] = true;

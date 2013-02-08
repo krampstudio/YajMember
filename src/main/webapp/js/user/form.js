@@ -59,9 +59,77 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 		},
 		
 		_initMembershipControls: function($form){
-			var self = this;
+			this._buildMembershipTabs();
+		},
+		
+		_buildMembershipForm(membership, callback){
+			var self = this,
+				membership = membership || {}, 
+				$form = self.getForm('membership'),
+				formTmpl = $('#membership-form-template'),
+				$container;
 			
+			if(membership.year){
+				
+				$container = $('#membership-form-'+membership.year);
 			
+				$('#memberships > ul', $form).after($.tmpl(formTmpl, membership));
+				
+				self.loadEvents(membership.year);
+				
+				$('.membership-type', $container).buttonset();
+				$('.membership-type input', $container).change(function(){
+					var val = $(this).val(),
+						id = $(this).attr('id');
+					
+					if(val === 'on'){
+						if(/sponsored$/.test(id)){
+							$('.sponsored-mb', $container).show();
+							$('.perso-mb', $container).hide();
+						}
+						if(/perso$/.test(id)){
+							$('.sponsored-mb', $container).hide();
+							$('.perso-mb', $container).show();
+						}
+					}
+				});
+				
+				if(!Modernizr.inputtypes.date){
+					$('.membership-date', $container).datepicker({
+						'dateFormat': 'yy-mm-dd'
+					});
+				}
+				//TODO upgrade jquery-ui
+	//			if(!Modernizr.inputtypes.number){
+	//				$('.membership-amount', $container).spinner({
+	//					min: 0,
+	//					max: 40,
+	//					step: 40
+	//				});
+	//			}
+				$('.membership-company', $container).autocomplete({
+					minLength : 2,
+					delay: 600,
+					source : 'api/member/acCompaniesSearch'
+				});
+				
+				if(typeof callback === 'function'){
+					callback();
+				}
+			}
+		},
+		
+		_buildMembershipTabs : function(callback){
+			if($('#memberships').hasClass('ui-tabs-vertical')){
+				$('#memberships').tabs('rehresh');
+			} else {
+				$('#memberships').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
+				$('#memberships li').removeClass('ui-corner-top').addClass('ui-corner-left');
+			}
+			
+			if(typeof callback === 'function'){
+				callback();
+			}
 		},
 		
 		/**
@@ -128,51 +196,12 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 								membership = data[i];
 								if(membership.year){
 									$('#memberships > ul', $form).prepend($.tmpl(tabTmpl, {'year' : membership.year}));
-									$('#memberships > ul', $form).after($.tmpl(formTmpl, membership));
-									self.loadEvents(membership.year);
+									self._buildMembershipForm(membership, function(){
+										self._buildMembershipTabs();
+									});
 								}
 							}
 						}
-						
-						$('#memberships').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
-						$('#memberships li').removeClass('ui-corner-top').addClass('ui-corner-left');
-						
-						$('.membership-type').buttonset();
-						$('.membership-type input').change(function(){
-							var $container = $(this).parents('.memebership-form'),
-								val = $(this).val(),
-								id = $(this).attr('id');
-							
-							if(val === 'on'){
-								if(/sponsored$/.test(id)){
-									$('.sponsored-mb', $container).show();
-									$('.perso-mb', $container).hide();
-								}
-								if(/perso$/.test(id)){
-									$('.sponsored-mb', $container).hide();
-									$('.perso-mb', $container).show();
-								}
-							}
-						});
-						
-						if(!Modernizr.inputtypes.date){
-							$('.membership-date').datepicker({
-								'dateFormat': 'yy-mm-dd'
-							});
-						}
-						//TODO upgrade jquery-ui
-//						if(!Modernizr.inputtypes.number){
-//							$('.membership-amount').spinner({
-//								min: 0,
-//								max: 40,
-//								step: 40
-//							});
-//						}
-						$('.membership-company').autocomplete({
-							minLength : 2,
-							delay: 600,
-							source : 'api/member/acCompaniesSearch'
-						});
 						
 						if(typeof callback === 'function'){
 							callback();
@@ -187,7 +216,8 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 		*/
 		loadEvents : function (year, callback){
 			
-			var params = (year) ? {year: year} : {current : true};
+			var selector = '#membership-' + year + '-event',
+				params = {year: year};
 			
 			//load events
 			$.ajax({
@@ -200,7 +230,7 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 					$.error("Error : " + (data.error ? data.error : "unknown"));
 				} else if(data.length){
 					var template = "<option value='${key}'>${date} - ${title}</option>";
-					$('.membership-event-list').empty().append($.tmpl(template, data));
+					$(selector).empty().append($.tmpl(template, data));
 				}
 				if(typeof callback === 'function'){
 					callback();
