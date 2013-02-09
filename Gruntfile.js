@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 			install: {
 				options: {
 					targetDir: basePath + 'js/libs',
-					cleanup: false,
+					cleanup: true,
 					install: true
 				}
 			}
