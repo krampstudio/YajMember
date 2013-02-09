@@ -7,14 +7,15 @@ module.exports = function(grunt) {
 			      basePath + 'js/app.js', 
 			      basePath + 'js/login.js',
 			      basePath + 'js/user/*.js',
-			      basePath + 'js/event/*.js'
+			      basePath + 'js/event/*.js',
+				  basePath + 'js/helpers/*.js'
 			];
 
 	grunt.initConfig({
 		bower: {
 			install: {
 				options: {
-					targetDir: basePath + 'js/libs',
+					targetDir: basePath + 'js/lib',
 					cleanup: true,
 					install: true
 				}
