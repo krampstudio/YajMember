@@ -1,12 +1,18 @@
 //RequireJs configuration: 
 requirejs.config({
-	baseUrl: 'js/lib',
 	urlArgs: 'bust=' + (new Date()).getTime(),	//only for dev  : no-cache for the laoded scripts 
+	paths: {
+		'jquery' 		: 'lib/jquery/jquery',
+		'noty-base'		: 'lib/noty/js/noty',
+		'noty'			: 'lib/noty/js/noty/jquery.noty',
+		'notify'		: 'helpers/notify',
+		'uri'			: 'helpers/uri'
+	},
 	//dependencies
 	shim: {
 		'uri'				: ['jquery'],
-	    'noty/jquery.noty' 	: ['jquery'],
-	    'notify'			: ['noty/jquery.noty']
+	    'noty' 				: ['jquery'],
+	    'notify'			: ['noty']
 	}
 });
 

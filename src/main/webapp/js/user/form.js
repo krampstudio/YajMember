@@ -2,7 +2,7 @@
  * Manage user's Form UI and IO
  * @module event/form
  */
-define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modernizr, notify, store){
+define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify, store){
 
 	/**
 	 * The UserForm is a MultiForm that manages widgets for the user's forms

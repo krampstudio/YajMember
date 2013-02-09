@@ -1,6 +1,9 @@
 #ignore project config
 src/main/resources/config.properties
 
+#ignore js libs
+src/main/webapp/js/lib
+
 # gradle
 build
 .gradle
