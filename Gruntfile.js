@@ -21,6 +21,23 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+		
+		clean: [buildPath + 'js'],
+		
+		requirejs: {
+			login: {
+				options: {
+					appDir: basePath + 'js',
+					baseUrl: './',
+					dir: buildPath + 'js',
+					preserveLicenseComments: false,
+					modules: [{
+						name: 'login',
+						mainConfigFile : 'config/login.js'
+					}]
+				}
+			}
+		},
 		jsdoc : {
 			dist: {
 				src: sources,
@@ -41,8 +58,14 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jsdoc');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-bower-task');
-
+  
   // Default task.
   grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('install', ['bower:install']);
+  grunt.registerTask('optimize', ['clean', 'requirejs:login']);//, 'requirejs:app']);
+  
+  grunt.registerTask('build', ['jshint', 'jsdoc:dist', 'optimize']);
 };
