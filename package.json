@@ -31,7 +31,8 @@
     "grunt-contrib-jsdoc": "~0.2.x",
     "grunt-bower-task": "~0.1.x",
     "grunt-contrib-requirejs": "~0.4.0",
-	"grunt-contrib-clean" : "0.4.0rc6"
+    "grunt-contrib-clean": "0.4.0rc6",
+    "grunt-htmlrefs": "~0.2.4"
   },
   "keywords": [
     "yajug",
