@@ -12,6 +12,7 @@ module.exports = function(grunt) {
 			];
 
 	grunt.initConfig({
+		
 		bower: {
 			install: {
 				options: {
@@ -27,23 +28,34 @@ module.exports = function(grunt) {
 		requirejs: {
 			login: {
 				options: {
-					appDir: basePath + 'js',
-					baseUrl: './',
-					dir: buildPath + 'js',
+					name: 'login',
+					baseUrl: basePath + 'js',
+					out: buildPath + 'js/login.min.js',
+					mainConfigFile : basePath + 'js/config/login.js',
 					preserveLicenseComments: false,
-					modules: [{
-						name: 'login',
-						mainConfigFile : 'config/login.js'
-					}]
+					findNestedDependencies : true
+				}
+			},
+			app: {
+				options: {
+					name: 'app',
+					baseUrl: basePath + 'js',
+					out: buildPath + 'js/app.min.js',
+					mainConfigFile : basePath + 'js/config/app.js',
+					preserveLicenseComments: false,
+					findNestedDependencies : true
 				}
 			}
 		},
+		
 		jsdoc : {
 			dist: {
 				src: sources,
 				dest: buildPath+ 'reports/jsdoc'
 			}
 		},
+		
+		
 		jshint : {
 			files : sources,
 			options: {
@@ -56,16 +68,16 @@ module.exports = function(grunt) {
 		}
   });
 
+  //load plugins
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jsdoc');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-bower-task');
   
-  // Default task.
+  //set up shortcut tasks
   grunt.registerTask('default', ['jshint']);
   grunt.registerTask('install', ['bower:install']);
-  grunt.registerTask('optimize', ['clean', 'requirejs:login']);//, 'requirejs:app']);
-  
+  grunt.registerTask('optimize', ['clean', 'requirejs:login', 'requirejs:app']);
   grunt.registerTask('build', ['jshint', 'jsdoc:dist', 'optimize']);
 };
