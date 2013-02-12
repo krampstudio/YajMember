@@ -59,21 +59,50 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 		},
 		
 		_initMembershipControls: function($form){
-			this._buildMembershipTabs();
+			var self = this;
+			
+		//	this._buildMembershipTabs();
+			
+			//Add year for membership form
+			//TODO upgrade jquery-ui
+			//			if(!Modernizr.inputtypes.number){
+			//				$('.membership-amount', $container).spinner({
+			//					min: 0,
+			//					max: 40,
+			//					step: 40
+			//				});
+			//			}
+			
+			$('#add-year').button({
+				icons: { primary: "icon-add" },
+				text : false
+			}).click(function(){
+				var newYear = $('#membership-new-year').val();
+				if(!/^20[0-9]{2}$/.test(newYear)){
+					notify('error', 'Invalid date format!');
+					return;
+				}
+				self._buildMembershipForm({'year' : newYear}, function(){
+					self._buildMembershipTabs();
+				});
+			});
 		},
 		
-		_buildMembershipForm(membership, callback){
+		_buildMembershipForm: function(membership, callback){
 			var self = this,
 				membership = membership || {}, 
 				$form = self.getForm('membership'),
 				formTmpl = $('#membership-form-template'),
+				tabTmpl = $('#membership-tab-template'),
 				$container;
 			
 			if(membership.year){
+				if($("#memberships > ul li a[href='#membership-form-"+membership.year+"']", $form).length === 0){
+					$('#memberships > ul', $form).prepend($.tmpl(tabTmpl, {'year' : membership.year}));
+				}
+				$('#memberships > ul', $form).after($.tmpl(formTmpl, membership));
 				
 				$container = $('#membership-form-'+membership.year);
-			
-				$('#memberships > ul', $form).after($.tmpl(formTmpl, membership));
 				
 				self.loadEvents(membership.year);
 				
@@ -121,11 +150,10 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 		
 		_buildMembershipTabs : function(callback){
 			if($('#memberships').hasClass('ui-tabs-vertical')){
-				$('#memberships').tabs('rehresh');
-			} else {
-				$('#memberships').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
-				$('#memberships li').removeClass('ui-corner-top').addClass('ui-corner-left');
+				$('#memberships').tabs('destroy');
 			}
+			$('#memberships').tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
+			$('#memberships li').removeClass('ui-corner-top ui-state-default');
 			
 			if(typeof callback === 'function'){
 				callback();
@@ -179,11 +207,7 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 						id : memberId
 					}
 				}).done(function(data) {	
-					var i, membership, 
-						memberships = {},
-						$form = self.getForm('membership'),
-						tabTmpl = $('#membership-tab-template'),
-						formTmpl = $('#membership-form-template');
+					var i = 0;
 					
 					self.toggleForm();
 					if(!data || data.error){
@@ -193,13 +217,9 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 						if(data.length > 0 ){
 							//build the form
 							for(i in data){
-								membership = data[i];
-								if(membership.year){
-									$('#memberships > ul', $form).prepend($.tmpl(tabTmpl, {'year' : membership.year}));
-									self._buildMembershipForm(membership, function(){
-										self._buildMembershipTabs();
-									});
-								}
+								self._buildMembershipForm(data[i], function(){
+									self._buildMembershipTabs();
+								});
 							}
 						}
 						
@@ -267,6 +287,12 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 				}
 			}
 			return member;
+		},
+	
+		_clearMembershipForm : function($form){
+			$('#memberships').tabs('destroy').removeClass('ui-tabs-vertical  ui-helper-clearfix');
+			$('#memberships .membership-year').remove();
+			$('#memberships .membership-form').remove();
 		}
 	});
 	

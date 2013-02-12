@@ -187,7 +187,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 			
 			//toggle registrants field between input and textarea
 			$('#expand-registrants').button({
-				icons: { primary: "icon-expand" },
+				icons: { primary: "icon-add" },
 				text : false
 			}).click(function(){
 				var $field 			= $('#registrants'),

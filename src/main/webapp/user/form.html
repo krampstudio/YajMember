@@ -46,10 +46,8 @@
 				<div id="new-membership-tab">
 					<div>
 						<label for="membership-new-year">For year</label>
-						<input id="membership-new-year" name="membership-new-year" type="text"  />
-					</div>
-					<div>
-						<button>Create</button>
+						<input id="membership-new-year" name="membership-new-year" type="number" value="" min="2010" max="2050" step="1" />
+						<a href="#" id="add-year">Create</a>
 					</div>
 				</div>
 			</div>
@@ -58,10 +56,10 @@
 	</form>
 </div>
 <script id="membership-tab-template" type="text/x-jquery-tmpl">
-<li class="memebership-year"><a href="#membership-form-${year}">${year}</a></li>
+<li class="membership-year"><a href="#membership-form-${year}">${year}</a></li>
 </script>
 <script id="membership-form-template" type="text/x-jquery-tmpl">
-<div id="membership-form-${year}" class="memebership-form">
+<div id="membership-form-${year}" class="membership-form">
 	<div class="membership-type">
 			<span class="label">Type of membership</span>
 				<input id="membership-${year}-type-perso" name="membership-${year}-type" type="radio" checked="checked"><label for="membership-${year}-type-perso" >Personnal</label>
