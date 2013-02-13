@@ -62,8 +62,8 @@
 <div id="membership-form-${year}" class="membership-form">
 	<div class="membership-type">
 			<span class="label">Type of membership</span>
-				<input id="membership-${year}-type-perso" name="membership-${year}-type" type="radio" checked="checked"><label for="membership-${year}-type-perso" >Personnal</label>
-				<input id="membership-${year}-type-sponsored" name="membership-${year}-type" type="radio"><label for="membership-${year}-type-sponsored" >Sponsored</label>
+				<input id="membership-${year}-type-perso" name="membership-${year}-type" type="radio" checked="checked" value="personnal"><label for="membership-${year}-type-perso" >Personnal</label>
+				<input id="membership-${year}-type-sponsored" name="membership-${year}-type" type="radio"><label for="membership-${year}-type-sponsored" value="sponsored">Sponsored</label>
 	</div>
 	<div class="sponsored-mb" style="display:none">
 		<label for="membership-${year}-company">Company</label>
@@ -79,8 +79,8 @@
 		<input id="membership-${year}-date" name="membership-${year}-date" class="membership-date" type="date" required value="${paiementDate}" />
 	</div>
 	<div class="perso-mb">
-		<label for="membership-${year}-type">Amount</label>
-		<input id="membership-${year}-type" name="membership-${year}-type" class="membership-amount" type="number" value="${amount}" min="0" max="40" step="40" />
+		<label for="membership-${year}-amount">Amount</label>
+		<input id="membership-${year}-amount" name="membership-${year}-amount" class="membership-amount" type="number" value="${amount}" min="0" max="40" step="40" />
 	</div>
 </div>
 </script>

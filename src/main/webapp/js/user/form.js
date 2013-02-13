@@ -2,7 +2,7 @@
  * Manage user's Form UI and IO
  * @module event/form
  */
-define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, notify){
+define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modernizr, notify, store){
 
 	/**
 	 * The UserForm is a MultiForm that manages widgets for the user's forms
@@ -61,7 +61,7 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 		_initMembershipControls: function($form){
 			var self = this;
 			
-		//	this._buildMembershipTabs();
+			this._buildMembershipTabs();
 			
 			//Add year for membership form
 			//TODO upgrade jquery-ui
@@ -73,7 +73,7 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 			//				});
 			//			}
 			
-			$('#add-year').button({
+			$('#add-year', $form).button({
 				icons: { primary: "icon-add" },
 				text : false
 			}).click(function(){
@@ -85,6 +85,36 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 				self._buildMembershipForm({'year' : newYear}, function(){
 					self._buildMembershipTabs();
 				});
+			});
+			
+			$form.submit(function(event){
+				event.preventDefault();
+				
+				var memberId = self.getMemberId();
+				
+				if(!memberId){
+					notify('error', 'Save the member before associate memberships');
+					return;
+				}
+				self.serializeMemberships($form);
+				return;
+				
+				$.ajax({
+					type 		: 'POST',
+					url 		: 'api/member/updateMemberships/'+memberId,
+					contentType : 'application/x-www-form-urlencoded',
+					dataType 	: 'json',
+					data 		: {
+						memberships : self.serializeMemberships($form)
+					}
+				}).done(function(data) {
+					if(!data.saved || data.error){
+						$.error("Error : " + data.error ? data.error : "unknown");
+					} else {
+						notify('success', 'Saved');
+					}
+				});
+				return false;
 			});
 		},
 		
@@ -264,8 +294,7 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 		 * @return {String} json 
 		 */
 		serializeMember : function($form){
-			var member = {},
-				membership  = {};
+			var member = {};
 			if($form){
 				if($form.prop('tagName') !== 'FORM'){
 					$.error('Invalid jQuery element for $form. It much match a form tag.')
@@ -287,6 +316,57 @@ define(['multiform', 'modernizr', 'notify'], function(MultiForm, Modernizr, noti
 				}
 			}
 			return member;
+		},
+		
+		serializeMemberships : function($form){
+			var memberships = [],
+				data = {},
+				membership = {}
+				year;
+			if($form){
+				if($form.prop('tagName') !== 'FORM'){
+					$.error('Invalid jQuery element for $form. It much match a form tag.')
+				}
+				$.map($form.serializeArray(), function(elt, index){
+					var year = elt.name.replace(/^membership-/, '').replace(/-[a-z]+$/, '');
+					if(/^20[0-9]{2}$/.test(year)){
+						if(data[year] === undefined){
+							data[year] = {};
+						}
+						data[year][elt.name.replace('membership-'+year+'-', '')] = elt.value;
+					}
+				});
+				for(year in data){
+					membership = { 'year': year };
+					if(data[year]['type'] === 'personnal'){
+						membership['amount'] = data[year]['amount'];
+						membership['paiemenDate'] = data[year]['date'];
+						membership['event'] = data[year]['event'];
+					}
+					if(data[year]['type'] === 'sponsored'){
+						membership['company'] = data[year]['company'];
+					}
+					memberships.push(membership);
+				}
+			}
+			return memberships;
+		},
+		
+		/**
+		 * Get the id of the event currently selected
+		 * from either the store or the input field
+		 * @memberOf module:event/form
+		 * @returns {Number} the id or undefined if not found
+		 */
+		getMemberId : function(){
+			var $keyField;
+			if(store.isset('member')){
+				return store.get('member');
+			}
+			$keyField = $('#key', this.getForm('details'));
+			if($keyField.length > 0 && $keyField.val().trim().length > 0){
+				return $keyField.val();
+			}
 		},
 	
 		_clearMembershipForm : function($form){

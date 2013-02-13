@@ -111,13 +111,13 @@ form fieldset > div#memberships:hover{
 	margin-right:3px;
 	vertical-align: baseline;
 }
-#memberships .memebership-form > div{
+#memberships .membership-form > div{
 	width:100%;
 	margin:5px 0;
 	padding:5px;
 	border-radius:3px;
 }
-#memberships .memebership-form > div:hover{
+#memberships .membership-form > div:hover{
 	background-color: #C8D8E2;
 }
 #memberships .membership-type label{

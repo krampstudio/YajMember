@@ -52,9 +52,7 @@ requirejs(
 								if(!initialized['member']){
 									if(store.isset('member')){
 										userForm.loadMember(store.get('member'), function(){
-											userForm.loadMemberships(store.get('member'), function(){
-												
-											});
+											userForm.loadMemberships(store.get('member'));
 										});	
 									}
 									initialized['member'] = true;
@@ -88,9 +86,15 @@ requirejs(
 				//User
 				if(initialized['member']){
 					requirejs(['user/form'], function(userForm) {
-						if(ui.index === 1 && store.isset('member')){
-							//load the member
-							userForm.loadMember(store.get('member'));	
+						if(ui.index === 1){
+							if(store.isset('member')){
+								//load the member
+								userForm.loadMember(store.get('member'), function(){
+									userForm.loadMemberships(store.get('member'));
+								});		
+							} else {
+								userForm._buildMembershipTabs();
+							}
 						} else {
 							//clean up
 							userForm.clearForms(function(){
