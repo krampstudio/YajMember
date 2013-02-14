@@ -384,13 +384,17 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 				for(year in data){
 					membership = { 
 							'year': year,
-							'member' : memberId
+							'member' : {
+								'key' : memberId
+							}
 						};
 					if(data[year]['type'] === 'personnal'){
 						membership['amount'] = 'PERSONNAL';
 						membership['amount'] = data[year]['amount'];
 						membership['paiementDate'] = data[year]['date'];
-						membership['event'] = data[year]['event'];
+						membership['event'] = {
+								'key' : data[year]['event']
+						};
 					}
 					if(data[year]['type'] === 'sponsored'){
 						membership['amount'] = 'SPONSORED';

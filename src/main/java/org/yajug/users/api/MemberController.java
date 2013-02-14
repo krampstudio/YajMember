@@ -1,5 +1,6 @@
 package org.yajug.users.api;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -28,6 +30,7 @@ import org.yajug.users.vo.GridVo;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 
 /**
@@ -260,6 +263,34 @@ public class MemberController extends RestController {
 		try {
 			
 			saved = this.memberService.save(member);
+			
+		} catch (DataException e) {
+			response.addProperty("error", e.getLocalizedMessage());
+		} finally {
+			this.clearMembers();
+		}
+		response.addProperty("saved", saved);
+		
+		return getSerializer().toJson(response);
+	}
+	
+	@POST
+	@Path("updateMemberships/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public String updateMemberships(@FormParam("memberships") String data, @PathParam("id") Long id) {
+		
+		JsonObject response = new JsonObject();
+		boolean saved = false;
+		
+		try {
+			if(id == null || id.longValue() <= 0){
+				throw new DataException("Unable to retrieve member from a wrong id");
+			}
+			Type listType = new TypeToken<ArrayList<Membership>>() {}.getType();
+			List<Membership> memberships = getSerializer().fromJson(data, listType);
+			
+			saved = memberService.saveMemberships(memberships);
 			
 		} catch (DataException e) {
 			response.addProperty("error", e.getLocalizedMessage());
