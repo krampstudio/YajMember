@@ -27,10 +27,15 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 		_formNames	: ['details', 'membership'],
 		
 		
-			/**
-			 * Initialize the controls behavior
-			 */
+		/**
+		 * Initialize the controls for the Details sub form.
+		 * @see module:multiform#initFormControls
+		 * @private
+		 * @memberOf module:user/form
+		 * @param {Object} $form - the jQuery element of the form
+		 */
 		_initDetailsControls : function($form){
+			var self = this;
 			
 			//on form submit
 			$form.submit(function(event){
@@ -58,9 +63,17 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 			});
 		},
 		
+		/**
+		 * Initialize the controls for the Membership sub form.
+		 * @see module:multiform#initFormControls
+		 * @private
+		 * @memberOf module:user/form
+		 * @param {Object} $form - the jquery element the reference the form
+		 */
 		_initMembershipControls: function($form){
 			var self = this;
 			
+			//build the vertical tabs (even if there's no years yet)
 			this._buildMembershipTabs();
 			
 			//Add year for membership form
@@ -73,6 +86,7 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 			//				});
 			//			}
 			
+			//The form to add a new membership starts with the definition of the year
 			$('#add-year', $form).button({
 				icons: { primary: "icon-add" },
 				text : false
@@ -82,11 +96,15 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 					notify('error', 'Invalid date format!');
 					return;
 				}
+				//we build up the form for the added year
 				self._buildMembershipForm({'year' : newYear}, function(){
 					self._buildMembershipTabs();
 				});
 			});
 			
+			//by submitting the Membership form, 
+			//we serialize the memberships (everything) using the form values
+			//and send them to the server
 			$form.submit(function(event){
 				event.preventDefault();
 				
@@ -96,8 +114,6 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 					notify('error', 'Save the member before associate memberships');
 					return;
 				}
-				self.serializeMemberships($form);
-				return;
 				
 				$.ajax({
 					type 		: 'POST',
@@ -105,7 +121,7 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 					contentType : 'application/x-www-form-urlencoded',
 					dataType 	: 'json',
 					data 		: {
-						memberships : self.serializeMemberships($form)
+						memberships : self.serializeMemberships($form, memberId)
 					}
 				}).done(function(data) {
 					if(!data.saved || data.error){
@@ -118,6 +134,13 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 			});
 		},
 		
+		/**
+		 * Build the form for a membership from templates and initialize the included widgets
+		 * @private
+		 * @memberOf module:user/form
+		 * @param {Object} membership - the complete membership object or at least with the year for new membership
+		 * @param {formCallback} callback - a callback executed once the memberis loaded
+		 */
 		_buildMembershipForm: function(membership, callback){
 			var self = this,
 				membership = membership || {}, 
@@ -140,16 +163,13 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 				$('.membership-type input', $container).change(function(){
 					var val = $(this).val(),
 						id = $(this).attr('id');
-					
-					if(val === 'on'){
-						if(/sponsored$/.test(id)){
-							$('.sponsored-mb', $container).show();
-							$('.perso-mb', $container).hide();
-						}
-						if(/perso$/.test(id)){
-							$('.sponsored-mb', $container).hide();
-							$('.perso-mb', $container).show();
-						}
+					console.log(val)
+					if(val === 'sponsored'){
+						$('.sponsored-mb', $container).show();
+						$('.perso-mb', $container).hide();
+					} else {
+						$('.sponsored-mb', $container).hide();
+						$('.perso-mb', $container).show();
 					}
 				});
 				
@@ -178,6 +198,13 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 			}
 		},
 		
+		/**
+		 * Creates a vertical tab widget from the membership form. 
+		 * The tabs are refreshed they already exists.
+		 * @private
+		 * @memberOf module:user/form
+		 * @param {formCallback} callback - a callback executed once the memberis loaded
+		 */
 		_buildMembershipTabs : function(callback){
 			if($('#memberships').hasClass('ui-tabs-vertical')){
 				$('#memberships').tabs('destroy');
@@ -191,8 +218,10 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 		},
 		
 		/**
-		 * Load the member data
-		 * @param {Number} the identifier of the member to load
+		 * Retrieve a member and populate the details form according to the results
+		 * @memberOf module:user/form
+		 * @param {Number} memberId - the requried identifier of the member
+		 * @param {formCallback} callback - a callback executed once the memberis loaded
 		 */
 		loadMember : function(memberId, callback){
 			var self = this;
@@ -224,6 +253,12 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 			}
 		},
 		
+		/**
+		 * Retrieve the memberships of a member and build the forms according to the results
+		 * @memberOf module:user/form
+		 * @param {Number} memberId - the requried identifier of the member
+		 * @param {formCallback} callback - a callback executed once the memberships are loaded
+		 */
 		loadMemberships: function(memberId, callback){
 			var self = this;
 			if(memberId && memberId > 0){
@@ -262,8 +297,11 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 		},
 		
 		/**
-		* Load the list of events
-		*/
+		 * Loads the events for a year
+		 * @memberOf module:user/form
+		 * @param {String} year - the year of the events 
+		 * @param {formCallback} callback - a callback executed once the events are loaded
+		 */
 		loadEvents : function (year, callback){
 			
 			var selector = '#membership-' + year + '-event',
@@ -289,9 +327,10 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 		},
 		
 		/**
-		 * Serialize the form to a JSON format that match the REST objects
-		 * @param {jQueryElement} $form
-		 * @return {String} json 
+		 * Get a member instance from the form data
+		 * @memberOf module:user/form
+		 * @param {Object} $form - the jQuery element of the form
+		 * @returns {Object} a member
 		 */
 		serializeMember : function($form){
 			var member = {};
@@ -318,10 +357,16 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 			return member;
 		},
 		
-		serializeMemberships : function($form){
+		/**
+		 *  Get the memberships instances from the form data
+		 * @memberOf module:user/form
+		 * @param {Object} $form - the jQuery element of the form
+		 * @returns {Array} of memberships
+		 */
+		serializeMemberships : function($form, memberId){
 			var memberships = [],
 				data = {},
-				membership = {}
+				membership = {},
 				year;
 			if($form){
 				if($form.prop('tagName') !== 'FORM'){
@@ -337,13 +382,18 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 					}
 				});
 				for(year in data){
-					membership = { 'year': year };
+					membership = { 
+							'year': year,
+							'member' : memberId
+						};
 					if(data[year]['type'] === 'personnal'){
+						membership['amount'] = 'PERSONNAL';
 						membership['amount'] = data[year]['amount'];
-						membership['paiemenDate'] = data[year]['date'];
+						membership['paiementDate'] = data[year]['date'];
 						membership['event'] = data[year]['event'];
 					}
 					if(data[year]['type'] === 'sponsored'){
+						membership['amount'] = 'SPONSORED';
 						membership['company'] = data[year]['company'];
 					}
 					memberships.push(membership);
@@ -369,12 +419,24 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 			}
 		},
 	
+		/**
+		 * Clear the membership form mannually
+		 * @see module:multiform#clear
+		 * @private
+		 * @memberOf module:event/form
+		 * @param {Object} $form - the jQuery element of the form
+		 */
 		_clearMembershipForm : function($form){
 			$('#memberships').tabs('destroy').removeClass('ui-tabs-vertical  ui-helper-clearfix');
 			$('#memberships .membership-year').remove();
 			$('#memberships .membership-form').remove();
 		}
 	});
+	
+	/**
+	 * Global callback, do what you f** you want
+	 * @callback formCallback
+	 */
 	
 	return UserForm;
 });

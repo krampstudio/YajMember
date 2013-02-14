@@ -31,7 +31,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		 * @see module:multiform#initFormControls
 		 * @private
 		 * @memberOf module:event/form
-		 * @param {Object} the jquery element the reference the form
+		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_initInfosControls : function($form){
 			var self = this,
@@ -93,7 +93,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		 * @see module:multiform#initFormControls
 		 * @private
 		 * @memberOf module:event/form
-		 * @param {Object} the jquery element the reference the form
+		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_initFlyerControls : function($form){
 			var self = this;
@@ -156,7 +156,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		 * @see module:multiform#initFormControls
 		 * @private
 		 * @memberOf module:event/form
-		 * @param {Object} the jquery element the reference the form
+		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_initParticipantControls : function($form){
 			var self = this;
@@ -309,8 +309,8 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		/**
 		 * Load an event from the server and dispatch the data to the forms
 		 * @memberOf module:event/form
-		 * @param {Number} the identifier of the event to load
-		 * @param {Function} a callback executed once the event is loaded
+		 * @param {Number} eventId -  the identifier of the event to load
+		 * @param {formCallback} callback - a callback executed once the event is loaded
 		 */
 		loadEvent : function(eventId, callback){
 			var self	= this; 
@@ -352,6 +352,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		/**
 		 * Creates an object from the form data
 		 * @memberOf module:event/form
+		 * @param {Object} $form - the jQuery element of the form
 		 * @returns {Object} that represents the inputs data
 		 */
 		serializeEvent : function($form){
@@ -394,6 +395,7 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		 * @see module:multiform#clear
 		 * @private
 		 * @memberOf module:event/form
+		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_clearInfosForm : function($form){
 			$('#description', $form).htmlarea('updateHtmlArea');
@@ -404,10 +406,17 @@ define(['multiform', 'modernizr', 'notify', 'store', 'jhtmlarea'], function(Mult
 		 * @see module:multiform#clear
 		 * @private
 		 * @memberOf module:event/form
+		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_clearFlyerForm: function($form){
 			$('#current-flyer', $form).removeAttr('src');
 		}
 	});
+	
+	/**
+	 * Global callback, do what you f** you want
+	 * @callback formCallback
+	 */
+	
 	return EventForm;
 });
