@@ -32,7 +32,7 @@
     "grunt-bower-task": "~0.1.x",
     "grunt-contrib-requirejs": "~0.4.0",
     "grunt-contrib-clean": "0.4.0rc6",
-    "grunt-htmlrefs": "~0.2.4"
+    "grunt-htmlrefs": "git://github.com/krampstudio/grunt-htmlrefs.git"
   },
   "keywords": [
     "yajug",

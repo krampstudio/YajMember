@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 			];
 
 	grunt.initConfig({
-		
+		pkg : grunt.file.readJSON('package.json'),	
 		bower: {
 			install: {
 				options: {
@@ -49,13 +49,13 @@ module.exports = function(grunt) {
 			}
 		},
 		
-	/*	htmlrefs:{
+		htmlrefs:{
 			dist: {
 				src:  basePath + '*.html',
 				dest: staticPath
 			}
 		},
-	*/	
+	
 		jsdoc : {
 			dist: {
 				src: sources,
@@ -82,12 +82,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-bower-task');
- // grunt.loadNpmTasks('grunt-htmlrefs');
- // grunt.loadTasks('../grunt-htmlrefs/tasks');
+  grunt.loadNpmTasks('grunt-htmlrefs');
   
   //set up shortcut tasks
   grunt.registerTask('default', ['jshint']);
   grunt.registerTask('install', ['bower:install']);
   grunt.registerTask('optimize', ['requirejs:login', 'requirejs:app']);
-  grunt.registerTask('build', ['jshint', 'jsdoc:dist', 'optimize']);
+  grunt.registerTask('build', ['jshint', 'jsdoc:dist', 'optimize', 'htmlrefs']);
 };
