@@ -117,5 +117,6 @@ require(['config/app'], function(){
 				}
 			});
 		});
+		
 	});
 });
