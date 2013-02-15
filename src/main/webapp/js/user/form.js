@@ -90,16 +90,20 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 			$('#add-year', $form).button({
 				icons: { primary: "icon-add" },
 				text : false
-			}).click(function(){
+			}).click(function(event){
+				event.preventDefault();
+				
 				var newYear = $('#membership-new-year').val();
 				if(!/^20[0-9]{2}$/.test(newYear)){
 					notify('error', 'Invalid date format!');
-					return;
+					return false;
 				}
 				//we build up the form for the added year
 				self._buildMembershipForm({'year' : newYear}, function(){
 					self._buildMembershipTabs();
 				});
+				
+				return false;
 			});
 			
 			//by submitting the Membership form, 
@@ -121,7 +125,7 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 					contentType : 'application/x-www-form-urlencoded',
 					dataType 	: 'json',
 					data 		: {
-						memberships : self.serializeMemberships($form, memberId)
+						memberships : JSON.stringify(self.serializeMemberships($form, memberId))
 					}
 				}).done(function(data) {
 					if(!data.saved || data.error){
@@ -150,9 +154,13 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 				$container;
 			
 			if(membership.year){
+				//fix issue of jquery.tmpl that get DOM nodes from id instead of the data key (#key element is set instead of membership.key)
+				membership['mkey'] = membership.key || '';
+				
 				if($("#memberships > ul li a[href='#membership-form-"+membership.year+"']", $form).length === 0){
 					$('#memberships > ul', $form).prepend($.tmpl(tabTmpl, {'year' : membership.year}));
 				}
+				
 				$('#memberships > ul', $form).after($.tmpl(formTmpl, membership));
 				
 				$container = $('#membership-form-'+membership.year);
@@ -163,7 +171,6 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 				$('.membership-type input', $container).change(function(){
 					var val = $(this).val(),
 						id = $(this).attr('id');
-					console.log(val)
 					if(val === 'sponsored'){
 						$('.sponsored-mb', $container).show();
 						$('.perso-mb', $container).hide();
@@ -372,6 +379,7 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 				if($form.prop('tagName') !== 'FORM'){
 					$.error('Invalid jQuery element for $form. It much match a form tag.')
 				}
+				console.log($form.serializeArray());
 				$.map($form.serializeArray(), function(elt, index){
 					var year = elt.name.replace(/^membership-/, '').replace(/-[a-z]+$/, '');
 					if(/^20[0-9]{2}$/.test(year)){
@@ -389,7 +397,7 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 							}
 						};
 					if(data[year]['type'] === 'personnal'){
-						membership['amount'] = 'PERSONNAL';
+						membership['type'] = 'PERSONNAL';
 						membership['amount'] = data[year]['amount'];
 						membership['paiementDate'] = data[year]['date'];
 						membership['event'] = {
@@ -397,8 +405,11 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 						};
 					}
 					if(data[year]['type'] === 'sponsored'){
-						membership['amount'] = 'SPONSORED';
+						membership['type'] = 'SPONSORED';
 						membership['company'] = data[year]['company'];
+					}
+					if(data[year]['key'] && data[year]['key'].trim().length > 0){
+						membership['key'] = data[year]['key'];
 					}
 					memberships.push(membership);
 				}

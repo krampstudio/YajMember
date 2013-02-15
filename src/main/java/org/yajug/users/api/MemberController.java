@@ -20,6 +20,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.utils.MemberComparator;
@@ -40,6 +42,8 @@ import com.google.inject.Inject;
  */
 @Path("member")
 public class MemberController extends RestController {
+	
+	private final static Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	@Inject private MemberService memberService;
 	
@@ -108,7 +112,7 @@ public class MemberController extends RestController {
 			response = serializeJsonp(new GridVo(membersList), callback);
 			
 		} catch (DataException e) {
-			e.printStackTrace();
+			logger.error(e.getLocalizedMessage(), e);
 			response = serializeException(e);
 		} 
 		return response;
@@ -140,7 +144,7 @@ public class MemberController extends RestController {
 			}
 			response = getSerializer().toJson(array);
 		} catch (DataException e) {
-			e.printStackTrace();
+			logger.error(e.getLocalizedMessage(), e);
 			response = serializeException(e);
 		} 
 		return response;
@@ -156,7 +160,7 @@ public class MemberController extends RestController {
 				response = getSerializer().toJson(memberService.findCompanies(term));
 			}
 		} catch (DataException e) {
-			e.printStackTrace();
+			logger.error(e.getLocalizedMessage(), e);
 			response = serializeException(e);
 		} 
 		return response;
@@ -186,7 +190,7 @@ public class MemberController extends RestController {
 			}
 			
 		} catch (DataException e) {
-			e.printStackTrace();
+			logger.error(e.getLocalizedMessage(), e);
 			response = serializeException(e);
 		} 
 		return response;
@@ -217,7 +221,7 @@ public class MemberController extends RestController {
 			}
 			
 		} catch (DataException e) {
-			e.printStackTrace();
+			logger.error(e.getLocalizedMessage(), e);
 			response = serializeException(e);
 		} 
 		return response;
@@ -265,6 +269,7 @@ public class MemberController extends RestController {
 			saved = this.memberService.save(member);
 			
 		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
 			response.addProperty("error", e.getLocalizedMessage());
 		} finally {
 			this.clearMembers();
@@ -293,6 +298,7 @@ public class MemberController extends RestController {
 			saved = memberService.saveMemberships(memberships);
 			
 		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
 			response.addProperty("error", e.getLocalizedMessage());
 		} finally {
 			this.clearMembers();
