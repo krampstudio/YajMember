@@ -19,7 +19,7 @@ import com.mongodb.DBCursor;
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Singleton
-public class MembershipMongoDao extends MongoDao{
+public class MembershipMongoDao extends MongoDao<Membership>{
 	
 
 	private final static String COLLECTION_NAME = "memberships";
@@ -99,6 +99,7 @@ public class MembershipMongoDao extends MongoDao{
 		return memberships;
 	}
 	
+	@Override
 	public Membership getOne(long key){
 		Membership membership = null;
 		if(key > 0){

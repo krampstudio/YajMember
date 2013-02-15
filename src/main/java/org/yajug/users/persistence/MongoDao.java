@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.yajug.users.domain.DomainObject;
 
@@ -34,11 +35,35 @@ import com.mongodb.util.JSON;
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-public abstract class MongoDao {
+public abstract class MongoDao<T extends DomainObject> {
 
 	private final static String DATE_PATTERN = "yyyy-MM-dd";
 	
 	@Inject private MongoConnector connector;
+	
+	/**
+	 * Get an domain object from it's key
+	 * @param key it's key identifier (different from _id)
+	 * @return the Domain object
+	 */
+	public abstract T getOne(long key);
+	
+	/**
+	 * Check if an instance don't exists in the store
+	 * @param model the instance
+	 * @return true is the instance don't exist
+	 */
+	public boolean isNew(T model){
+		boolean neew = true;
+		if(StringUtils.isNotBlank(model._getId())){
+			neew = false;
+		} else {
+			if(this.getOne(model.getKey()) != null){
+				neew = false;
+			}
+		}
+		return neew;
+	}
 	
 	/**
 	 * Get a mongo collection
@@ -157,7 +182,7 @@ public abstract class MongoDao {
 	 * @param dbObject the {@link BasicDBObject} 
 	 * @return a new instance of {@link DomainObject} 
 	 */
-	protected <T extends DomainObject> T map(Class<T> clazz, BasicDBObject dbObject){
+	protected T map(Class<T> clazz, BasicDBObject dbObject){
 		if(dbObject != null){
 			
 			ObjectId id = null;

@@ -12,7 +12,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 
-public class EventMongoDao extends MongoDao {
+public class EventMongoDao extends MongoDao<Event> {
 
 	private final static String COLLECTION_NAME = "events";
 	
@@ -43,6 +43,7 @@ public class EventMongoDao extends MongoDao {
 		return events;
 	}
 	
+	@Override
 	public Event getOne(long key){
 		Event event = null;
 		if(key > 0){

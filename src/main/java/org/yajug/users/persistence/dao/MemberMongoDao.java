@@ -23,7 +23,7 @@ import com.mongodb.DBObject;
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Singleton
-public class MemberMongoDao extends MongoDao{
+public class MemberMongoDao extends MongoDao<Member>{
 	
 	private final static String COLLECTION_NAME = "members";
 	
@@ -78,6 +78,7 @@ public class MemberMongoDao extends MongoDao{
 		return members;
 	}
 	
+	@Override
 	public Member getOne(long key){
 		Member member = null;
 		if(key > 0){

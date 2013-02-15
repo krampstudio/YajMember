@@ -107,12 +107,12 @@ public class EventServiceImpl implements EventService {
 		int expected = events.size();
 		int saved = 0;
 		for (Event event : events) {
-			if(StringUtils.isNotBlank(event._getId())){
-				if(eventMongoDao.update(event)){
+			if(eventMongoDao.isNew(event)){
+				if(eventMongoDao.insert(event)){
 					saved++;
 				}
 			} else {
-				if(eventMongoDao.insert(event)){
+				if(eventMongoDao.update(event)){
 					saved++;
 				}
 			}
