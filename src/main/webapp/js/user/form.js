@@ -107,7 +107,7 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 			//by submitting the Membership form, 
 			//we serialize the memberships (everything) using the form values
 			//and send them to the server
-			$form.submit(function(event){
+			$('.submiter', $form).click(function(event){
 				event.preventDefault();
 				
 				var memberId = self.getMemberId();
@@ -123,7 +123,7 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 					contentType : 'application/x-www-form-urlencoded',
 					dataType 	: 'json',
 					data 		: {
-						memberships : self.serializeMemberships($form, memberId)
+						memberships : JSON.stringify(self.serializeMemberships($form, memberId))
 					}
 				}).done(function(data) {
 					if(!data.saved || data.error){
@@ -132,6 +132,10 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 						notify('success', 'Saved');
 					}
 				});
+				return false;
+			});
+			$form.submit(function(event){
+				event.preventDefault();
 				return false;
 			});
 		},
@@ -152,6 +156,9 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 				$container;
 			
 			if(membership.year){
+				//fix issue of jquery.tmpl that get DOM nodes from id instead of the data key (#key element is set instead of m
+				membership['mkey'] = membership.key || '';
+				
 				if($("#memberships > ul li a[href='#membership-form-"+membership.year+"']", $form).length === 0){
 					$('#memberships > ul', $form).prepend($.tmpl(tabTmpl, {'year' : membership.year}));
 				}
@@ -165,7 +172,7 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 				$('.membership-type input', $container).change(function(){
 					var val = $(this).val(),
 						id = $(this).attr('id');
-					console.log(val)
+					
 					if(val === 'sponsored'){
 						$('.sponsored-mb', $container).show();
 						$('.perso-mb', $container).hide();

@@ -178,12 +178,12 @@ public class MemberServiceImpl implements MemberService {
 		int expected = memberships.size();
 		int saved = 0;
 		for(Membership membership : memberships){
-			if(StringUtils.isNotBlank(membership._getId())){
-				if(membershipMongoDao.update(membership)){
+			if(membershipMongoDao.isNew(membership)){
+				if(membershipMongoDao.insert(membership)){
 					saved++;
 				}
 			} else {
-				if(membershipMongoDao.insert(membership)){
+				if(membershipMongoDao.update(membership)){
 					saved++;
 				}
 			}
