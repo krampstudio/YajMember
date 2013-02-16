@@ -10,6 +10,8 @@
  * - single unit test: 		gradle test -Dtest.single=TestClassName
  * - run the app in dev: 	gradle jettyRun
  * - data import:			gradle bulk
+ * - client install			gradle install
+ * - build the war			gradle war
  * 
  * Debug:
  * To remote debug when running the web server using jettyRun, export the following variable:
@@ -30,7 +32,6 @@ repositories { mavenCentral() }
 dependencies {
 	compile "org.mongodb:mongo-java-driver:$mongoDriverVersion"
 	compile "org.apache.commons:commons-lang3:$commonsLangVersion"
-	compile "javax.servlet:servlet-api:$servletVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
 	compile "com.google.inject:guice:$guiceVersion"
 	compile "com.google.guava:guava:$guavaVersion"
@@ -46,10 +47,28 @@ dependencies {
 	compile "org.slf4j:slf4j-api:$slf4jVersion"
 	compile "ch.qos.logback:logback-core:$logbackVersion"
 	compile "ch.qos.logback:logback-classic:$logbackVersion"
-	runtime "org.codehaus.groovy:groovy:1.8.6"
+	providedCompile "javax.servlet:servlet-api:$servletVersion"
+	runtime "org.codehaus.groovy:groovy:$groovyVersion"
 	testCompile "junit:junit:$junitVersion"
 	testCompile "org.jukito:jukito:$jukitoVersion"
 }
+
+//Override the war task
+war{
+	//add the static resources to the war
+	from("build/static")
+}
+
+//Build client side for war
+task("gruntBuild", type: Exec, description: "Build client side resource") {
+	commandLine "$grunt", 'build'
+}
+war.dependsOn("gruntBuild");
+
+
+/*
+ * Developpement server
+ */
 
 //jetty conf
 httpPort = 8000
@@ -62,9 +81,29 @@ jettyRun{
 	webDefaultXml = file('src/main/config/webdefault.xml')
 }
 
+// Clean up task, install task should be called after
+task("cleanUp", dependsOn: "clean", type: Delete, description: "Remove all generated files"){
+	delete 'node_modules', 'src/main/webapp/js/lib'
+}
+
+
+/*
+ * Install tasks
+ */
+
+task("npmInstall", type: Exec, description: "Install node dependencies") {
+	commandLine "$npm", 'install'
+}
+task("gruntInstall", type: Exec, dependsOn: "npmInstall",  description: "Install node dependencies") {
+	commandLine "$grunt", 'install'
+}
+task("install", dependsOn: ["npmInstall", "gruntInstall"], description: "Client set up process");
+
+
 /*
  * Bulk import 
  */
+
 task("bulk", description : "Bulk data import");
 ['event','member','membership'].each {target ->
 	//create a task for each bulk import

@@ -88,5 +88,5 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['jshint']);
   grunt.registerTask('install', ['bower:install']);
   grunt.registerTask('optimize', ['requirejs:login', 'requirejs:app']);
-  grunt.registerTask('build', ['jshint', 'jsdoc:dist', 'optimize', 'htmlrefs']);
+  grunt.registerTask('build', ['jsdoc:dist', 'optimize', 'htmlrefs']);
 };
