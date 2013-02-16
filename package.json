@@ -28,7 +28,7 @@
   "devDependencies": {
     "grunt": "~0.4.x",
     "grunt-contrib-jshint": "~0.1.x",
-    "grunt-contrib-jsdoc": "~0.2.x",
+    "grunt-jsdoc": "git://github.com/krampstudio/grunt-jsdoc-plugin.git",
     "grunt-bower-task": "~0.1.x",
     "grunt-contrib-requirejs": "~0.4.0",
     "grunt-contrib-clean": "0.4.0rc6",
