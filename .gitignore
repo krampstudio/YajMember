@@ -1,6 +1,12 @@
 #ignore project config
 src/main/resources/config.properties
 
+#ignore js libs
+src/main/webapp/js/lib
+
+#ignore js optimized
+src/main/webapp/js/*.min.js
+
 # gradle
 build
 .gradle
@@ -21,3 +27,7 @@ build
 .metadata
 bin
 /nbproject/private/
+
+#node js
+npm-debug.log
+node_modules

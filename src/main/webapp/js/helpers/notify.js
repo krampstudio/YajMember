@@ -3,9 +3,9 @@
  * @module notify
  */
 define(['jquery',
-        'noty/layouts/topCenter', 
-        'noty/layouts/center',
-        'noty/themes/default'], 
+        'noty-base/layouts/topCenter', 
+        'noty-base/layouts/center',
+        'noty-base/themes/default'], 
 function($){
 	
 	$.noty.defaults.timeout = 20000;

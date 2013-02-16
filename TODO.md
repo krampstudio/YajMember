@@ -8,10 +8,10 @@
  - [ ] Participants matching list from RSVP or full text list
  - [x] Manage authentication error messages (ie. when user is already logged to google but with another account)
  - [x] Add slf4j and logback!
- - [ ] Add grunt to build the client side (to manage the require.js optimizer) and link it to gradle
- - [ ] Persist the logged users to mongo 
- - [ ] Events/years stats would be great
+ - [x] Add grunt to build the client side (to manage the require.js optimizer) and link it to gradle
+ - [Â ] Persist the logged users to mongo 
+ - [Â ] Events/years stats would be great
  - [ ] Generate the participants list for an event (with QR codes to mark registered as participants)
- - [ ] Update model to include company sponsor memberships
- - [ ] Extract serializer to be shared for mongo and rest (especially for the timezone handling)
- - [ ] Change jquery.tmpl is it is not maintained anymore
+ - [Â ] Update model to include company sponsor memberships
+ - [Â ] Extract serializer to be shared for mongo and rest (especially for the timezone handling)
+ - [Â ] Change jquery.tmpl is it is not maintained anymore

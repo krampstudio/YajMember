@@ -10,12 +10,29 @@ _still under dev (0.1 comming soon)_
 
 ## Development
 
-To start coding, you need:
+To start coding, you need the following softwares:
 
-* Git as well and the repo cloned
-* Gradle version **>1.0** in your path
+* [Git](http://git-scm.com/downloads) as well and the repo cloned
+* [Gradle](http://www.gradle.org/downloads) version **>1.0** in your path
+* [Node.js](http://nodejs.org/download/) **>=0.8** to be able to use the javascript tooling and package repository
 * JDK **>=7**
-* A MongoDB server
+* [MongoDB](http://www.mongodb.org/downloads) **>=2** as data store server
+
+Then set up the project:
+
+* Update the file `gradle.properties` (the _binaries_ and _proxy_ section) 
+* Install Grunt: 
+
+``̀ bash
+$> npm install -g grunt-cli
+`̀``
+
+* Run the command to fetch the javascript dependencies:
+
+`̀`̀`bash
+$> gradle install
+```
+
 * To set up the project configuration:
  1. Copy the config file from `src/main/config/config.propertie` to somewhere in the classpath, ie. `src/main/resources`
  2. Update the mongo connection settings
@@ -23,14 +40,16 @@ To start coding, you need:
 * Import the data into mongo (the data are contained into CSV files under `src/main/scripts`), by running: 
 
 ```bash
-$ gradle bulk
+$> gradle bulk
 ```
 
-* Once the data is imported, you can start the web app:
+* Once the data is imported, you can start the development server:
 
 ```bash
-$ gradle jettyRun
+$> gradle jettyRun
 ```
+
+
 
 
 ## Thank you to the blocks that I have assembled to build this app
@@ -38,6 +57,7 @@ $ gradle jettyRun
 ###Build
 
 * [Gradle](http://www.gradle.org/) : the best java build tool (from far!)
+* [Grunt](http://gruntjs.org) : the best javascript build tool (too)
 
 ###Server side smells
 
@@ -54,11 +74,12 @@ $ gradle jettyRun
 
 ###Client side flavours
 
-* [RequireJs](http://requirejs.org/): don't need a skeleton framework, webmodules are enough
+* [RequireJs](http://requirejs.org/): don't need a skeleton framework, AMD's webmodules are enough
 * [jQuery](http://jquery.com/) : what else ?
 * [jQueryUi](http://jqueryui.com/) : simple components, cool theming, everything to build an UI 
 * [Gridy](https://github.com/wbotelhos/gridy) : but I'm too lazy to build my own _listgrid_
 * [Noty](http://needim.github.com/noty/) : because communication is the key
+* [Bower](http://twitter.github.com/bower/) : client side dependency management
 
 ## There is still a lot to do
 

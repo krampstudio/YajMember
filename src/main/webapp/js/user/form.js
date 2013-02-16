@@ -2,7 +2,7 @@
  * Manage user's Form UI and IO
  * @module event/form
  */
-define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modernizr, notify, store){
+define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify, store){
 
 	/**
 	 * The UserForm is a MultiForm that manages widgets for the user's forms
@@ -102,8 +102,6 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 				self._buildMembershipForm({'year' : newYear}, function(){
 					self._buildMembershipTabs();
 				});
-				
-				return false;
 			});
 			
 			//by submitting the Membership form, 
@@ -125,7 +123,7 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 					contentType : 'application/x-www-form-urlencoded',
 					dataType 	: 'json',
 					data 		: {
-						memberships : JSON.stringify(self.serializeMemberships($form, memberId))
+						memberships : self.serializeMemberships($form, memberId)
 					}
 				}).done(function(data) {
 					if(!data.saved || data.error){
@@ -154,13 +152,9 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 				$container;
 			
 			if(membership.year){
-				//fix issue of jquery.tmpl that get DOM nodes from id instead of the data key (#key element is set instead of membership.key)
-				membership['mkey'] = membership.key || '';
-				
 				if($("#memberships > ul li a[href='#membership-form-"+membership.year+"']", $form).length === 0){
 					$('#memberships > ul', $form).prepend($.tmpl(tabTmpl, {'year' : membership.year}));
 				}
-				
 				$('#memberships > ul', $form).after($.tmpl(formTmpl, membership));
 				
 				$container = $('#membership-form-'+membership.year);
@@ -171,6 +165,7 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 				$('.membership-type input', $container).change(function(){
 					var val = $(this).val(),
 						id = $(this).attr('id');
+					console.log(val)
 					if(val === 'sponsored'){
 						$('.sponsored-mb', $container).show();
 						$('.perso-mb', $container).hide();
@@ -379,7 +374,6 @@ define(['multiform', 'modernizr', 'notify', 'store'], function(MultiForm, Modern
 				if($form.prop('tagName') !== 'FORM'){
 					$.error('Invalid jQuery element for $form. It much match a form tag.')
 				}
-				console.log($form.serializeArray());
 				$.map($form.serializeArray(), function(elt, index){
 					var year = elt.name.replace(/^membership-/, '').replace(/-[a-z]+$/, '');
 					if(/^20[0-9]{2}$/.test(year)){

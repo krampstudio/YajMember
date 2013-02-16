@@ -1,0 +1,41 @@
+{
+  "name": "YajMember",
+  "version": "0.1.0",
+  "description": "Small app to manage our java user group users",
+  "homepage": "https://github.com/krampstudio/YajMember",
+  "author": {
+    "name": "Bertrand Chevrier",
+    "email": "chevrier.bertrand@gmail.com",
+    "url": "http://krampstudio.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:krampstudio/YajMember.git"
+  },
+  "bugs": {
+    "url": "https://github.com/krampstudio/YajMember/issues"
+  },
+  "licenses": [
+    {
+      "type": "GPL-v3",
+      "url": "https://github.com/krampstudio/YajMember/blob/master/LICENSE-GPL"
+    }
+  ],
+  "main": "src/main/webapp/js/app.js",
+  "scripts": {
+    "test": "grunt qunit"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.x",
+    "grunt-contrib-jshint": "~0.1.x",
+    "grunt-jsdoc": "git://github.com/krampstudio/grunt-jsdoc-plugin.git",
+    "grunt-bower-task": "~0.1.x",
+    "grunt-contrib-requirejs": "~0.4.0",
+    "grunt-contrib-clean": "0.4.0rc6",
+    "grunt-htmlrefs": "git://github.com/krampstudio/grunt-htmlrefs.git"
+  },
+  "keywords": [
+    "yajug",
+    "yajmember"
+  ]
+}
