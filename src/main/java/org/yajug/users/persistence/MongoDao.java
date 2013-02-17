@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.yajug.users.domain.DomainObject;
+import org.yajug.users.domain.Member;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -222,5 +223,4 @@ public abstract class MongoDao<T extends DomainObject> {
         }
 		return next;
 	}
-	
 }

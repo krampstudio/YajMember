@@ -18,3 +18,4 @@
  - [ ] Update jquery and jquery ui to the last version (the use of spinners would be cool)
  - [ ] Try to find a way to exclude files from the war into gradle
  - [ ] Optimize also CSS in the grunt optimize task
+ - [ ] Do a bulk test tasks to create a test store

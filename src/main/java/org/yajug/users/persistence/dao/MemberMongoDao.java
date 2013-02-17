@@ -167,16 +167,16 @@ public class MemberMongoDao extends MongoDao<Member>{
 			//get next key
 			if(member.getKey() > 0){
 				BasicDBObject query =  new BasicDBObject("key", member.getKey());
-				BasicDBObject doc =  
-					new BasicDBObject("firstName", member.getFirstName())
-		                    .append("lastName",  member.getLastName())
-		                    .append("company",  member.getCompany())
-		                    .append("email", member.getEmail());
+				BasicDBObject doc = 
+						new BasicDBObject("firstName", member.getFirstName())
+			                    	.append("lastName", member.getLastName())
+			                    	.append("company", member.getCompany())
+			                    	.append("email", member.getEmail());
 				if(member.getRoles() != null){
 					doc.append("roles", mappingHelper.enumsToStrings(member.getRoles()));
 				}
 				saved = handleWriteResult(
-						members().update(query, doc)
+						members().update(query, new BasicDBObject("$set", doc))
 					);
 			}
 		}

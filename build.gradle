@@ -59,6 +59,13 @@ war{
 	from("build/static")
 }
 
+//Override the test task
+test {
+	//makes the standard streams (err and out) visible at console when running tests
+	testLogging.showStandardStreams = true
+}
+
+
 //Build client side for war
 task("gruntBuild", type: Exec, description: "Build client side resource") {
 	commandLine "$grunt", 'build'

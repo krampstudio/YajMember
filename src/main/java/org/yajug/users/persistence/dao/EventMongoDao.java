@@ -90,9 +90,9 @@ public class EventMongoDao extends MongoDao<Event> {
 			if(event.getKey() > 0){
 				BasicDBObject query =  new BasicDBObject("key", event.getKey());
 				BasicDBObject doc =  
-					new BasicDBObject("title", event.getTitle())
-                    .append("description",  event.getDescription())
-                    .append("date",  event.getDate());
+						new BasicDBObject("title", event.getTitle())
+				                    .append("description",  event.getDescription())
+				                    .append("date",  event.getDate());
 				if(event.getParticipants() != null){
 					doc.append("participants", mappingHelper.extractKeys(event.getParticipants()));
 				}
@@ -100,7 +100,7 @@ public class EventMongoDao extends MongoDao<Event> {
 					doc.append("registrants", mappingHelper.extractKeys(event.getRegistrants()));
 				}
 				saved = handleWriteResult(
-						events().update(query, doc)
+						events().update(query, new BasicDBObject("$set", doc))
 					);
 			}
 		}

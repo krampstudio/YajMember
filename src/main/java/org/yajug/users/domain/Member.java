@@ -162,7 +162,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 	
 	@Override
 	public String toString() {
-		return "Member [firstName=" + firstName + ", lastName=" + lastName
+		return "Member [key=" + key + ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", email=" + email + ", company=" + company + ", roles="
 				+ roles + ", valid=" + valid
 				+ "]";

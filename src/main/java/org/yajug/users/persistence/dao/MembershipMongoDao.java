@@ -147,14 +147,14 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 			//get next key
 			if(membership.getKey() > 0){
 				BasicDBObject query = new BasicDBObject("key", membership.getKey());
-				BasicDBObject doc = new BasicDBObject("amount", membership.getAmount())
-		                    .append("paiementDate",  membership.getPaiementDate())
-		                    .append("year",  membership.getYear())
-							.append("event", (membership.getEvent() != null) ? membership.getEvent().getKey() : null)
-							.append("member", ( membership.getMember() != null) ? membership.getMember().getKey() : null);
-				
+				BasicDBObject doc = 
+						new BasicDBObject("amount", membership.getAmount())
+			                    .append("paiementDate",  membership.getPaiementDate())
+			                    .append("year",  membership.getYear())
+								.append("event", (membership.getEvent() != null) ? membership.getEvent().getKey() : null)
+								.append("member", ( membership.getMember() != null) ? membership.getMember().getKey() : null);
 				saved = handleWriteResult(
-						memberships().update(query, doc)
+						memberships().update(query, new BasicDBObject("$set", doc))
 					);
 			}
 		}
