@@ -4,20 +4,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * This domain pojo represent a annual membership paid by a member.
+ * This domain POJO represents an annual membership paid by a {@link Member}.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-//	name="Membership.getAllByMember", 
-//	query="select ms from Membership ms where ms.member = :member"
 public class Membership  extends DomainObject {
 
 	public static final int ANNUAL_FEE = 40;
+	
 	private int year;
+	private Type type;
 	private Date paiementDate;
 	private int amount;
+	private String company;
 	private Event event;
 	private Member member;
+	
+	/** Available memberships types */
+	public enum Type { PERSONNAL, SPONSORED }
 	
 	/**
 	 * Default constructor
@@ -105,13 +109,42 @@ public class Membership  extends DomainObject {
 		this.member = member;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * @return the type
+	 */
+	public Type getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return the company
+	 */
+	public String getCompany() {
+		return company;
+	}
+
+	/**
+	 * @param company the company to set
+	 */
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return "Membership [key = " + key + ", year=" + year + ", paiementDate=" + paiementDate
-				+ ", amount=" + amount + ", event=" + event +  ", member=" + member + "]";
+				+ ", amount=" + amount + ", event=" + event +  ", member=" + member
+				+ ", type=" + type + ", company=" + company + "]";
 	}
 	
 	

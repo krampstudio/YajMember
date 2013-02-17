@@ -122,13 +122,20 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 			if(membership.getKey() <= 0){
 				membership.setKey(getNextKey(COLLECTION_NAME));
 			}
-			BasicDBObject doc = 
-					new BasicDBObject("key", membership.getKey())
-		                    .append("amount", membership.getAmount())
-		                    .append("paiementDate",  membership.getPaiementDate())
-		                    .append("year",  membership.getYear());
-			if(membership.getEvent() != null){
-				doc.append("event", membership.getEvent().getKey());
+			BasicDBObject doc = new BasicDBObject("key", membership.getKey())
+								.append("year",  membership.getYear())
+					            .append("type", membership.getType());
+			switch(membership.getType()){
+				case PERSONNAL:
+					doc.append("amount", membership.getAmount());
+					doc.append("paiementDate",  membership.getPaiementDate());
+					if(membership.getEvent() != null){
+						doc.append("event", membership.getEvent().getKey());
+					}
+					break;
+				case SPONSORED:
+					doc.append("company",  membership.getPaiementDate());
+					break;
 			}
 			if(membership.getMember() != null){
 				doc.append("member", membership.getMember().getKey());
@@ -147,12 +154,19 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 			//get next key
 			if(membership.getKey() > 0){
 				BasicDBObject query = new BasicDBObject("key", membership.getKey());
-				BasicDBObject doc = 
-						new BasicDBObject("amount", membership.getAmount())
-			                    .append("paiementDate",  membership.getPaiementDate())
-			                    .append("year",  membership.getYear())
-								.append("event", (membership.getEvent() != null) ? membership.getEvent().getKey() : null)
-								.append("member", ( membership.getMember() != null) ? membership.getMember().getKey() : null);
+				
+				BasicDBObject doc = new BasicDBObject("type", membership.getType());
+				switch(membership.getType()){
+					case PERSONNAL:
+						doc.append("amount", membership.getAmount());
+						doc.append("paiementDate",  membership.getPaiementDate());
+						doc.append("event", (membership.getEvent() != null) ? membership.getEvent().getKey() : null);
+						break;
+					case SPONSORED:
+						doc.append("company",  membership.getCompany());
+						break;
+				}
+				doc.append("member", ( membership.getMember() != null) ? membership.getMember().getKey() : null);
 				saved = handleWriteResult(
 						memberships().update(query, new BasicDBObject("$set", doc))
 					);
