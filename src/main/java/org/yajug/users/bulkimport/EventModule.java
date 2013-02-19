@@ -6,6 +6,7 @@ import org.yajug.users.bulkimport.reader.CsvEventReader;
 import org.yajug.users.bulkimport.reader.DomainReader;
 import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
 import org.yajug.users.bulkimport.reader.processor.EventCellProcessor;
+import org.yajug.users.config.ModuleHelper;
 import org.yajug.users.domain.Event;
 import org.yajug.users.service.EventService;
 import org.yajug.users.service.EventServiceImpl;
@@ -24,6 +25,9 @@ public class EventModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		
+		ModuleHelper.bindProperties(binder());
+		
 		//bind importer, readers and processors
 		bind(DomainImporter.class).to(EventImporter.class);
 		bind(new TypeLiteral<DomainReader<Event>>(){}).to(CsvEventReader.class);
@@ -33,5 +37,4 @@ public class EventModule extends AbstractModule {
 		bind(MemberService.class).to(MemberServiceImpl.class);
         bind(EventService.class).to(EventServiceImpl.class);
 	}
-
 }

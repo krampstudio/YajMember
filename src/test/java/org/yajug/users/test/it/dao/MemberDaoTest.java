@@ -8,22 +8,24 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.jukito.JukitoModule;
+import org.jukito.JukitoRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.yajug.users.config.ModuleHelper;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Role;
 import org.yajug.users.persistence.dao.MemberMongoDao;
-import org.yajug.users.test.it.GuiceIntegrationTest;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.google.inject.name.Names;
 
 /**
  * Integration test that check basic CRUD operations on the {@link MemberMongoDao}
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-public class MemberDaoTest extends GuiceIntegrationTest{
+@RunWith(JukitoRunner.class)
+public class MemberDaoTest {
 	
 	@Inject private MemberMongoDao dao;
 	
@@ -79,7 +81,7 @@ public class MemberDaoTest extends GuiceIntegrationTest{
 	public static class  TestModule extends JukitoModule{
 		@Override
 		protected void configureTest() {
-			Names.bindProperties(binder(), getTestProperties());
+			ModuleHelper.bindProperties(binder());
 		}
 	}
 }

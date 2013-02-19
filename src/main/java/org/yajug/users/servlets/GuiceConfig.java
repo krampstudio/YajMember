@@ -1,11 +1,10 @@
 package org.yajug.users.servlets;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import org.yajug.users.api.EventController;
 import org.yajug.users.api.MemberController;
+import org.yajug.users.config.ModuleHelper;
 import org.yajug.users.service.EventService;
 import org.yajug.users.service.EventServiceImpl;
 import org.yajug.users.service.MemberService;
@@ -23,7 +22,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.name.Names;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -34,13 +32,12 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 public class GuiceConfig extends GuiceServletContextListener {
-
 	
 	@Override
 	protected Injector getInjector() {
 		
-		final Properties properties = getProperties();
-		final boolean authEnabled =Boolean.parseBoolean(properties.getProperty("auth.enabled"));
+		final Properties properties = ModuleHelper.getProperties();
+		final boolean authEnabled = Boolean.parseBoolean(properties.getProperty("auth.enabled", "true"));
 		
 		/*
 		 * Guice module for the REST API 
@@ -50,7 +47,7 @@ public class GuiceConfig extends GuiceServletContextListener {
 			@Override
 	         protected void configureServlets() {
 				
-				Names.bindProperties(binder(), properties);
+				ModuleHelper.bindProperties(binder());
 				
 	            bind(MemberController.class);
 	            bind(EventController.class);
@@ -74,21 +71,4 @@ public class GuiceConfig extends GuiceServletContextListener {
 	         }
 		});
 	}
-	
-	/**
-	 * Load the configuration properties
-	 * @return the properties
-	 */
-	private Properties getProperties(){
-		Properties properties = new Properties();
-		
-		try(InputStream input = getClass().getResourceAsStream("/config.properties")){
-			properties.load(input);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return properties;
-	}
-
 }
