@@ -1,2 +1,3 @@
-key,year,amount,paiementDate,member
-1,2012,40,2012-03-20,chevrier.bertrand@gmail.com
+key,year,type,amount,paiementDate,company,member
+1,2012,PERSONNAL,40,2012-03-20,,chevrier.bertrand@gmail.com
+2,2013,SPONSORED,,,CGI,chevrier.bertrand@gmail.com

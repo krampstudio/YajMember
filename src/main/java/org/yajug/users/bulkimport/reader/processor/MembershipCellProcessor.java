@@ -19,11 +19,13 @@ public class MembershipCellProcessor implements DomainCellProcessor {
 	
 	public MembershipCellProcessor() {
 		cellProcessors = new CellProcessor[] { 
-				new UniqueHashCode(new ParseLong()), 		// key (must be unique)
-				new NotNull(new ParseInt()), 				// year
-                new Optional(new ParseInt()), 				// amount
+				new UniqueHashCode(new ParseLong()), 			// key (must be unique)
+				new NotNull(new ParseInt()), 					// year
+				new NotNull(new ParseMembershipType()),			// type
+                new Optional(new ParseInt()), 					// amount
                 new Optional(new ParseGMTDate("yyyy-MM-dd")), 	// paiementDate
-                new NotNull(new ParseMember())				// member's mail
+                new Optional(),									// company
+                new NotNull(new ParseMember())					// member's mail
         };
 	}
 	

@@ -175,6 +175,19 @@ public class MemberServiceImpl implements MemberService {
 			throw new DataException("Cannot save null memberships");
 		}
 		
+		//do the checks prior the save operations in a non transactionnal context
+		for(Membership membership : memberships){
+			if(membership == null){
+				throw new DataException("Can't save a null membership!");
+			}
+			if(membership.getYear() < 1990 || membership.getYear() > 2050){
+				throw new DataException("Wrong membership year : " + membership.getYear());
+			}
+			if(membership.getType() == null){
+				throw new DataException("Membership type is required.");
+			}
+		}
+		
 		int expected = memberships.size();
 		int saved = 0;
 		for(Membership membership : memberships){

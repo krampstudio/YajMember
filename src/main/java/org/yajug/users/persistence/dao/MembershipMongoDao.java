@@ -124,7 +124,7 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 			}
 			BasicDBObject doc = new BasicDBObject("key", membership.getKey())
 								.append("year",  membership.getYear())
-					            .append("type", membership.getType());
+					            .append("type", membership.getType().name());
 			switch(membership.getType()){
 				case PERSONNAL:
 					doc.append("amount", membership.getAmount());
@@ -134,7 +134,7 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 					}
 					break;
 				case SPONSORED:
-					doc.append("company",  membership.getPaiementDate());
+					doc.append("company",  membership.getCompany());
 					break;
 			}
 			if(membership.getMember() != null){
@@ -155,7 +155,7 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 			if(membership.getKey() > 0){
 				BasicDBObject query = new BasicDBObject("key", membership.getKey());
 				
-				BasicDBObject doc = new BasicDBObject("type", membership.getType());
+				BasicDBObject doc = new BasicDBObject("type", membership.getType().name());
 				switch(membership.getType()){
 					case PERSONNAL:
 						doc.append("amount", membership.getAmount());

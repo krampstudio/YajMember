@@ -58,7 +58,8 @@ public class MembershipImporter implements DomainImporter {
 					}
 					//get event if paiementDate match
 					for(Event event : events){
-						if(event.getDate() != null && event.getDate().compareTo(membership.getPaiementDate()) == 0){
+						if(membership.getPaiementDate() != null && event.getDate() != null 
+								&& event.getDate().compareTo(membership.getPaiementDate()) == 0){
 							membership.setEvent(event);
 							break;
 						}
