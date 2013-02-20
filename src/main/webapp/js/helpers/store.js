@@ -2,14 +2,13 @@
  * Browser storage, persistent if localStorage is supported 
  * or fallback to DOM data is not.
  */
-define( ['modernizr'], function(){
+define( ['jquery', 'modernizr'], function($){
+	
+	'use strict';
 	
 	var ls = (Modernizr.localstorage === true),
 		ns = 'yajmember',
 	
-	
-	
-		
 	/**
 	 * @class Store
 	 */
@@ -22,7 +21,7 @@ define( ['modernizr'], function(){
 			if(ls){
 				return localStorage.getItem(ns + '.' + key);
 			}
-			return $('body').data(ns + '.' + key)
+			return $('body').data(ns + '.' + key);
 		},
 				
 		/**
@@ -40,11 +39,11 @@ define( ['modernizr'], function(){
 		/**
 		 * @param {String} key
 		 */
-		rm 	: function(key){
+		rm : function(key){
 			if(ls){
 				localStorage.removeItem(ns + '.' + key);
 			} else {
-				$('body').removeData(ns + '.' + key)
+				$('body').removeData(ns + '.' + key);
 			}
 		},
 		

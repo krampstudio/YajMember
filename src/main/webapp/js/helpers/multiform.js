@@ -3,6 +3,7 @@
  * @module multiform
  */
 define(['jquery'], function($){
+	
 	'use strict';
 	
 	/**
@@ -138,15 +139,16 @@ define(['jquery'], function($){
 			 * @param {Function} a callback executed once the forms are cleared
 			 */
 			clearForms : function(callback){
-				var i, $form, name, clearForm;
+				var i, $form, name, clearForm, 
+					resetForm = function(){
+						this.reset();
+					};
 				
 				for(i in this._formNames){
 					name = this._formNames[i];
 					$form = this.getForm(name);
 					if($form.length){
-						$form.each(function(){
-							this.reset();
-						});
+						$form.each(resetForm);
 						clearForm = '_clear' + name[0].toUpperCase() + name.slice(1) + 'Form';
 						if(this[clearForm] !== undefined && typeof this[clearForm] === 'function'){
 							this[clearForm].call(this, $form);
@@ -157,6 +159,6 @@ define(['jquery'], function($){
 					callback();
 				}
 			}
-	}
+	};
 	return MultiForm;
 });

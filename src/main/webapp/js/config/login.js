@@ -10,7 +10,6 @@ requirejs.config({
 	},
 	//dependencies
 	shim: {
-		'uri'				: ['jquery'],
 	    'noty' 				: ['jquery'],
 	    'notify'			: ['noty']
 	}

@@ -2,7 +2,9 @@
  * Manage event's Form UI and IO
  * @module event/form
  */
-define(['multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], function(MultiForm, notify, store){
+define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], function($, MultiForm, notify, store){
+	
+	'use strict';
 	
 	/**
 	 * The EventForm extends from the Form object

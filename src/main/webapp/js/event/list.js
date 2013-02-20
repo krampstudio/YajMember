@@ -2,7 +2,9 @@
  * Manage event's list UI and IO
  * @module event/list
  */
-define(['store', 'notify'], function(store, notify){
+define(['jquery', 'store', 'notify'], function($, store, notify){
+	
+	'use strict';
 	
 	/**
 	 * @constructor

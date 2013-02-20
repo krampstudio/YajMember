@@ -67,11 +67,7 @@ module.exports = function(grunt) {
 		jshint : {
 			files : sources,
 			options: {
-				browser : true,
-				smarttabs : true
-			},
-			globals: {
-				jQuery: true
+				jshintrc: basePath + 'js/.jshintrc'
 			}
 		}
   });

@@ -1,6 +1,8 @@
 //load the configuration
 require(['config/login'], function(){
 	
+	'use strict';
+	
 	//login page entry point
 	requirejs(['jquery','notify', 'uri'], function($, notify, uri){
 		

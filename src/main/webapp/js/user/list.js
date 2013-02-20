@@ -2,7 +2,9 @@
  * Manage the users list widget
  * @module user/list
  */
-define( ['store', 'gridy'], function(store){
+define( ['jquery', 'store', 'gridy'], function($, store){
+	
+	'use strict';
 	
 	/**
 	 * @exports user/list

@@ -2,7 +2,8 @@
  * URI helper module
  * @module uri
  */
-define(['jquery'], function($){
+define(function(){
+	
 	'use strict';
 	
 	/**
@@ -35,6 +36,6 @@ define(['jquery'], function($){
 			}
 			return params;
 		}
-	}
+	};
 	return URI;
 });

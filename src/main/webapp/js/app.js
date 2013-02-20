@@ -1,5 +1,7 @@
 //load the configuration
 require(['config/app'], function(){
+	
+	'use strict';
 
 	require(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store'],  
 		function($, ui, tmpl, notify, store){
@@ -7,14 +9,14 @@ require(['config/app'], function(){
 		$(function(){
 			
 			var initialized = {
-				user : false,
+				member : false,
 				event : false
 			};
 			
 			//create the tabs
 			$('#actions').tabs({
 				cache: true,
-				create: function(event, ui) {
+				create: function() {
 					//unload splash and display screen
 					$('#splash').fadeOut();
 					$('#main').show('slow');
@@ -32,13 +34,13 @@ require(['config/app'], function(){
 						case 1:
 							requirejs(['user/form'], function(userForm) {
 								userForm.initFormControls(function(){
-									if(!initialized['member']){
+									if(!initialized.member){
 										if(store.isset('member')){
 											userForm.loadMember(store.get('member'), function(){
 												userForm.loadMemberships(store.get('member'));
 											});	
 										}
-										initialized['member'] = true;
+										initialized.member = true;
 									}
 								});
 							});
@@ -51,11 +53,11 @@ require(['config/app'], function(){
 						case 3:
 							requirejs(['event/form'], function(eventForm) {
 								eventForm.initFormControls(function(){
-									if(!initialized['event']){
+									if(!initialized.event){
 										if( store.isset('event')){
 											eventForm.loadEvent(store.get('event'));
 										}
-										initialized['event'] = true;
+										initialized.event = true;
 									}
 								});
 							});
@@ -67,7 +69,7 @@ require(['config/app'], function(){
 				show : function(event, ui) {
 	
 					//User
-					if(initialized['member']){
+					if(initialized.member){
 						requirejs(['user/form'], function(userForm) {
 							if(ui.index === 1){
 								if(store.isset('member')){
@@ -98,7 +100,7 @@ require(['config/app'], function(){
 					);
 					
 					//Event
-					if(initialized['event']){
+					if(initialized.event){
 						requirejs(['event/form'], function(eventForm) {
 							if(ui.index === 3 && store.isset('event')){
 								eventForm.loadEvent(store.get('event'));

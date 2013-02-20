@@ -3,10 +3,13 @@
  * @module notify
  */
 define(['jquery',
+        'noty',
         'noty-base/layouts/topCenter', 
         'noty-base/layouts/center',
         'noty-base/themes/default'], 
-function($){
+function($, noty){
+	
+	'use strict';
 	
 	$.noty.defaults.timeout = 20000;
 	
@@ -31,9 +34,9 @@ function($){
 		
 		if(msg && type){
 			return noty({
-				text 	: msg, 
+				text	: msg, 
 				layout	: layout[type] || topLayout, 
-				type 	: type,
+				type	: type,
 				buttons : type != 'confirm' ? false : [{
 					addClass : 'btn btn-primary',
 					text : 'Yes',
@@ -57,5 +60,5 @@ function($){
 				}
 			});
 		}
-	}
+	};
 });

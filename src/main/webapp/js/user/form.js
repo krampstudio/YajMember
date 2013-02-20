@@ -2,7 +2,9 @@
  * Manage user's Form UI and IO
  * @module event/form
  */
-define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify, store){
+define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, MultiForm, notify, store){
+	
+	'use strict';
 
 	/**
 	 * The UserForm is a MultiForm that manages widgets for the user's forms
@@ -24,7 +26,7 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 		 * @memberOf module:event/form
 		 * @see module:form#_id
 		 */
-		_formNames	: ['details', 'membership'],
+		_formNames : ['details', 'membership'],
 		
 		
 		/**
@@ -45,11 +47,11 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 					udpate = (member.key && member.key > 0);
 						
 				$.ajax({
-					type 		: (udpate) ? 'POST' : 'PUT',
-					url 		: (udpate) ? 'api/member/update' : 'api/member/add',
-					contentType : 'application/x-www-form-urlencoded',
-					dataType 	: 'json',
-					data 		: {
+					type		: (udpate) ? 'POST' : 'PUT',
+					url			: (udpate) ? 'api/member/update' : 'api/member/add',
+					contentType	: 'application/x-www-form-urlencoded',
+					dataType	: 'json',
+					data		: {
 						member : JSON.stringify(member)
 					}
 				}).done(function(data) {
@@ -118,11 +120,11 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 				}
 				
 				$.ajax({
-					type 		: 'POST',
-					url 		: 'api/member/updateMemberships/'+memberId,
-					contentType : 'application/x-www-form-urlencoded',
-					dataType 	: 'json',
-					data 		: {
+					type		: 'POST',
+					url			: 'api/member/updateMemberships/'+memberId,
+					contentType	: 'application/x-www-form-urlencoded',
+					dataType	: 'json',
+					data		: {
 						memberships : JSON.stringify(self.serializeMemberships($form, memberId))
 					}
 				}).done(function(data) {
@@ -149,15 +151,14 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 		 */
 		_buildMembershipForm: function(membership, callback){
 			var self = this,
-				membership = membership || {}, 
 				$form = self.getForm('membership'),
 				formTmpl = $('#membership-form-template'),
 				tabTmpl = $('#membership-tab-template'),
 				$container;
 			
-			if(membership.year){
+			if(membership !== undefined && membership.year){
 				//fix issue of jquery.tmpl that get DOM nodes from id instead of the data key (#key element is set instead of m
-				membership['mkey'] = membership.key || '';
+				membership.mkey = membership.key || '';
 				
 				if($("#memberships > ul li a[href='#membership-form-"+membership.year+"']", $form).length === 0){
 					$('#memberships > ul', $form).prepend($.tmpl(tabTmpl, {'year' : membership.year}));
@@ -238,9 +239,9 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 				self.toggleForm();
 				
 				$.ajax({
-					type 		: 'GET',
-					url 		: 'api/member/getOne',
-					dataType 	: 'json',
+					type		: 'GET',
+					url			: 'api/member/getOne',
+					dataType	: 'json',
 					data		: {
 						id : memberId
 					}
@@ -274,9 +275,9 @@ define(['multiform', 'notify', 'store', 'modernizr'], function(MultiForm, notify
 				self.toggleForm();
 				
 				$.ajax({
-					type 		: 'GET',
-					url 		: 'api/member/getMemberships',
-					dataType 	: 'json',
+					type		: 'GET',
+					url			: 'api/member/getMemberships',
+					dataType	: 'json',
 					data		: {
 						id : memberId
 					}
