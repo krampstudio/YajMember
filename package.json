@@ -28,11 +28,11 @@
   "devDependencies": {
     "grunt": "~0.4.x",
     "grunt-contrib-jshint": "~0.1.x",
-    "grunt-jsdoc": "git://github.com/krampstudio/grunt-jsdoc-plugin.git",
+    "grunt-jsdoc": "~0.2.x",
     "grunt-bower-task": "~0.1.x",
-    "grunt-contrib-requirejs": "~0.4.0",
-    "grunt-contrib-clean": "0.4.0rc6",
-    "grunt-htmlrefs": "git://github.com/krampstudio/grunt-htmlrefs.git"
+    "grunt-contrib-requirejs": "~0.4.x",
+    "grunt-contrib-clean": "~0.4.x",
+    "grunt-htmlrefs": "git+https://github.com/krampstudio/grunt-htmlrefs.git"
   },
   "keywords": [
     "yajug",
