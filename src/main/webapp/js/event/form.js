@@ -45,9 +45,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				});
 			}
 			$date.on('change', function(){
-				if(self.getEventId() !== undefined 
-						&& this.value 
-						&& this.value.length === 10){
+				if(self.getEventId() !== undefined  && this.value && this.value.length === 10){
 					self.getForm('flyer').show();
 				} else {
 					self.getForm('flyer').hide();
@@ -71,11 +69,11 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				var udpate = $('#key', $(this)).val().length > 0;
 						
 				$.ajax({
-					type 		: (udpate) ? 'POST' : 'PUT',
-					url 		: (udpate) ? 'api/event/update' : 'api/event/add',
-					contentType : 'application/x-www-form-urlencoded',
-					dataType 	: 'json',
-					data 		: {
+					type		: (udpate) ? 'POST' : 'PUT',
+					url			: (udpate) ? 'api/event/update' : 'api/event/add',
+					contentType	: 'application/x-www-form-urlencoded',
+					dataType	: 'json',
+					data		: {
 						event : JSON.stringify(self.serializeEvent($(this)))
 					}
 				}).done(function(data) {
@@ -192,8 +190,8 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				icons: { primary: "icon-add" },
 				text : false
 			}).click(function(){
-				var $field 			= $('#registrants'),
-					singleTitle 	= 'Add a registrant',
+				var $field			= $('#registrants'),
+					singleTitle		= 'Add a registrant',
 					mulitpleTitle	= 'Add multiple registrants', 
 					expand			= $field.get(0).tagName.toLowerCase() === 'input',
 					$newField, title;
@@ -288,11 +286,11 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				});
 				
 				$.ajax({
-					type 		: 'POST',
-					url 		: 'api/event/updateParticipant/'+self.getEventId(),
-					contentType : 'application/x-www-form-urlencoded',
-					dataType 	: 'json',
-					data 		: {
+					type		: 'POST',
+					url			: 'api/event/updateParticipant/'+self.getEventId(),
+					contentType	: 'application/x-www-form-urlencoded',
+					dataType	: 'json',
+					data		: {
 						registered  : JSON.stringify(lists.registered),
 						participant : JSON.stringify(lists.participant)
 					}
@@ -319,9 +317,9 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			
 			if(eventId && eventId > 0){
 				$.ajax({
-					type 		: 'GET',
-					url 		: 'api/event/getOne',
-					dataType 	: 'json',
+					type		: 'GET',
+					url			: 'api/event/getOne',
+					dataType	: 'json',
 					data		: {
 						id : eventId
 					}
@@ -335,10 +333,10 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 								$(this).val(data[$(this).attr('id')]);
 							}
 						});
-						if(data['date']){
+						if(data.date){
 							$('#current-flyer',  self.getForm('flyer')).attr('src', 'img/events/event-'+data.date.replace(/\-/g,'')+'-small.png');
 						}
-						if(data['description']){
+						if(data.description){
 							$('#description', self.getForm('infos')).htmlarea('html', data.description.replace(/\\n/g, '<br />'));
 						}
 						$('#date', self.getForm('infos')).trigger('change');
@@ -361,16 +359,16 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			var event = {};
 			if($form){
 				if($form.prop('tagName') !== 'FORM'){
-					$.error('Invalid jQuery element for $form. It much match a form tag.')
+					$.error('Invalid jQuery element for $form. It much match a form tag.');
 				}
-				$.map($form.serializeArray(), function(elt, index){
+				$.map($form.serializeArray(), function(elt){
 					if(event[elt.name] === undefined && elt.value){
 						if( elt.value.trim().length > 0){
 							event[elt.name] = elt.value;
 						}
 					}
 				});
-				event['description'] = $('#description', $form).htmlarea('toHtmlString');
+				event.description = $('#description', $form).htmlarea('toHtmlString');
 			}
 			return event;
 		},

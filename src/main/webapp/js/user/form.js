@@ -171,8 +171,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				
 				$('.membership-type', $container).buttonset();
 				$('.membership-type input', $container).change(function(){
-					var val = $(this).val(),
-						id = $(this).attr('id');
+					var val = $(this).val();
 					
 					if(val === 'sponsored'){
 						$('.sponsored-mb', $container).show();
@@ -319,9 +318,9 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 			
 			//load events
 			$.ajax({
-				type 		: 'GET',
-				url 		: 'api/event/list',
-				dataType 	: 'json',
+				type		: 'GET',
+				url			: 'api/event/list',
+				dataType	: 'json',
 				data		: params
 			}).done(function(data) {	
 				if(!data || data.error){
@@ -346,9 +345,9 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 			var member = {};
 			if($form){
 				if($form.prop('tagName') !== 'FORM'){
-					$.error('Invalid jQuery element for $form. It much match a form tag.')
+					$.error('Invalid jQuery element for $form. It much match a form tag.');
 				}
-				$.map($form.serializeArray(), function(elt, index){
+				$.map($form.serializeArray(), function(elt){
 					if(elt.value && elt.value.trim().length > 0){
 						if(member[elt.name] === undefined){
 							member[elt.name] = elt.value;
@@ -380,9 +379,9 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				year;
 			if($form){
 				if($form.prop('tagName') !== 'FORM'){
-					$.error('Invalid jQuery element for $form. It much match a form tag.')
+					$.error('Invalid jQuery element for $form. It much match a form tag.');
 				}
-				$.map($form.serializeArray(), function(elt, index){
+				$.map($form.serializeArray(), function(elt){
 					var year = elt.name.replace(/^membership-/, '').replace(/-[a-z]+$/, '');
 					if(/^20[0-9]{2}$/.test(year)){
 						if(data[year] === undefined){
@@ -398,20 +397,20 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 								'key' : memberId
 							}
 						};
-					if(data[year]['type'] === 'personnal'){
-						membership['type'] = 'PERSONNAL';
-						membership['amount'] = data[year]['amount'];
-						membership['paiementDate'] = data[year]['date'];
-						membership['event'] = {
-								'key' : data[year]['event']
+					if(data[year].type === 'personnal'){
+						membership.type = 'PERSONNAL';
+						membership.amount = data[year].amount;
+						membership.paiementDate = data[year].date;
+						membership.event = {
+								'key' : data[year].event
 						};
 					}
-					if(data[year]['type'] === 'sponsored'){
-						membership['type'] = 'SPONSORED';
-						membership['company'] = data[year]['company'];
+					if(data[year].type === 'sponsored'){
+						membership.type = 'SPONSORED';
+						membership.company = data[year].company;
 					}
-					if(data[year]['key'] && data[year]['key'].trim().length > 0){
-						membership['key'] = data[year]['key'];
+					if(data[year].key && data[year].key.trim().length > 0){
+						membership.key = data[year].key;
 					}
 					memberships.push(membership);
 				}
@@ -444,9 +443,9 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_clearMembershipForm : function($form){
-			$('#memberships').tabs('destroy').removeClass('ui-tabs-vertical  ui-helper-clearfix');
-			$('#memberships .membership-year').remove();
-			$('#memberships .membership-form').remove();
+			$('#memberships', $form).tabs('destroy').removeClass('ui-tabs-vertical  ui-helper-clearfix');
+			$('#memberships .membership-year', $form).remove();
+			$('#memberships .membership-form', $form).remove();
 		}
 	});
 	

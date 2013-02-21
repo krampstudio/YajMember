@@ -21,9 +21,9 @@ define(['jquery', 'store', 'notify'], function($, store, notify){
 			
 			//load the years list
 			$.ajax({
-				type 		: 'GET',
-				url 		: 'api/event/getYears',
-				dataType 	: 'json'
+				type		: 'GET',
+				url			: 'api/event/getYears',
+				dataType	: 'json'
 			}).done(function(data) {	
 				if(!data || data.error || data.length === 0){
 					$.error("Error : " + (data.error ? data.error : "unknown"));
@@ -41,16 +41,16 @@ define(['jquery', 'store', 'notify'], function($, store, notify){
 						collapsible: true,
 						clearStyle : true,
 						//load the event list by activating a 
-					    changestart: function(event, ui ){
-					    	 var $eventList = ui.newContent.find('ul');
-					    	 $eventList.find('li').remove('li');
-				    		 self.loadEvents(
-				    			 ui.newContent.find('ul'), 
-				    			 ui.newHeader.find('a').attr('href').replace('#', ''),
-				    			 function(){
-				    				 self._setUpEventsControls($eventList);
-				    			 }
-				    		);
+						changestart: function(event, ui){
+							var $eventList = ui.newContent.find('ul');
+							$eventList.find('li').remove('li');
+							self.loadEvents(
+								ui.newContent.find('ul'), 
+								ui.newHeader.find('a').attr('href').replace('#', ''),
+								function(){
+									self._setUpEventsControls($eventList);
+								}
+							);
 						}
 					});
 				}
@@ -67,15 +67,13 @@ define(['jquery', 'store', 'notify'], function($, store, notify){
 		loadEvents: function($container, year, callback){
 			//load events
 			$.ajax({
-				type 		: 'GET',
-				url 		: 'api/event/list',
-				dataType 	: 'json',
+				type		: 'GET',
+				url			: 'api/event/list',
+				dataType	: 'json',
 				data		: {year : year}
 			}).done(function(data) {	
 				if(!data || data.error){
 					$.error("Error : " + (data.error ? data.error : "unknown"));
-				} else if(!data.length){
-					//data is empty no event
 				} else {
 					var template = $('#event-item-template');
 					$container.append($.tmpl(template, data));
@@ -96,7 +94,7 @@ define(['jquery', 'store', 'notify'], function($, store, notify){
 			var self = this;
 			var getEventId = function($elt){
 				return $elt.parents('li.event').attr('id').replace('event-', '');
-			}
+			};
 			
 			//edit event button
 			$('.event-editor', $container)
@@ -131,9 +129,9 @@ define(['jquery', 'store', 'notify'], function($, store, notify){
 		 */
 		_rmEvent: function(eventId){
 			$.ajax({
-				type 		: 'DELETE',
-				url 		: 'api/event/remove/'+eventId,
-				dataType 	: 'json'
+				type		: 'DELETE',
+				url			: 'api/event/remove/'+eventId,
+				dataType	: 'json'
 			}).done(function(data) {	
 				if(data && data.removed === true){
 					notify('success', 'Event removed');

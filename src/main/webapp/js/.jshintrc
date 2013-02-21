@@ -8,6 +8,7 @@
 	"unused": true,
 	"strict": true,
 	"smarttabs" : true,
+	"loopfunc" : true,
 	"globals": {
 		"jQuery": true
 	},

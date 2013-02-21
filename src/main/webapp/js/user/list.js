@@ -65,5 +65,5 @@ define( ['jquery', 'store', 'gridy'], function($, store){
 		reload : function(){
 			$("#users").gridy('reload');
 		}
-	}
+	};
 });
