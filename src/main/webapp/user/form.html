@@ -65,12 +65,17 @@
 	<input  id="membership-${year}-key" name="membership-${year}-key" type="hidden" value="${mkey}" />
 	<div class="membership-type">
 		<span class="label">Type of membership</span>
+{{if type == 'SPONSORED'}}
+		<input id="membership-${year}-type-perso" name="membership-${year}-type" type="radio" value="personnal"><label for="membership-${year}-type-perso" >Personnal</label>
+		<input id="membership-${year}-type-sponsored" name="membership-${year}-type" type="radio" checked="checked" value="sponsored"><label for="membership-${year}-type-sponsored">Sponsored</label>
+{{else}}
 		<input id="membership-${year}-type-perso" name="membership-${year}-type" type="radio" checked="checked" value="personnal"><label for="membership-${year}-type-perso" >Personnal</label>
 		<input id="membership-${year}-type-sponsored" name="membership-${year}-type" type="radio" value="sponsored"><label for="membership-${year}-type-sponsored">Sponsored</label>
-	</div>
+{{/if}}	
+</div>
 	<div class="sponsored-mb" style="display:none">
 		<label for="membership-${year}-company">Company</label>
-		<input id="membership-${year}-company" name="membership-${year}-company" class="membership-company" type="text" />
+		<input id="membership-${year}-company" name="membership-${year}-company" class="membership-company" type="text" value="${company}" />
 	</div>
 	<div class="perso-mb">
 		<label for="membership-${year}-event">Event</label>

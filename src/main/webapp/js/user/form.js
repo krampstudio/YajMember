@@ -154,7 +154,17 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				$form = self.getForm('membership'),
 				formTmpl = $('#membership-form-template'),
 				tabTmpl = $('#membership-tab-template'),
-				$container;
+				$container,
+				updateFormView = function(){
+					var val = $(this).val();
+					if(val === 'sponsored'){
+						$('.sponsored-mb', $container).show();
+						$('.perso-mb', $container).hide();
+					} else {
+						$('.sponsored-mb', $container).hide();
+						$('.perso-mb', $container).show();
+					}
+				};
 			
 			if(membership !== undefined && membership.year){
 				//fix issue of jquery.tmpl that get DOM nodes from id instead of the data key (#key element is set instead of m
@@ -170,17 +180,9 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				self.loadEvents(membership.year);
 				
 				$('.membership-type', $container).buttonset();
-				$('.membership-type input', $container).change(function(){
-					var val = $(this).val();
-					
-					if(val === 'sponsored'){
-						$('.sponsored-mb', $container).show();
-						$('.perso-mb', $container).hide();
-					} else {
-						$('.sponsored-mb', $container).hide();
-						$('.perso-mb', $container).show();
-					}
-				});
+				updateFormView.apply($('.membership-type input:checked', $container));
+				$('.membership-type input', $container).change(updateFormView);
+				
 				
 				if(!Modernizr.inputtypes.date){
 					$('.membership-date', $container).datepicker({
