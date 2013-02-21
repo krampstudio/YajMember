@@ -1,4 +1,4 @@
- - [x] Sort events list in add member</s>
+﻿ - [x] Sort events list in add member</s>
  - [x] Check why roles are not loaded with members</s>
  - [x] Use icons to represents roles
  - [x] Add a splash screen
@@ -9,13 +9,13 @@
  - [x] Manage authentication error messages (ie. when user is already logged to google but with another account)
  - [x] Add slf4j and logback!
  - [x] Add grunt to build the client side (to manage the require.js optimizer) and link it to gradle
- - [ ] Persist the logged users to mongo 
- - [ ] Events/years stats would be great
+ - [ ] Persist the logged users to mongo 
+ - [ ] Events/years stats would be great
  - [ ] Generate the participants list for an event (with QR codes to mark registered as participants)
- - [ ] Update model to include company sponsor memberships
- - [ ] Extract serializer to be shared for mongo and rest (especially for the timezone handling)
- - [ ] Change jquery.tmpl is it is not maintained anymore
+ - [x] Update model to include company sponsor memberships
+ - [ ] Extract serializer to be shared for mongo and rest (especially for the timezone handling)
+ - [ ] Change jquery.tmpl is it is not maintained anymore
  - [ ] Update jquery and jquery ui to the last version (the use of spinners would be cool)
- - [ ] Try to find a way to exclude files from the war into gradle
- - [ ] Optimize also CSS in the grunt optimize task
- - [ ] Do a bulk test tasks to create a test store
+ - [ ] Try to find a way to exclude files from the war into gradle
+ - [ ] Optimize also CSS in the grunt optimize task
+ - [ ] Do a bulk test tasks to create a test store
