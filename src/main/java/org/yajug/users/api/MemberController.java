@@ -142,7 +142,7 @@ public class MemberController extends RestController {
 					array.add(item);
 				}
 			}
-			response = getSerializer().toJson(array);
+			response = serializer.get().toJson(array);
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);
 			response = serializeException(e);
@@ -157,7 +157,7 @@ public class MemberController extends RestController {
 		String response = "";
 		try {
 			if(StringUtils.isNotBlank(term)){
-				response = getSerializer().toJson(memberService.findCompanies(term));
+				response = serializer.get().toJson(memberService.findCompanies(term));
 			}
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);
@@ -186,7 +186,7 @@ public class MemberController extends RestController {
 			
 			//check the cache
 			if(getMembers().containsKey(id)){
-				response = getSerializer().toJson(getMembers().get(id));
+				response = serializer.get().toJson(getMembers().get(id));
 			}
 			
 		} catch (DataException e) {
@@ -217,7 +217,7 @@ public class MemberController extends RestController {
 			//check the cache
 			if(getMembers().containsKey(id)){
 				Member member = getMembers().get(id);
-				response = getSerializer().toJson(memberService.getMemberships(member));
+				response = serializer.get().toJson(memberService.getMemberships(member));
 			}
 			
 		} catch (DataException e) {
@@ -262,7 +262,7 @@ public class MemberController extends RestController {
 		JsonObject response = new JsonObject();
 		boolean saved = false;
 		
-		Member member = getSerializer().fromJson(memberData, Member.class);
+		Member member = serializer.get().fromJson(memberData, Member.class);
 			
 		try {
 			
@@ -276,7 +276,7 @@ public class MemberController extends RestController {
 		}
 		response.addProperty("saved", saved);
 		
-		return getSerializer().toJson(response);
+		return serializer.get().toJson(response);
 	}
 	
 	@POST
@@ -293,7 +293,7 @@ public class MemberController extends RestController {
 				throw new DataException("Unable to retrieve member from a wrong id");
 			}
 			Type listType = new TypeToken<ArrayList<Membership>>() {}.getType();
-			List<Membership> memberships = getSerializer().fromJson(data, listType);
+			List<Membership> memberships = serializer.get().fromJson(data, listType);
 			
 			saved = memberService.saveMemberships(memberships);
 			
@@ -305,7 +305,7 @@ public class MemberController extends RestController {
 		}
 		response.addProperty("saved", saved);
 		
-		return getSerializer().toJson(response);
+		return serializer.get().toJson(response);
 	}
 	
 	/**

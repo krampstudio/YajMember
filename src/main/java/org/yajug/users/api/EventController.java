@@ -104,7 +104,7 @@ public class EventController extends RestController {
 								)
 							);
 			}
-			response = getSerializer().toJson(events);
+			response = serializer.get().toJson(events);
 			
 		} catch (DataException e) {
 			e.printStackTrace();
@@ -139,7 +139,7 @@ public class EventController extends RestController {
 				}
 			}
 			
-			response = getSerializer().toJson(years.descendingSet());
+			response = serializer.get().toJson(years.descendingSet());
 		} catch (DataException e) {
 			e.printStackTrace();
 			response = serializeException(e);
@@ -167,7 +167,7 @@ public class EventController extends RestController {
 				throw new DataException("Unable to retrieve an event from a wrong id");
 			}
 			Event event = eventService.getOne(id);
-			response = getSerializer().toJson(event);
+			response = serializer.get().toJson(event);
 			
 		} catch (DataException e) {
 			e.printStackTrace();
@@ -220,7 +220,7 @@ public class EventController extends RestController {
 		JsonObject response = new JsonObject();
 		boolean saved = false;
 		
-		Event event = getSerializer().fromJson(eventData, Event.class);
+		Event event = serializer.get().fromJson(eventData, Event.class);
 		try {
 			saved = this.eventService.save(event);
 		} catch (DataException e) {
@@ -228,7 +228,7 @@ public class EventController extends RestController {
 		} 
 		response.addProperty("saved", saved);
 		
-		return getSerializer().toJson(response);
+		return serializer.get().toJson(response);
 	}
 	
 	/**
@@ -259,7 +259,7 @@ public class EventController extends RestController {
 		}
 		response.addProperty("removed", removed);
 		
-		return  getSerializer().toJson(response);
+		return  serializer.get().toJson(response);
 	}
 	
 	/**
@@ -312,7 +312,7 @@ public class EventController extends RestController {
 		} 
 		response.addProperty("saved", saved);
 		
-		return getSerializer().toJson(response);
+		return serializer.get().toJson(response);
 	}
 	
 	/**
@@ -327,7 +327,7 @@ public class EventController extends RestController {
 		boolean removed = false;
 		
 		response.addProperty("removed", removed);
-		return getSerializer().toJson(response);
+		return serializer.get().toJson(response);
 	}
 	
 	/**
@@ -357,8 +357,8 @@ public class EventController extends RestController {
 		
 			//unserialize the JSON ids to lists
 			Type listType = new TypeToken<ArrayList<Long>>() {}.getType();
-			List<Long> registeredIds = getSerializer().fromJson(registeredData, listType);
-			List<Long> participantIds = getSerializer().fromJson(participantData, listType);
+			List<Long> registeredIds = serializer.get().fromJson(registeredData, listType);
+			List<Long> participantIds = serializer.get().fromJson(participantData, listType);
 		
 			//function used to map an id to a member
 			Function <Long, Member> idToMember = new Function<Long, Member>() {
@@ -385,6 +385,6 @@ public class EventController extends RestController {
 			} 
 		}
 		response.addProperty("saved", saved);
-		return getSerializer().toJson(response);
+		return serializer.get().toJson(response);
 	}
 }

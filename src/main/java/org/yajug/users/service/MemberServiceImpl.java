@@ -22,7 +22,6 @@ import com.google.inject.Inject;
  */
 public class MemberServiceImpl implements MemberService {
 
-	
 	@Inject private MemberMongoDao memberMongoDao;
 	@Inject private MembershipMongoDao membershipMongoDao;
 	
