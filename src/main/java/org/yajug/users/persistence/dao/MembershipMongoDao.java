@@ -175,11 +175,11 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 		return saved;
 	}
 	
-	public boolean remove(Membership member){
+	public boolean remove(Membership membership){
 		boolean removed = false;
-		if(member != null && member.getKey() > 0){
+		if(membership != null && membership.getKey() > 0){
 			removed = handleWriteResult(
-						memberships().remove(new BasicDBObject("key", member.getKey()))
+						memberships().remove(new BasicDBObject("key", membership.getKey()))
 					);
 		}
 		return removed;

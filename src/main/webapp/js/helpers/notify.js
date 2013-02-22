@@ -22,20 +22,24 @@ function($){
 	return  function(type, msg, callback){
 		var topLayout = 'topCenter',
 			centerLayout = 'center',
-			layout = {
+			layouts = {		//map types to layout
 				'alert'		: centerLayout,
 				'info'		: topLayout,
 				'confirm'	: centerLayout,
 				'success'	: topLayout,
 				'error'		: topLayout,
 				'warning'	: topLayout
+			},
+			types = {		//re-map some types
+				'info'		: 'information',
+				'confirm'	: 'warning'
 			};
 		
 		if(msg && type){
 			return noty({
 				text	: msg, 
-				layout	: layout[type] || topLayout, 
-				type	: type,
+				layout	: layouts[type] || topLayout, 
+				type	: types[type] ? types[type] : type,
 				timeout	: 10000,
 				dismissQueue: true,
 				buttons : type != 'confirm' ? false : [{

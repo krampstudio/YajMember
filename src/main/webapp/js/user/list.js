@@ -2,7 +2,7 @@
  * Manage the users list widget
  * @module user/list
  */
-define( ['jquery', 'store', 'gridy'], function($, store){
+define( ['jquery', 'store', 'notify', 'gridy'], function($, store, notify){
 	
 	'use strict';
 	
@@ -16,6 +16,9 @@ define( ['jquery', 'store', 'gridy'], function($, store){
 		 * @memberOf user/list
 		 */
 		build: function(){
+			
+			var self = this;
+			
 			$("#users").gridy({
 				url		: 'api/member/list',
 				dataType	: 'jsonp',
@@ -40,6 +43,19 @@ define( ['jquery', 'store', 'gridy'], function($, store){
 						
 						return false;
 					});
+					
+					$('.member-remove').click(function(event){
+						event.preventDefault();
+						
+						//extract the id and store it 
+						var id = $(this).attr('href').replace('#', '');
+						if(id){
+							notify('confirm', 'You really want to remove this member ?', function(){
+								self._rmMember(id);
+							});
+						}
+						return false;
+					});
 				},
 				
 				/*
@@ -56,6 +72,32 @@ define( ['jquery', 'store', 'gridy'], function($, store){
 					{ name: 'Actions', width: 200 }
 				]
 			});
+		},
+		
+		/**
+		 * Removes a member
+		 * @private
+		 * @memberOf user/list
+		 * @params {Number} memberId - the identifier of the member to remove
+		 */
+		_rmMember: function(memberId){
+			var self = this;
+			
+			if(memberId){
+				$.ajax({
+					type		: 'DELETE',
+					url			: 'api/member/remove/'+memberId,
+					dataType	: 'json'
+				}).done(function(data) {
+					if(!data.removed || data.error){
+						$.error("Error : " + data.error ? data.error : "unknown");
+					} else {
+						store.rm(memberId);
+						self.reload();
+						notify('success', 'Removed');
+					}
+				});
+			}
 		},
 		
 		/**

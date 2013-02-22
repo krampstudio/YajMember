@@ -27,6 +27,12 @@ public interface MemberService {
 	 */
 	Collection<Member> findAll(String expression) throws DataException;
 	
+	/**
+	 * Find members' companies based on an expression
+	 * @param expression to look for 
+	 * @return a list of company name
+	 * @throws DataException
+	 */
 	Collection<String> findCompanies(String expression) throws DataException;
 	
 	/**
@@ -44,6 +50,14 @@ public interface MemberService {
 	 * @throws DataException
 	 */
 	Collection<Membership> getMemberships(Member member) throws DataException;
+	
+	/**
+	 * Get a {@link Membership} from it's identiier
+	 * @param id
+	 * @return
+	 * @throws DataException
+	 */
+	Membership getMembership(long id) throws DataException;
 	
 	/**
 	 * Save  a collection of {@link Members}
@@ -68,4 +82,12 @@ public interface MemberService {
 	 * @throws DataException
 	 */
 	boolean remove(Member member) throws DataException;
+	
+	/**
+	 * Remove a membership
+	 * @param membership the memebership to remove
+	 * @return true if removed
+	 * @throws DataException
+	 */
+	boolean removeMembership(Membership membership) throws DataException;
 }

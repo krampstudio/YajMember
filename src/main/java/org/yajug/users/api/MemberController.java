@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -308,6 +309,64 @@ public class MemberController extends RestController {
 		return serializer.get().toJson(response);
 	}
 	
+	
+	@DELETE
+	@Path("remove/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String remove(@PathParam("id") Long id){
+		JsonObject response = new JsonObject();
+		boolean removed = false;
+		
+		try {
+			
+			if(id == null || id.longValue() <= 0){
+				throw new DataException("Unable to remove member from a wrong id");
+			}
+			
+			//get it from the local cache
+			if(getMembers().containsKey(id)){
+				removed = memberService.remove(getMembers().get(id));
+			}
+		
+		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
+			response.addProperty("error", e.getLocalizedMessage());
+		} finally {
+			this.clearMembers();
+		}
+		response.addProperty("removed", removed);
+			
+		return serializer.get().toJson(response);
+	}
+	
+	@DELETE
+	@Path("removeMembership/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String removeMembership(@PathParam("id") Long id){
+		JsonObject response = new JsonObject();
+		boolean removed = false;
+		
+		try {
+			
+			if(id == null || id.longValue() <= 0){
+				throw new DataException("Unable to remove member from a wrong id");
+			}
+			
+			Membership membership = memberService.getMembership(id.longValue());
+			if(membership != null){
+				removed = memberService.removeMembership(membership);
+			}
+		
+		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
+			response.addProperty("error", e.getLocalizedMessage());
+		} finally {
+			this.clearMembers();
+		}
+		response.addProperty("removed", removed);
+			
+		return serializer.get().toJson(response);
+	}
 	/**
 	 * get the members (from cache or the service layer)
 	 * @return the map of members, with the member's id as key

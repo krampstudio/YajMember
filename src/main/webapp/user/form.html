@@ -62,6 +62,9 @@
 
 <script id="membership-form-template" type="text/x-jquery-tmpl">
 <div id="membership-form-${year}" class="membership-form">
+	<div class="membership-ctrl">
+		<a href="#${mkey}" class="membership-remover" title="Remove ${year} membership">Remove</a>
+	</div>
 	<input  id="membership-${year}-key" name="membership-${year}-key" type="hidden" value="${mkey}" />
 	<div class="membership-type">
 		<span class="label">Type of membership</span>

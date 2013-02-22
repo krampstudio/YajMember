@@ -184,6 +184,13 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				$('.membership-type input', $container).change(updateFormView);
 				
 				
+				$('.membership-remover', $container).button({
+					icons : { primary: "icon-delete" },
+					text : false
+				}).click(function(){
+					noty('info', 'remove');
+				});
+				
 				if(!Modernizr.inputtypes.date){
 					$('.membership-date', $container).datepicker({
 						'dateFormat': 'yy-mm-dd'

@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.Role;
@@ -22,6 +24,8 @@ import com.google.inject.Inject;
  */
 public class MemberServiceImpl implements MemberService {
 
+	private final static Logger logger = LoggerFactory.getLogger(MemberServiceImpl.class);
+	
 	@Inject private MemberMongoDao memberMongoDao;
 	@Inject private MembershipMongoDao membershipMongoDao;
 	
@@ -124,6 +128,17 @@ public class MemberServiceImpl implements MemberService {
 		return memberships;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Membership getMembership(long id) throws DataException {
+		Membership membership = null;
+		if(id > 0){
+			membership = membershipMongoDao.getOne(id);
+		}
+		return membership;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -211,7 +226,25 @@ public class MemberServiceImpl implements MemberService {
 		if(member == null){
 			throw new DataException("Cannot save a null member");
 		}
-		
+		//remove also member's memberships
+		for(Membership membership : this.getMemberships(member)){
+			try{
+				this.removeMembership(membership);
+			} catch(DataException dae){
+				logger.error("Error while removing a membership, continue removals", dae);
+			}
+		}
 		return  memberMongoDao.remove(member);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean removeMembership(Membership membership) throws DataException {
+		if(membership == null){
+			throw new DataException("Cannot save a null member");
+		}
+		return  membershipMongoDao.remove(membership);
 	}
 }

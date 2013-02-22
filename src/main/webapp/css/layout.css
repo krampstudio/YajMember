@@ -1,11 +1,58 @@
-html,
-body {
+/* common styles */
+
+html, body {
    margin:0;
    padding:0;
    height:100%;
    color:#333;
    font-size:14px;
 }
+.small{
+	font-size:.8em;
+}
+.ui-button .ui-icon.icon-add{
+	background-image: url('../img/add_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-add{
+	background-image: url('../img/add.png');
+}
+.ui-button .ui-icon.icon-expand{
+	background-image: url('../img/expand_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-expand{
+	background-image: url('../img/expand.png');
+}
+.ui-button .ui-icon.icon-evt-edit{
+	background-image: url('../img/event_edit_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-evt-edit{
+	background-image: url('../img/event_edit.png');
+}
+.ui-button .ui-icon.icon-evt-delete{
+	background-image: url('../img/event_delete_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-evt-delete{
+	background-image: url('../img/event_delete.png');
+}
+.ui-button .ui-icon.icon-delete{
+	background-image: url('../img/delete_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-delete{
+	background-image: url('../img/delete.png');
+}
+.ui-button .ui-icon.icon-image{
+	background-image: url('../img/image_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-image{
+	background-image: url('../img/image.png');
+}
+
+/* noty overridings */
+.noty_text{
+	font-weight:bold;
+}
+
+/* layout */
 #splash{
 	position:relative;
 	width:50%;
@@ -57,10 +104,7 @@ body {
 	color:#C85408;
 }
 
-.small{
-	font-size:.8em;
-}
-
+/* forms */
 form fieldset{
 	border:solid 1px #C8D8E2;
 	margin-bottom:1em;
@@ -96,7 +140,6 @@ form select,
 form textarea{
 	width: 49%;
 }
-
 form .help{
 	font-size: .7em;
 	font-style: italic;
@@ -133,14 +176,22 @@ form fieldset > div#memberships:hover{
 #memberships .membership-type .ui-state-active .ui-button-text{
 	background-color:#fff;
 }
+#memberships .membership-form .membership-ctrl{
+	text-align: right;
+	padding:0;
+	margin:0;
+}
+#memberships .membership-form .membership-ctrl:hover{
+	background-color: inherit;
+}
 
 /* vertical tabs */
 .ui-tabs-vertical { width: 65em; }
-.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 10em; }
-.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .1em 0 !important;  }
-.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 6.5em; }
+.ui-tabs-vertical .ui-tabs-nav li { float:none; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .1em 0 !important;  }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; float:inherit;text-align:right;}
 .ui-tabs-vertical .ui-tabs-nav li.ui-state-active { padding-bottom: 0; padding-right: .1em; border-right-width: 0 !important; right: -0.1em;}
-.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 52em;}
+.ui-tabs-vertical .ui-tabs-panel { padding: 0; float: right; width: 58em;}
 
 
 /* gridy fix */
@@ -187,42 +238,6 @@ li.event > img {
 }
 li.event .event-ctrl{
 	margin:.5em;
-}
-.ui-button .ui-icon.icon-add{
-	background-image: url('../img/add_high.png');
-}
-.ui-button.ui-state-hover .ui-icon.icon-add{
-	background-image: url('../img/add.png');
-}
-.ui-button .ui-icon.icon-expand{
-	background-image: url('../img/expand_high.png');
-}
-.ui-button.ui-state-hover .ui-icon.icon-expand{
-	background-image: url('../img/expand.png');
-}
-.ui-button .ui-icon.icon-evt-edit{
-	background-image: url('../img/event_edit_high.png');
-}
-.ui-button.ui-state-hover .ui-icon.icon-evt-edit{
-	background-image: url('../img/event_edit.png');
-}
-.ui-button .ui-icon.icon-evt-delete{
-	background-image: url('../img/event_delete_high.png');
-}
-.ui-button.ui-state-hover .ui-icon.icon-evt-delete{
-	background-image: url('../img/event_delete.png');
-}
-.ui-button .ui-icon.icon-delete{
-	background-image: url('../img/delete_high.png');
-}
-.ui-button.ui-state-hover .ui-icon.icon-delete{
-	background-image: url('../img/delete.png');
-}
-.ui-button .ui-icon.icon-image{
-	background-image: url('../img/image_high.png');
-}
-.ui-button.ui-state-hover .ui-icon.icon-image{
-	background-image: url('../img/image.png');
 }
 .current-flyer-field{
 	position:relative;
