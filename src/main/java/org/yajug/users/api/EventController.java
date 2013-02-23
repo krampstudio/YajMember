@@ -39,6 +39,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
@@ -56,6 +57,8 @@ public class EventController extends RestController {
 	
 	/** Enables you to access the current servlet context within an action (it's thread safe) */
 	@Context private ServletContext servletContext;
+	
+	@Inject @Named("flyer.path") private String flyerPath;
 	
 	/**
 	 * Get the list of events either for the current or a particular year <br>
@@ -283,7 +286,6 @@ public class EventController extends RestController {
 		
 		JsonObject response = new JsonObject();
 		boolean saved = false;
-		final String flyerPath = "img/events/";
 		
 		//check MIME TYPE
 		if(bodyPart == null || !bodyPart.getMediaType().isCompatible(new MediaType("image", "*"))){
@@ -316,16 +318,31 @@ public class EventController extends RestController {
 	}
 	
 	/**
-	 * TODO implement method
-	 * @param id
-	 * @return
+	 * Removes a flyer 
+	 * 
+	 * @param id the event identifier the flyer belongs to
+	 * @return  a JSON object that contains the 'removed' property
 	 */
 	@DELETE
-	@Path("/flyer/{id}")
+	@Path("/removeFlyer/{id}")
 	public String removeFlyer(@PathParam("id") long id){
 		JsonObject response = new JsonObject();
 		boolean removed = false;
 		
+		if(id > 0){
+			
+			try {
+				Event event = eventService.getOne(id);
+				if(event != null){
+					final String flyerFullPath = servletContext.getRealPath(flyerPath);
+					Flyer flyer = new Flyer(flyerFullPath, event);
+					
+					removed = eventService.removeFlyer(flyer);
+				}
+			} catch (DataException e) {
+				response.addProperty("error", serializeException(e));
+			}
+		}
 		response.addProperty("removed", removed);
 		return serializer.get().toJson(response);
 	}

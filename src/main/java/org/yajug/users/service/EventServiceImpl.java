@@ -168,4 +168,23 @@ public class EventServiceImpl implements EventService {
 		}
 		return saved;
 	}
+
+	@Override
+	public boolean removeFlyer(Flyer flyer) throws DataException {
+		
+		boolean removed = false;
+		
+		if (flyer == null || flyer.getFile() == null) {
+			throw new DataException("Trying to remove a null flyer.");
+		}
+		
+		try{
+			removed = flyer.getFile().delete();
+		} catch(SecurityException se){
+			throw new DataException("It seems there is a persmission issue while removing the flyer", se);
+		}
+		return removed;
+	}
+	
+	
 }

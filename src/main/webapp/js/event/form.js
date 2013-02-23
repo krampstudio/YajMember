@@ -102,7 +102,25 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				icons : { primary: "icon-delete" },
 				text : false
 			}).click(function(){
-				$('#current-flyer').removeAttr('src');
+				notify('confirm', 'You really want to remove this image ?', function(){
+					var eventId = self.getEventId();
+					if(eventId){
+						$.ajax({
+							type		: 'DELETE',
+							url			: 'api/event/removeFlyer/'+eventId,
+							dataType	: 'json'
+						}).done(function(data) {
+							if(!data.removed || data.error){
+								$.error("Error : " + data.error ? data.error : "unknown");
+							} else {
+								$('#current-flyer').removeAttr('src');
+								notify('success', 'Removed');
+							} 
+						});
+					} else {
+						$('#current-flyer').removeAttr('src');
+					}
+				});
 			});
 			
 			$('#flyer-viewer').button({

@@ -3,7 +3,7 @@
  - [x] Use icons to represents roles
  - [x] Add a splash screen
  - [x] Add filtering/searching to member table
- - [ ] Flyers removal
+ - [x] Flyers removal
  - [ ] Save event participants
  - [ ] Participants matching list from RSVP or full text list
  - [x] Manage authentication error messages (ie. when user is already logged to google but with another account)
@@ -21,4 +21,6 @@
  - [ ] Do a bunch of integration tests
  - [ ] Replace the custom cache by a cache lib (guava? ehcache?)
  - [ ] Split the member/membership services and controllers
+ - [ ] Split the event/flyer services and controllers
  - [ ] Refactor app.js and form/lists to use an event bus instead of the overriding model
+ - [ ] Refactor form/lists to use a js crud layer that communicate with the server
