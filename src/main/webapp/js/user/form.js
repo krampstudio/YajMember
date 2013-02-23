@@ -101,7 +101,10 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 					return false;
 				}
 				//we build up the form for the added year
-				self._buildMembershipForm({'year' : newYear}, function(){
+				self._buildMembershipForm({
+					'year': newYear, 
+					'type': 'PERSONNAL'
+				}, function(){
 					self._buildMembershipTabs();
 				});
 			});
@@ -155,6 +158,10 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				formTmpl = $('#membership-form-template'),
 				tabTmpl = $('#membership-tab-template'),
 				$container,
+				
+				/**
+				 * switch the membership form elements based on the type
+				 */
 				updateFormView = function(){
 					var val = $(this).val();
 					if(val === 'sponsored'){
@@ -167,9 +174,12 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				};
 			
 			if(membership !== undefined && membership.year){
+				
 				//fix issue of jquery.tmpl that get DOM nodes from id instead of the data key (#key element is set instead of m
 				membership.mkey = membership.key || '';
+				membership.mcompany = membership.company || '';
 				
+				//creates the html form using the templates
 				if($("#memberships > ul li a[href='#membership-form-"+membership.year+"']", $form).length === 0){
 					$('#memberships > ul', $form).prepend($.tmpl(tabTmpl, {'year' : membership.year}));
 				}
@@ -177,25 +187,41 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				
 				$container = $('#membership-form-'+membership.year);
 				
+				//load the events list
 				self.loadEvents(membership.year);
 				
+				//set up the membership type switch
 				$('.membership-type', $container).buttonset();
 				updateFormView.apply($('.membership-type input:checked', $container));
 				$('.membership-type input', $container).change(updateFormView);
 				
-				
+				//set up the membership removal
 				$('.membership-remover', $container).button({
 					icons : { primary: "icon-delete" },
 					text : false
-				}).click(function(){
-					noty('info', 'remove');
+				}).click(function(event){
+					event.preventDefault();
+					
+					var id = $(this).attr('href').replace('#', '');
+					if(id){
+						notify('confirm', 'You really want to remove this membership ?', function(){
+							self._rmMembership(id, function(){
+								$container.remove();
+								$("#memberships > ul li a[href='#membership-form-"+membership.year+"']", $form).remove();
+								self._buildMembershipTabs();
+							});
+						});
+					}
+					return false;
 				});
 				
+				//set up the date selection
 				if(!Modernizr.inputtypes.date){
 					$('.membership-date', $container).datepicker({
 						'dateFormat': 'yy-mm-dd'
 					});
 				}
+				
 				//TODO upgrade jquery-ui
 	//			if(!Modernizr.inputtypes.number){
 	//				$('.membership-amount', $container).spinner({
@@ -204,6 +230,8 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 	//					step: 40
 	//				});
 	//			}
+				
+				//and the company list autocompletion
 				$('.membership-company', $container).autocomplete({
 					minLength : 2,
 					delay: 600,
@@ -425,6 +453,27 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				}
 			}
 			return memberships;
+		},
+		
+		_rmMembership : function(membershipId, success){
+			var self = this;
+			
+			if(membershipId){
+				$.ajax({
+					type		: 'DELETE',
+					url			: 'api/member/removeMembership/'+membershipId,
+					dataType	: 'json'
+				}).done(function(data) {
+					if(!data.removed || data.error){
+						$.error("Error : " + data.error ? data.error : "unknown");
+					} else {
+						if(typeof success === 'function'){
+							success();
+						}
+						notify('success', 'Removed');
+					} 
+				});
+			}
 		},
 		
 		/**

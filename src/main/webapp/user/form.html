@@ -45,9 +45,12 @@
 				</ul>
 				<div id="new-membership-tab">
 					<div>
-						<label for="membership-new-year">For year</label>
-						<input id="membership-new-year" name="membership-new-year" type="number" value="" min="2010" max="2050" step="1" />
-						<a href="#" id="add-year">Create</a>
+						<div>&nbsp;</div>
+						<div>
+							<label for="membership-new-year">For year</label>
+							<input id="membership-new-year" name="membership-new-year" type="number" value="" min="2010" max="2050" step="1" />
+							<a href="#" id="add-year">Create</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -78,7 +81,7 @@
 </div>
 	<div class="sponsored-mb" style="display:none">
 		<label for="membership-${year}-company">Company</label>
-		<input id="membership-${year}-company" name="membership-${year}-company" class="membership-company" type="text" value="${company}" />
+		<input id="membership-${year}-company" name="membership-${year}-company" class="membership-company" type="text" value="${mcompany}" />
 	</div>
 	<div class="perso-mb">
 		<label for="membership-${year}-event">Event</label>
