@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yajug.users.domain.DomainObject;
 
 import com.google.common.base.Function;
@@ -28,6 +30,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class Serializer {
 
+	private final static Logger logger = LoggerFactory.getLogger(Serializer.class);
+	
 	@Inject private DateSerializer dateSerializer;
 	
 	private Gson gson;
@@ -58,46 +62,55 @@ public class Serializer {
 	}
 	
 	/**
-	 * Custom deserializer that converts lists of {@link DomainObject} to their 
+	 * Custom De-serializer that converts lists of ids to {@link DomainObject}
 	 */
 	private final class DomainListDeserializer implements
 			JsonDeserializer<List<? extends DomainObject>> {
-		//create an other parser to avoid stack overflow with context parser
+		
+		/**
+		 * create an other parser to avoid stack overflow with context parser
+		 */
 		private Gson gson =  new GsonBuilder().create();
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public List<? extends DomainObject> deserialize(JsonElement json, final Type typeOfT, JsonDeserializationContext context)
 				throws JsonParseException {
 			
-			//TODO handle the case where a generic is not defined 
-			boolean domainList = false;
-			Class<?> generic = (Class<?>)((ParameterizedType)typeOfT).getActualTypeArguments()[0];
-			
-			//check if the list is a list of DomainObjects
-			if(DomainObject.class.isAssignableFrom(generic)){
-				 domainList = true;
-			}
-			
-			//if this is Domain Objects
-			if(domainList){
-				//we get the JSON array of ids
-				List<Long> ids = gson.fromJson(json, new TypeToken<ArrayList<Long>>(){}.getType());
-				//and transform it into a list of instance with only the key set
-				return Lists.transform(ids, new Function<Long, DomainObject>() {
-
-					@Override public DomainObject apply(Long input) {
-						DomainObject domainObject = null;
-						try {
-							 domainObject = (DomainObject) Class.forName(typeOfT.getClass().getName()).newInstance() ;
-							 domainObject.setKey(input);
-						} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-							e.printStackTrace();
+			Type[] typeArgs = ((ParameterizedType)typeOfT).getActualTypeArguments();
+			if(typeArgs.length > 0){
+				
+				boolean domainList = false;
+				final Class<?> generic = (Class<?>)typeArgs[0];
+				
+				//check if the list is a list of DomainObjects
+				if(DomainObject.class.isAssignableFrom(generic)){
+					 domainList = true;
+				}
+				
+				//if this is Domain Objects
+				if(domainList){
+					//we get the JSON array of ids
+					List<Long> ids = gson.fromJson(json, new TypeToken<ArrayList<Long>>(){}.getType());
+					//and transform it into a list of instance with only the key set
+					return Lists.transform(ids, new Function<Long, DomainObject>() {
+	
+						@Override public DomainObject apply(Long input) {
+							DomainObject domainObject = null;
+							try {
+								 domainObject = (DomainObject) Class.forName(generic.getClass().getName()).newInstance() ;
+								 domainObject.setKey(input);
+							} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+								logger.error(e.getLocalizedMessage(), e);
+							}
+							return domainObject;
 						}
-						return domainObject;
-					}
-					
-				});
-			} 
+						
+					});
+				} 
+			}
 			//or do a simple parsing
 			return gson.fromJson(json, typeOfT);
 		}

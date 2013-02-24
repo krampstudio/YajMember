@@ -169,6 +169,9 @@ public class EventServiceImpl implements EventService {
 		return saved;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean removeFlyer(Flyer flyer) throws DataException {
 		
@@ -180,6 +183,11 @@ public class EventServiceImpl implements EventService {
 		
 		try{
 			removed = flyer.getFile().delete();
+			
+			//removes also the thumbnail
+			if(flyer.getThumbnail() != null){
+				removed = removed && flyer.getThumbnail().getFile().delete();
+			}
 		} catch(SecurityException se){
 			throw new DataException("It seems there is a persmission issue while removing the flyer", se);
 		}

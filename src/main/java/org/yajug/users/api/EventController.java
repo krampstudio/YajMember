@@ -24,6 +24,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
 import org.yajug.users.domain.Member;
@@ -52,6 +54,8 @@ import com.sun.jersey.multipart.FormDataParam;
 @Path("event")
 public class EventController extends RestController {
 
+	private final static Logger logger = LoggerFactory.getLogger(EventController.class);
+	
 	/** The service instance that manages events */
 	@Inject private EventService eventService;
 	
@@ -110,7 +114,7 @@ public class EventController extends RestController {
 			response = serializer.get().toJson(events);
 			
 		} catch (DataException e) {
-			e.printStackTrace();
+			logger.error(e.getLocalizedMessage(), e);
 			response = serializeException(e);
 		}
 		return response;
@@ -144,7 +148,7 @@ public class EventController extends RestController {
 			
 			response = serializer.get().toJson(years.descendingSet());
 		} catch (DataException e) {
-			e.printStackTrace();
+			logger.error(e.getLocalizedMessage(), e);
 			response = serializeException(e);
 		} 
 		return response;
@@ -173,7 +177,7 @@ public class EventController extends RestController {
 			response = serializer.get().toJson(event);
 			
 		} catch (DataException e) {
-			e.printStackTrace();
+			logger.error(e.getLocalizedMessage(), e);
 			response = serializeException(e);
 		} 
 		return response;
@@ -227,6 +231,7 @@ public class EventController extends RestController {
 		try {
 			saved = this.eventService.save(event);
 		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
 			response.addProperty("error", e.getLocalizedMessage());
 		} 
 		response.addProperty("saved", saved);
@@ -257,6 +262,7 @@ public class EventController extends RestController {
 				event.setKey(id);
 				removed = eventService.remove(event);
 			} catch (DataException e) {
+				logger.error(e.getLocalizedMessage(), e);
 				response.addProperty("error", e.getLocalizedMessage());
 			} 
 		}
@@ -310,6 +316,7 @@ public class EventController extends RestController {
 				}
 			}
 		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
 			response.addProperty("error", serializeException(e));
 		} 
 		response.addProperty("saved", saved);
@@ -340,6 +347,7 @@ public class EventController extends RestController {
 					removed = eventService.removeFlyer(flyer);
 				}
 			} catch (DataException e) {
+				logger.error(e.getLocalizedMessage(), e);
 				response.addProperty("error", serializeException(e));
 			}
 		}
@@ -397,7 +405,7 @@ public class EventController extends RestController {
 					saved = eventService.save(event);
 				}
 			} catch (DataException e) {
-				e.printStackTrace();
+				logger.error(e.getLocalizedMessage(), e);
 				response.addProperty("error", serializeException(e));
 			} 
 		}
