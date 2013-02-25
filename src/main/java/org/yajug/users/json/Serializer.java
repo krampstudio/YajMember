@@ -100,7 +100,7 @@ public class Serializer {
 						@Override public DomainObject apply(Long input) {
 							DomainObject domainObject = null;
 							try {
-								 domainObject = (DomainObject) Class.forName(generic.getClass().getName()).newInstance() ;
+								 domainObject = (DomainObject) Class.forName(generic.getName()).newInstance() ;
 								 domainObject.setKey(input);
 							} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 								logger.error(e.getLocalizedMessage(), e);
