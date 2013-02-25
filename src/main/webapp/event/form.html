@@ -49,7 +49,7 @@
 			<div>
 				<div class="list-box">
 					<div>Registered</div>
-					<ul id="registered"></ul>
+					<ul id="registrant"></ul>
 					<span class="help">Hold CTRL to select multiples</span>
 				</div>
 				<div class="list-box-ctrl">
@@ -66,3 +66,6 @@
 		</fieldset>
 	</form>
 </div>
+<script id="participant-item-template" type="text/x-jquery-tmpl">
+<li id="${pkey}" class="ui-state-default">${pname}</li>
+</script>

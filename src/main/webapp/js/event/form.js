@@ -192,10 +192,10 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 						
 						var $item = $('<li></li>')
 							.addClass('ui-state-default')
-							.attr('id', 'registered-' + ui.item.value)
+							.attr('id', 'registrant-' + ui.item.value)
 							.text(ui.item.label);
 						
-						$('#registered').append($item);
+						$('#registrant').append($item);
 						
 						return false;
 					}
@@ -243,8 +243,8 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				icons: { primary: "ui-icon-carat-1-e" },
 				text : false
 			}).click(function(){
-				$('#registered li.ui-selected').each(function(index, elt){
-					var id = 'participant-' + $(elt).attr('id').replace('registered-', ''),
+				$('#registrant li.ui-selected').each(function(index, elt){
+					var id = 'participant-' + $(elt).attr('id').replace('registrant-', ''),
 						$item = $('<li></li>');
 					if($('#' + id).length === 0){
 						$item.addClass('ui-state-default')
@@ -267,12 +267,12 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				return false;
 			});
 			
-			//remove registered from the list box
+			//remove registrant from the list box
 			$('.list-box-ctrl a.rml').button({
 				icons: { primary: "ui-icon-trash" },
 				text : false
 			}).click(function(){
-				$('#registered li.ui-selected').remove();
+				$('#registrant li.ui-selected').remove();
 				return false;
 			});
 			
@@ -286,12 +286,12 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				}
 			});
 			
-			//submit the registered and participants lists
+			//submit the registrant and participants lists
 			$('.submiter', $form).click(function(e){
 				e.preventDefault();
 				
 				var lists = {
-					registered : [],
+					registrant : [],
 					participant : []
 				};
 				
@@ -309,7 +309,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 					contentType	: 'application/x-www-form-urlencoded',
 					dataType	: 'json',
 					data		: {
-						registered  : JSON.stringify(lists.registered),
+						registrant  : JSON.stringify(lists.registrant),
 						participant : JSON.stringify(lists.participant)
 					}
 				}).done(function(data) {
@@ -358,12 +358,47 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 							$('#description', self.getForm('infos')).htmlarea('html', data.description.replace(/\\n/g, '<br />'));
 						}
 						$('#date', self.getForm('infos')).trigger('change');
-						
+						if(data.registrants){
+							self.addParticipant(data.registrants, 'registrant');
+						}
+						if(data.participants){
+							self.addParticipant(data.participants, 'participant');
+						}
 						if(typeof callback === 'function'){
 							callback();
 						}
 					}
 				});
+			}
+		},
+		
+		/**
+		 * Add a participant/registrant to the list box
+		 * @param {Array} data - of participant, each item must contains a key, a firstname and a lastname
+		 * @param {String} type - either registrant or participant
+		 */
+		addParticipant : function(data, type){
+			if(!type || type !== 'registrant' && type !== 'participant'){
+				$.error('Invalid participant type :' + type);
+			}
+			if(!data || !$.isArray(data)){
+				$.error('Invalid participant list, array excepted');
+			}
+			var tmpl = $('#participant-item-template'),
+				$container = $('#' + type),
+				participants = [];
+			
+			//remap data to avoid issue with duplicate ids in jquery-tmpl
+			$.each(data, function(index, elt){
+				console.log(elt)
+				participants.push({
+					'pkey' : type + '-' + elt.key,
+					'pname' : elt.firstName + elt.lastName
+				});
+			});
+			
+			if(participants.length > 0){
+				$container.append($.tmpl(tmpl, participants));
 			}
 		},
 		
