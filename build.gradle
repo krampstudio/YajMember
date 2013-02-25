@@ -34,14 +34,23 @@ dependencies {
 	compile "org.apache.commons:commons-lang3:$commonsLangVersion"
 	compile "com.google.code.gson:gson:$gsonVersion"
 	compile "com.google.inject:guice:$guiceVersion"
-	compile "com.google.guava:guava:$guavaVersion"
+	
 	compile "com.sun.jersey:jersey-bundle:$jerseyVersion"
 	compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
 	compile "com.sun.jersey.contribs:jersey-multipart:$jerseyVersion"
-	compile "com.google.api-client:google-api-client:$googleApiClientVersion"
-	compile "com.google.oauth-client:google-oauth-client:$googleApiClientVersion"
-	compile "com.google.oauth-client:google-oauth-client-servlet:$googleApiClientVersion"
-	compile "com.google.http-client:google-http-client-gson:$googleApiClientVersion"
+	compile("com.google.api-client:google-api-client:$googleApiClientVersion"){
+		exclude group: 'com.google.guava'
+	}
+	compile("com.google.oauth-client:google-oauth-client:$googleApiClientVersion"){
+		exclude group: 'com.google.guava'
+	}
+	compile("com.google.oauth-client:google-oauth-client-servlet:$googleApiClientVersion"){
+		exclude group: 'com.google.guava'
+	}
+	compile("com.google.http-client:google-http-client-gson:$googleApiClientVersion"){
+		exclude group: 'com.google.guava'
+	}
+	compile "com.google.guava:guava:$guavaVersion"
 	compile "net.sf.supercsv:super-csv:$superCsvVersion"
 	compile "org.imgscalr:imgscalr-lib:$scalrVersion"
 	compile "org.slf4j:slf4j-api:$slf4jVersion"
