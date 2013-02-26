@@ -177,80 +177,63 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_initParticipantControls : function($form){
-			var self = this;
+			var self					= this,
+				$importFields			= $('.reg-import-field', $form),
+				$importCtrl				= $('#reg-import-ctrl', $form),
+				$addRegistrants			= $('#reg-add', $form),
+				$registrantList			= $('#registrant', $form),
+				$participantList		= $('#participant', $form),
+				$ltr					= $('.list-box-ctrl a.ltr', $form),
+				$rtl					= $('.list-box-ctrl a.rtl', $form),
+				$trash					= $('.list-box-ctrl a.rml', $form),
+				$listBoxes				= $('.list-box ul', $form);
 			
-			/**
-			 * Set up autocomplete field
-			 */
-			var setUpAutocomplete = function(){
-				$('input#registrants').autocomplete({
-					minLength : 2,
-					delay: 600,
-					source : 'api/member/acSearch',
-					focus: function(event){
-						//prevent the item value to be displayed in the field
-						event.preventDefault();
-						return false;
-					},
-					select : function(event, ui){
-						event.preventDefault();
-						
-						var $item = $('<li></li>')
-							.addClass('ui-state-default')
-							.attr('id', 'registrant-' + ui.item.value)
-							.text(ui.item.label);
-						
-						$('#registrant').append($item);
-						
-						$(this).val('');
-						
-						return false;
-					}
-				});
-			};
-			setUpAutocomplete();
+			$importFields.css('display', 'none');
+			
+			//Set up autocomplete field
+			$addRegistrants.autocomplete({
+				minLength : 2,
+				delay: 600,
+				source : 'api/member/acSearch',
+				focus: function(event){
+					//prevent the item value to be displayed in the field
+					event.preventDefault();
+					return false;
+				},
+				select : function(event, ui){
+					event.preventDefault();
+					
+					var $item = $('<li></li>')
+						.addClass('ui-state-default')
+						.attr('id', 'registrant-' + ui.item.value)
+						.text(ui.item.label);
+					
+					$registrantList.append($item);
+					
+					$(this).val('');
+					
+					return false;
+				}
+			});
 			
 			//toggle registrants field between input and textarea
-			$('#expand-registrants').button({
-				icons: { primary: "icon-add" },
+			$importCtrl.button({
+				icons: { primary: "icon-import" },
 				text : false
-			}).click(function(){
-				var $field			= $('#registrants'),
-					singleTitle		= 'Add a registrant',
-					mulitpleTitle	= 'Add multiple registrants', 
-					expand			= $field.get(0).tagName.toLowerCase() === 'input',
-					$newField, title;
+			}).click(function(event){
+				event.preventDefault();
 				
-				if(expand){
-					$newField = $("<textarea></textarea>");
-					title = singleTitle;
-					$(this).button('option', 'label', mulitpleTitle);
-				} else {
-					$newField = $("<input type='text' />");
-					title = mulitpleTitle;
-					$(this).button('option', 'label', singleTitle);
-				}
-				$newField.attr({
-					id		: 'registrants', 
-					name	: 'registrants',
-					title	: title
-				}).val($field.val());
+				$importFields.toggle();
 				
-				//remove the old & insert the new field
-				$field.after($newField).remove();
-				if(!expand){
-					//we need to set it up again because it is a new instance!
-					setUpAutocomplete();
-				}
 				return false;
 			});
 			
 			//move items from registrants to participants list box
-			$('.list-box-ctrl a.ltr').button({
+			$ltr.button({
 				icons: { primary: "ui-icon-carat-1-e" },
 				text : false
 			}).click(function(){
-				$('#registrant li.ui-selected').each(function(index, elt){
+				$('#registrant li.ui-selected', $form).each(function(index, elt){
 					var id = 'participant-' + $(elt).attr('id').replace('registrant-', ''),
 						$item = $('<li></li>');
 					if($('#' + id).length === 0){
@@ -258,7 +241,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 							.attr('id', id)
 							.text($(elt).text());
 						
-						$('#participant').append($item);
+						$participantList.append($item);
 					}
 					$(elt).removeClass('ui-selected ui-state-highlight');
 				});
@@ -266,29 +249,29 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			});
 			
 			//remove participants from the list box
-			$('.list-box-ctrl a.rtl').button({
+			$rtl.button({
 				icons: { primary: "ui-icon-carat-1-w" },
 				text : false
 			}).click(function(){
-				$('#participant li.ui-selected').remove();
+				$('#participant li.ui-selected', $form).remove();
 				return false;
 			});
 			
 			//remove registrant from the list box
-			$('.list-box-ctrl a.rml').button({
+			$trash.button({
 				icons: { primary: "ui-icon-trash" },
 				text : false
 			}).click(function(){
-				$('#registrant li.ui-selected').each(function(){
+				$('#registrant li.ui-selected', $form).each(function(){
 					$('#' + $(this).attr('id').replace('registrant-', 'participant-')).remove();
 					$(this).remove();
 				});
-				$('#participant li.ui-selected').remove();
+				$('#participant li.ui-selected', $form).remove();
 				return false;
 			});
 			
 			//enable list multiple selection
-			$('.list-box ul').selectable({
+			$listBoxes.selectable({
 				selected: function(event, ui){
 					$(ui.selected).addClass('ui-state-highlight');
 				},
@@ -307,7 +290,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				};
 				
 				//get the ids of the both lists and push them to the lists arrays
-				$('.list-box ul', $form).each(function(){
+				$listBoxes.each(function(){
 					var listId = $(this).attr('id');
 					$('li', $(this)).each(function(){
 						lists[listId].push($(this).attr('id').replace(listId+'-', ''));

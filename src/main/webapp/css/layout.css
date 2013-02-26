@@ -46,6 +46,12 @@ html, body {
 .ui-button.ui-state-hover .ui-icon.icon-image{
 	background-image: url('../img/image.png');
 }
+.ui-button .ui-icon.icon-import{
+	background-image: url('../img/import_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-import{
+	background-image: url('../img/import.png');
+}
 
 /* noty overridings */
 .noty_text{

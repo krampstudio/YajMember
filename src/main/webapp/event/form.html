@@ -42,9 +42,18 @@
 		<fieldset>
 			<legend>Participants</legend>
 			<div>
-				<label for="registrants">Add registrants</label>
-				<input id="registrants" name="registrants" type="text" style="width:40%;" />
-				<a href="#registrants" id="expand-registrants">Expand</a>
+				<label for="reg-add">Add registrants</label>
+				<input id="reg-add" name="reg-add" type="text" style="width:40%;" />
+				<a href="#registrants" id="reg-import-ctrl">Import from file</a>
+			</div>
+			<div class="reg-import-field">
+				<label for="reg-import-file">Import file</label>
+				<input id="reg-import-file" name="reg-import-file" type="file" />
+				<span class="help">Only CSV files are allowed.</span>
+			</div>
+			<div class="reg-import-field">
+				<label for="reg-import-opts">Options</label>
+				<input id="reg-import-opts" name="reg-import-opts" type="text" />
 			</div>
 			<div>
 				<div class="list-box">
