@@ -187,6 +187,11 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 					minLength : 2,
 					delay: 600,
 					source : 'api/member/acSearch',
+					focus: function(event){
+						//prevent the item value to be displayed in the field
+						event.preventDefault();
+						return false;
+					},
 					select : function(event, ui){
 						event.preventDefault();
 						
@@ -196,6 +201,8 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 							.text(ui.item.label);
 						
 						$('#registrant').append($item);
+						
+						$(this).val('');
 						
 						return false;
 					}
@@ -272,7 +279,11 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				icons: { primary: "ui-icon-trash" },
 				text : false
 			}).click(function(){
-				$('#registrant li.ui-selected').remove();
+				$('#registrant li.ui-selected').each(function(){
+					$('#' + $(this).attr('id').replace('registrant-', 'participant-')).remove();
+					$(this).remove();
+				});
+				$('#participant li.ui-selected').remove();
 				return false;
 			});
 			

@@ -372,7 +372,7 @@ public class EventController extends RestController {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public String updateParticipant(
 			@PathParam("id") long id, 
-			@FormParam("registered") String registeredData, 
+			@FormParam("registrant") String registeredData, 
 			@FormParam("participant") String participantData){
 		
 		JsonObject response = new JsonObject();
