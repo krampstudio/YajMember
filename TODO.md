@@ -4,7 +4,7 @@
  - [x] Add a splash screen
  - [x] Add filtering/searching to member table
  - [x] Flyers removal
- - [ ] Save event participants
+ - [x] Save event participants
  - [ ] Participants matching list from RSVP or full text list
  - [x] Manage authentication error messages (ie. when user is already logged to google but with another account)
  - [x] Add slf4j and logback!
