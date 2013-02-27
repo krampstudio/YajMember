@@ -228,6 +228,8 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				return false;
 			});
 			
+			$('#reg-import-opts-order', $form).sortable();
+			
 			//move items from registrants to participants list box
 			$ltr.button({
 				icons: { primary: "ui-icon-carat-1-e" },

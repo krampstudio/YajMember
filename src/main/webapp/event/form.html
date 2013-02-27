@@ -53,8 +53,22 @@
 			</div>
 			<div class="reg-import-field">
 				<label for="reg-import-opts">Options</label>
-				<input id="reg-import-opts" name="reg-import-opts" type="text" />
+				<label for="reg-import-opts-no-head">Ignore 1st line</label>
+				<input id="reg-import-opts-no-head" name="reg-import-opts-no-head" type="checkbox" checked="checked" />
+				<label for="reg-import-opts-dels">Delimiters</label>
+				<input id="reg-import-opts-dels" name="reg-import-opts-dels" type="text" value=",;|" />
+				<label for="reg-import-opts-wrap">Wrapper</label>
+				<input id="reg-import-opts-wrap" name="reg-import-opts-wrap" type="text" value='"' />
+				<label for="reg-import-opts-order">Fields order</label>
+				<ul id="reg-import-opts-order">
+					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>First Name</li>
+					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Last Name</li>
+					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>>Name (First + Last or Last + First)</li>
+					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Company</li>
+					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Email</li>
+				</ul>
 			</div>
+			
 			<div>
 				<div class="list-box">
 					<div>Registered</div>
