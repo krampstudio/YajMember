@@ -52,6 +52,12 @@ html, body {
 .ui-button.ui-state-hover .ui-icon.icon-import{
 	background-image: url('../img/import.png');
 }
+.ui-button .ui-icon.icon-reset{
+	background-image: url('../img/reset{_high.png');
+}
+.ui-button.ui-state-hover .ui-icon.icon-reset{{
+	background-image: url('../img/reset{.png');
+}
 
 /* noty overridings */
 .noty_text{
@@ -146,6 +152,9 @@ form select,
 form textarea{
 	width: 49%;
 }
+form input.small[type=text]{
+	width:10%;
+}
 form .help{
 	font-size: .7em;
 	font-style: italic;
@@ -189,6 +198,32 @@ form fieldset > div#memberships:hover{
 }
 #memberships .membership-form .membership-ctrl:hover{
 	background-color: inherit;
+}
+
+/* sortable */
+ul.sortable{
+	list-style-type: none;
+	margin: 0; 
+	padding: 0; 
+	width: 40%;
+}
+ul.sortable li {
+	margin: 0 .2em .2em .2em; 
+	padding: .3em; 
+	padding-left: 1.5em; 
+	font-size: 1em; 
+	height: 1.3em; 
+}
+ul.sortable li:hover{
+	cursor:pointer;
+}
+ul.sortable li span { 
+	position: absolute; 
+	margin-left: -1.3em; 
+}
+.sortable-placeholder,
+.ui-sortable-placeholder{
+	border: dashed 1px #E77124;
 }
 
 /* vertical tabs */
@@ -254,6 +289,29 @@ li.event .event-ctrl{
 .current-flyer-field #flyer-viewer{
 	position:absolute;
 	top:36px;
+}
+.reg-import-opts{
+	border: #ccc dashed 1px;
+}
+.reg-import-opts:hover{
+	background-color: inherit;
+}
+.reg-import-opts > div{
+	width:100%;
+	margin:5px 0;
+	padding:5px;
+	border-radius:3px;
+}
+.reg-import-opts > div:hover{
+	background-color: #C8D8E2;
+}
+#reg-import-opts-order{
+	position:relative;
+	left:49%;
+	top:-1em;
+}
+#reg-import-opts-order-ctrl-trash{
+	background-image: url('../img/bin_closed.png');
 }
 #registrants{
 	width:40%;

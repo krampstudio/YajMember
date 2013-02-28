@@ -51,24 +51,36 @@
 				<input id="reg-import-file" name="reg-import-file" type="file" />
 				<span class="help">Only CSV files are allowed.</span>
 			</div>
-			<div class="reg-import-field">
-				<label for="reg-import-opts">Options</label>
-				<label for="reg-import-opts-no-head">Ignore 1st line</label>
-				<input id="reg-import-opts-no-head" name="reg-import-opts-no-head" type="checkbox" checked="checked" />
-				<label for="reg-import-opts-dels">Delimiters</label>
-				<input id="reg-import-opts-dels" name="reg-import-opts-dels" type="text" value=",;|" />
-				<label for="reg-import-opts-wrap">Wrapper</label>
-				<input id="reg-import-opts-wrap" name="reg-import-opts-wrap" type="text" value='"' />
-				<label for="reg-import-opts-order">Fields order</label>
-				<ul id="reg-import-opts-order">
-					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>First Name</li>
-					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Last Name</li>
-					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>>Name (First + Last or Last + First)</li>
-					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Company</li>
-					<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Email</li>
-				</ul>
+			<div class="reg-import-field reg-import-opts">
+				<span>Import Options</span>
+				<div>
+					<label for="reg-import-opts-no-head">Ignore 1st line</label>
+					<input id="reg-import-opts-no-head" name="reg-import-opts-no-head" type="checkbox" checked="checked" />
+				</div>
+				<div>
+					<label for="reg-import-opts-dels">Delimiters</label>
+					<input id="reg-import-opts-dels" class="small" name="reg-import-opts-dels" type="text" value=",;|" />
+				</div>
+				<div>
+					<label for="reg-import-opts-wrap">Wrapper</label>
+					<input id="reg-import-opts-wrap" class="small" name="reg-import-opts-wrap" type="text" value='"' />
+				</div>
+				<div>
+					<label for="reg-import-opts-order">Fields order</label>
+					<ul id="reg-import-opts-order" class="sortable">
+						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>First Name</li>
+						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Last Name</li>
+						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Name (First + Last or Last + First)</li>
+						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Company</li>
+						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Email</li>
+					</ul>
+					<div id="reg-import-opts-order-ctrl">
+						<div id="reg-import-opts-order-ctrl-trash" class="ui-state-default"></div>
+						<a id="reg-import-opts-order-ctrl-reset" href="#">Reset fields</a>
+					</div>
+					<span class="help">Sort the fields, and drop the unused to the trashbin.</span>
+				</div>
 			</div>
-			
 			<div>
 				<div class="list-box">
 					<div>Registered</div>

@@ -228,7 +228,13 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				return false;
 			});
 			
-			$('#reg-import-opts-order', $form).sortable();
+			$('#reg-import-opts-order', $form).sortable({
+				cursor : 'move',
+				opacity: 0.6,
+				placeholder: 'sortable-placeholder',
+				forcePlaceholderSizeType: true,
+				revert: true
+			});
 			
 			//move items from registrants to participants list box
 			$ltr.button({
