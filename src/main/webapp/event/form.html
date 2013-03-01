@@ -47,11 +47,11 @@
 				<a href="#registrants" id="reg-import-ctrl">Import from file</a>
 			</div>
 			<div class="reg-import-field">
-				<label for="reg-import-file">Import file</label>
-				<input id="reg-import-file" name="reg-import-file" type="file" />
-				<span class="help">Only CSV files are allowed.</span>
-			</div>
-			<div class="reg-import-field reg-import-opts">
+				<div>
+					<label for="reg-import-file">Import file</label>
+					<input id="reg-import-file" name="reg-import-file" type="file" />
+					<span class="help">Only CSV files are allowed.</span>
+				</div>
 				<span>Import Options</span>
 				<div>
 					<label for="reg-import-opts-no-head">Ignore 1st line</label>
@@ -75,11 +75,12 @@
 						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Email</li>
 					</ul>
 					<div id="reg-import-opts-order-ctrl">
-						<div id="reg-import-opts-order-ctrl-trash" class="ui-state-default"></div>
+						<div id="reg-import-opts-order-ctrl-trash" class="ui-state-default">&nbsp;</div>
 						<a id="reg-import-opts-order-ctrl-reset" href="#">Reset fields</a>
 					</div>
 					<span class="help">Sort the fields, and drop the unused to the trashbin.</span>
 				</div>
+				<input id="reg-importer" type="button" class="submiter" value="Import" />
 			</div>
 			<div>
 				<div class="list-box">

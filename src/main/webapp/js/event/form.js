@@ -136,12 +136,12 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				e.preventDefault();
 				
 				//clean up 
-				$("#postFrame", $form).remove();
+				$("#postFlyerFrame", $form).remove();
 				
 				//we create an hidden frame as the action of the upload form (to prevent page reload)
-				var $postFrame = $("<iframe id='postFrame' />");
+				var $postFrame = $("<iframe id='postFlyerFrame' />");
 				$postFrame
-					.attr('name', 'postFrame')
+					.attr('name', 'postFlyerFrame')
 					.css('display', 'none')
 					.load(function(){
 						
@@ -161,7 +161,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 						'method'	: 'POST',
 						'enctype'	: 'multipart/form-data',
 						'encoding'	: 'multipart/form-data',
-						'target'	: 'postFrame'
+						'target'	: 'postFlyerFrame'
 					})
 					.append($postFrame)
 					.submit();
@@ -180,6 +180,10 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			var self					= this,
 				$importFields			= $('.reg-import-field', $form),
 				$importCtrl				= $('#reg-import-ctrl', $form),
+				$importOptsOrder		= $('#reg-import-opts-order', $form),
+				$importOptsOrderItems	= $('#reg-import-opts-order li', $form),
+				$importOptsOrderTrash	= $('#reg-import-opts-order-ctrl-trash', $form),
+				$importOptsOrderReset	= $('#reg-import-opts-order-ctrl-reset', $form),
 				$addRegistrants			= $('#reg-add', $form),
 				$registrantList			= $('#registrant', $form),
 				$participantList		= $('#participant', $form),
@@ -190,7 +194,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			
 			$importFields.css('display', 'none');
 			
-			//Set up autocomplete field
+			//Set up auto complete field for adding registrants
 			$addRegistrants.autocomplete({
 				minLength : 2,
 				delay: 600,
@@ -216,25 +220,82 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				}
 			});
 			
-			//toggle registrants field between input and textarea
+			//toggle import regsitrant sub form
 			$importCtrl.button({
 				icons: { primary: "icon-import" },
 				text : false
-			}).click(function(event){
-				event.preventDefault();
-				
+			}).click(function(){
 				$importFields.toggle();
-				
 				return false;
 			});
 			
-			$('#reg-import-opts-order', $form).sortable({
+			//enables to sort the fields
+			$importOptsOrder.sortable({
 				cursor : 'move',
 				opacity: 0.6,
 				placeholder: 'sortable-placeholder',
 				forcePlaceholderSizeType: true,
 				revert: true
 			});
+			
+			//a trash bin to remove import fields
+			$importOptsOrderTrash.droppable({
+				accept: $importOptsOrderItems,
+				activeClass:  'accpet-drop',
+				hoverClass: 'dropping',
+				tolerance: 'pointer',
+				drop: function(event, ui){
+					ui.draggable.remove();
+					return false;
+				}
+			});
+			
+			//reset the import fields (order and removed)
+			$importOptsOrderReset.button({
+				icons: { primary: "icon-reset" },
+				text : false
+			}).click(function(event){
+				event.preventDefault();
+				$importOptsOrder.empty().append($importOptsOrderItems);
+				return false;
+			});
+			
+			//Do the import
+			/*$('.submiter', $form).click(function(e){
+				e.preventDefault();
+				
+				//clean up 
+				$("#postFlyerFrame", $form).remove();
+				
+				//we create an hidden frame as the action of the upload form (to prevent page reload)
+				var $postFrame = $("<iframe id='postFlyerFrame' />");
+				$postFrame
+					.attr('name', 'postFlyerFrame')
+					.css('display', 'none')
+					.load(function(){
+						
+						//we get the response in the frame
+						var result = $.parseJSON($(this).contents().text());
+						if(result && result.saved === true){
+							$('#current-flyer').attr('src', result.thumb);
+							notify('success', 'Flyer uploaded');
+						} else {
+							notify('error', 'Flyer upload error');
+						}
+					});
+				
+				//we update the form attributes according to the frame
+				$form.attr({
+						'action'	: 'api/event/flyer/'+self.getEventId(),
+						'method'	: 'POST',
+						'enctype'	: 'multipart/form-data',
+						'encoding'	: 'multipart/form-data',
+						'target'	: 'postFlyerFrame'
+					})
+					.append($postFrame)
+					.submit();
+				return false;
+			});*/
 			
 			//move items from registrants to participants list box
 			$ltr.button({

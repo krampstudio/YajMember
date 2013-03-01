@@ -53,10 +53,10 @@ html, body {
 	background-image: url('../img/import.png');
 }
 .ui-button .ui-icon.icon-reset{
-	background-image: url('../img/reset{_high.png');
+	background-image: url('../img/reset_high.png');
 }
-.ui-button.ui-state-hover .ui-icon.icon-reset{{
-	background-image: url('../img/reset{.png');
+.ui-button.ui-state-hover .ui-icon.icon-reset{
+	background-image: url('../img/reset.png');
 }
 
 /* noty overridings */
@@ -290,19 +290,19 @@ li.event .event-ctrl{
 	position:absolute;
 	top:36px;
 }
-.reg-import-opts{
+.reg-import-field{
 	border: #ccc dashed 1px;
 }
-.reg-import-opts:hover{
+.reg-import-field:hover{
 	background-color: inherit;
 }
-.reg-import-opts > div{
+.reg-import-field > div{
 	width:100%;
 	margin:5px 0;
 	padding:5px;
 	border-radius:3px;
 }
-.reg-import-opts > div:hover{
+.reg-import-field > div:hover{
 	background-color: #C8D8E2;
 }
 #reg-import-opts-order{
@@ -310,8 +310,26 @@ li.event .event-ctrl{
 	left:49%;
 	top:-1em;
 }
+#reg-import-opts-order-ctrl{
+	position:relative;
+	left:49%;	
+	width:50%;
+}
 #reg-import-opts-order-ctrl-trash{
 	background-image: url('../img/bin_closed.png');
+	background-repeat: no-repeat;
+	display:inline-block;
+	width: 4em;
+	height:1.9em;
+	border-radius: 3px;
+	margin:0;
+	top:-.1em;
+}
+#reg-import-opts-order-ctrl-trash.accpet-drop{
+	background-image: url('../img/bin_open.png');
+}
+#reg-import-opts-order-ctrl-trash.dropping{
+	border:dashed 1px #E77124;
 }
 #registrants{
 	width:40%;
