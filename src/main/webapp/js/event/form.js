@@ -261,36 +261,35 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			});
 			
 			//Do the import
-			/*$('.submiter', $form).click(function(e){
+			/$('#reg-importer', $form).click(function(e){
 				e.preventDefault();
 				
 				//clean up 
-				$("#postFlyerFrame", $form).remove();
+				$("#postImportFrame", $form).remove();
 				
 				//we create an hidden frame as the action of the upload form (to prevent page reload)
-				var $postFrame = $("<iframe id='postFlyerFrame' />");
+				var $postFrame = $("<iframe id='postImportFrame' />");
 				$postFrame
-					.attr('name', 'postFlyerFrame')
+					.attr('name', 'postImportFrame')
 					.css('display', 'none')
 					.load(function(){
 						
 						//we get the response in the frame
 						var result = $.parseJSON($(this).contents().text());
 						if(result && result.saved === true){
-							$('#current-flyer').attr('src', result.thumb);
-							notify('success', 'Flyer uploaded');
+							notify('success', 'File uploaded');
 						} else {
-							notify('error', 'Flyer upload error');
+							notify('error', 'File upload error');
 						}
 					});
 				
 				//we update the form attributes according to the frame
 				$form.attr({
-						'action'	: 'api/event/flyer/'+self.getEventId(),
+						'action'	: 'api/event/importRegistrants/'+self.getEventId(),
 						'method'	: 'POST',
 						'enctype'	: 'multipart/form-data',
 						'encoding'	: 'multipart/form-data',
-						'target'	: 'postFlyerFrame'
+						'target'	: 'postImportFrame'
 					})
 					.append($postFrame)
 					.submit();

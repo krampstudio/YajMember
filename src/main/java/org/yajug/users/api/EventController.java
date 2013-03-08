@@ -1,6 +1,9 @@
 package org.yajug.users.api;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +29,11 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.supercsv.cellprocessor.constraint.NotNull;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import org.supercsv.io.CsvBeanReader;
+import org.supercsv.io.ICsvBeanReader;
+import org.supercsv.prefs.CsvPreference;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
 import org.yajug.users.domain.Member;
@@ -411,5 +419,64 @@ public class EventController extends RestController {
 		}
 		response.addProperty("saved", saved);
 		return serializer.get().toJson(response);
+	}
+	
+	@POST
+	@Path("importRegistants/{id}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces("text/plain; charset=UTF-8")
+	public String importRegistrants(
+			@FormDataParam("reg-import-file") InputStream stream,
+			@FormDataParam("reg-import-file") FormDataContentDisposition contentDisposition,
+			@FormDataParam("reg-import-file") FormDataBodyPart bodyPart, 
+			@FormParam("reg-import-opts-no-head") boolean ignoreHeader,
+			@FormParam("reg-import-opts-del") String delimiter,
+			@FormParam("reg-import-opts-wrap") String wrapper,
+			@FormParam("reg-import-opts-order") String[] fields,
+			@PathParam("id") long id){
+		
+		JsonObject response = new JsonObject();
+		
+		logger.debug(delimiter.toString());
+		logger.debug(wrapper.toString());
+		logger.debug(fields.toString());
+		
+		//check MIME TYPE
+		if(bodyPart == null || !bodyPart.getMediaType().isCompatible(new MediaType("text", "csv"))){
+			response.addProperty("error", "Unknow or unsupported file type");
+		}
+		
+		final CsvPreference preferences = new CsvPreference.Builder(
+				wrapper.charAt(0), 
+				delimiter.charAt(0), 
+				"\r\n"
+			).build();
+		
+		try(ICsvBeanReader beanReader = new CsvBeanReader(
+				new BufferedReader(new InputStreamReader(stream)), 
+				preferences
+			)){
+			
+			Collection<Member> members = new ArrayList<Member>();
+			
+			if(ignoreHeader){
+				beanReader.getHeader(true);
+			}
+			CellProcessor[] processors = new CellProcessor[fields.length];
+			for(int i = 0; i < fields.length ; i++){
+				processors[i] = new NotNull();
+			}
+			
+			Member member;
+            while( (member = beanReader.read(Member.class, fields, processors)) != null ) {
+                members.add(member);
+            }
+            logger.debug(members.toString());
+            return members.toString();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
