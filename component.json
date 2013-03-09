@@ -6,7 +6,8 @@
 	    "jquery"		: "~1.8.3",
 	    "jquery-ui" 	: "~1.8.23",
 	    "jquery-tmpl" 	: "*",
-	    "modernizr"		: "*",
+	    "handlebars"	: "*",
+		"modernizr"		: "*",
 	    "gridy"			: "git://github.com/wbotelhos/gridy.git",
 	    "noty"			: "git://github.com/needim/noty.git",
 		"jhtmlarea"		: "git@github.com:krampstudio/jhtmlarea.git"
