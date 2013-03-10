@@ -22,12 +22,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
+@Singleton
 public class EventServiceImpl implements EventService {
 
 	@Inject private EventMongoDao eventMongoDao;

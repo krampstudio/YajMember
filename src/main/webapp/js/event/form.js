@@ -261,11 +261,20 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			});
 			
 			//Do the import
-			/$('#reg-importer', $form).click(function(e){
+			$('#reg-importer', $form).click(function(e){
 				e.preventDefault();
 				
 				//clean up 
 				$("#postImportFrame", $form).remove();
+				
+				console.log($importOptsOrder.sortable("toArray"))
+				console.log(JSON.stringify($importOptsOrder.sortable("toArray")))
+				
+				//set the order values to the hidden fields
+				$("input[name='reg-import-opts-order']", $form).val(
+						JSON.stringify($importOptsOrder.sortable("toArray"))
+					);
+				
 				
 				//we create an hidden frame as the action of the upload form (to prevent page reload)
 				var $postFrame = $("<iframe id='postImportFrame' />");
@@ -273,7 +282,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 					.attr('name', 'postImportFrame')
 					.css('display', 'none')
 					.load(function(){
-						
+					
 						//we get the response in the frame
 						var result = $.parseJSON($(this).contents().text());
 						if(result && result.saved === true){
@@ -288,13 +297,13 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 						'action'	: 'api/event/importRegistrants/'+self.getEventId(),
 						'method'	: 'POST',
 						'enctype'	: 'multipart/form-data',
-						'encoding'	: 'multipart/form-data',
 						'target'	: 'postImportFrame'
 					})
 					.append($postFrame)
 					.submit();
+				
 				return false;
-			});*/
+			});
 			
 			//move items from registrants to participants list box
 			$ltr.button({
@@ -349,7 +358,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			});
 			
 			//submit the registrant and participants lists
-			$('.submiter', $form).click(function(e){
+			$('#reg-submiter', $form).click(function(e){
 				e.preventDefault();
 				
 				var lists = {
@@ -452,7 +461,6 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			
 			//remap data to avoid issue with duplicate ids in jquery-tmpl
 			$.each(data, function(index, elt){
-				console.log(elt)
 				participants.push({
 					'pkey' : type + '-' + elt.key,
 					'pname' : elt.firstName + elt.lastName

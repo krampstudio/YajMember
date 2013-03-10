@@ -8,10 +8,12 @@ import org.yajug.users.domain.utils.MappingHelper;
 import org.yajug.users.persistence.MongoDao;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 
+@Singleton
 public class EventMongoDao extends MongoDao<Event> {
 
 	private final static String COLLECTION_NAME = "events";

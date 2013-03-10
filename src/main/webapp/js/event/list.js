@@ -51,6 +51,7 @@ define(['jquery', 'store', 'notify'], function($, store, notify){
 									self._setUpEventsControls($eventList);
 								}
 							);
+							return false;
 						}
 					});
 				}

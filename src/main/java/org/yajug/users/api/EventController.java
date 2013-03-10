@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.TreeSet;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -34,18 +37,21 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
+import org.yajug.users.api.helper.MemberImportHelper;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
 import org.yajug.users.domain.Member;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
@@ -66,6 +72,8 @@ public class EventController extends RestController {
 	
 	/** The service instance that manages events */
 	@Inject private EventService eventService;
+	
+	@Inject private MemberImportHelper memberImportHelper;
 	
 	/** Enables you to access the current servlet context within an action (it's thread safe) */
 	@Context private ServletContext servletContext;
@@ -422,61 +430,42 @@ public class EventController extends RestController {
 	}
 	
 	@POST
-	@Path("importRegistants/{id}")
+	@Path("importRegistrants/{id}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces("text/plain; charset=UTF-8")
 	public String importRegistrants(
 			@FormDataParam("reg-import-file") InputStream stream,
 			@FormDataParam("reg-import-file") FormDataContentDisposition contentDisposition,
 			@FormDataParam("reg-import-file") FormDataBodyPart bodyPart, 
-			@FormParam("reg-import-opts-no-head") boolean ignoreHeader,
-			@FormParam("reg-import-opts-del") String delimiter,
-			@FormParam("reg-import-opts-wrap") String wrapper,
-			@FormParam("reg-import-opts-order") String[] fields,
+			@FormDataParam("reg-import-opts-no-head") @DefaultValue("true") boolean ignoreHeader,
+			@FormDataParam("reg-import-opts-del") @DefaultValue(",") String delimiter,
+			@FormDataParam("reg-import-opts-wrap") @DefaultValue("\"") String wrapper,
+			@FormDataParam("reg-import-opts-order") @DefaultValue("") String order,
 			@PathParam("id") long id){
 		
 		JsonObject response = new JsonObject();
 		
-		logger.debug(delimiter.toString());
-		logger.debug(wrapper.toString());
-		logger.debug(fields.toString());
-		
 		//check MIME TYPE
 		if(bodyPart == null || !bodyPart.getMediaType().isCompatible(new MediaType("text", "csv"))){
 			response.addProperty("error", "Unknow or unsupported file type");
-		}
+		} else {
 		
-		final CsvPreference preferences = new CsvPreference.Builder(
-				wrapper.charAt(0), 
-				delimiter.charAt(0), 
-				"\r\n"
-			).build();
-		
-		try(ICsvBeanReader beanReader = new CsvBeanReader(
-				new BufferedReader(new InputStreamReader(stream)), 
-				preferences
-			)){
+			String[] fields = serializer.get().fromJson(order, String[].class);
 			
-			Collection<Member> members = new ArrayList<Member>();
 			
-			if(ignoreHeader){
-				beanReader.getHeader(true);
-			}
-			CellProcessor[] processors = new CellProcessor[fields.length];
-			for(int i = 0; i < fields.length ; i++){
-				processors[i] = new NotNull();
+			try {
+				Collection<Member> members =  memberImportHelper.readFromCsv(stream, fields, ignoreHeader, delimiter.charAt(0), wrapper.charAt(0));
+			
+				//TODO check members against the db 
+				
+				response.addProperty("members", members.size());
+				
+			} catch (DataException e) {
+				logger.error(e.getLocalizedMessage(), e);
+				response.addProperty("error", serializeException(e));
 			}
 			
-			Member member;
-            while( (member = beanReader.read(Member.class, fields, processors)) != null ) {
-                members.add(member);
-            }
-            logger.debug(members.toString());
-            return members.toString();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-		return null;
+		return serializer.get().toJson(response);
 	}
 }

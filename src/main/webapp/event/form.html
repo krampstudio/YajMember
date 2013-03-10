@@ -55,7 +55,7 @@
 				<span>Import Options</span>
 				<div>
 					<label for="reg-import-opts-no-head">Ignore 1st line</label>
-					<input id="reg-import-opts-no-head" name="reg-import-opts-no-head" type="checkbox" checked="checked" />
+					<input id="reg-import-opts-no-head" name="reg-import-opts-no-head" type="checkbox" checked="checked" value="true" />
 				</div>
 				<div>
 					<label for="reg-import-opts-del">Delimiter</label>
@@ -66,13 +66,14 @@
 					<input id="reg-import-opts-wrap" class="small" name="reg-import-opts-wrap" type="text" value='"' />
 				</div>
 				<div>
+					<input type="hidden" name="reg-import-opts-order" value="" />
 					<label for="reg-import-opts-order">Fields order</label>
 					<ul id="reg-import-opts-order" class="sortable">
-						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>First Name</li>
-						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Last Name</li>
-						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Name (First + Last or Last + First)</li>
-						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Company</li>
-						<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Email</li>
+						<li class="ui-state-default" id="firstName"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>First Name</li>
+						<li class="ui-state-default" id="lastName"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Last Name</li>
+						<li class="ui-state-default" id="name"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Name (First + Last or Last + First)</li>
+						<li class="ui-state-default" id="company"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Company</li>
+						<li class="ui-state-default" id="email"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Email</li>
 					</ul>
 					<div id="reg-import-opts-order-ctrl">
 						<div id="reg-import-opts-order-ctrl-trash" class="ui-state-default">&nbsp;</div>
@@ -98,7 +99,7 @@
 					<ul id="participant"></ul>
 				</div>
 			</div>
-			<input type="submit" class="submiter" value="Save" />
+			<input id="reg-submiter" type="submit" class="submiter" value="Save" />
 		</fieldset>
 	</form>
 </div>

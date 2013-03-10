@@ -63,4 +63,5 @@ public interface EventService {
 	boolean saveFlyer(InputStream input, String format, Flyer flyer)  throws DataException;
 
 	boolean removeFlyer(Flyer flyer)  throws DataException;
+	
 }

@@ -16,12 +16,14 @@ import org.yajug.users.persistence.dao.MemberMongoDao;
 import org.yajug.users.persistence.dao.MembershipMongoDao;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Implementation of the {@link MemberService} that use JPA to persist data.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
+@Singleton
 public class MemberServiceImpl implements MemberService {
 
 	private final static Logger logger = LoggerFactory.getLogger(MemberServiceImpl.class);
