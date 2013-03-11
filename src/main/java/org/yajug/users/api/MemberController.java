@@ -138,7 +138,7 @@ public class MemberController extends RestController {
 			
 				for(Member member : memberService.findAll(term)){
 					JsonObject item = new JsonObject();
-					item.addProperty("label", member.getFirstName() + " " + member.getLastName());
+					item.addProperty("label", member.getName());
 					item.addProperty("value", member.getKey());
 					array.add(item);
 				}

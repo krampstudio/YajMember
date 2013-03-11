@@ -75,6 +75,10 @@ public class Member extends DomainObject implements Comparable<Member>{
 		this.lastName = lastName;
 	}
 	
+	public String getName(){
+		return this.firstName + " " + this.lastName;
+	}
+	
 	/**
 	 * @return the email
 	 */

@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -438,60 +439,76 @@ public class EventController extends RestController {
 		
 		JsonObject response = new JsonObject();
 		
-		//check MIME TYPE
-		if(bodyPart == null || !bodyPart.getMediaType().isCompatible(new MediaType("text", "csv"))){
-			response.addProperty("error", "Unknow or unsupported file type");
-		} else {
+		try {
+			//check MIME TYPE
+			if(bodyPart == null || !bodyPart.getMediaType().isCompatible(new MediaType("text", "csv"))){
+				throw new DataException("Unknow or unsupported file type");
+			} 
 
-			//TODO validate options
-			
+			//get the CSV columns in the right order
 			String[] fields = serializer.get().fromJson(order, String[].class);
 			
-			try {
-				Collection<Member> members =  memberImportHelper.readFromCsv(
-						stream, 
-						fields, 
-						ignoreHeader, 
-						delimiter.charAt(0), 
-						wrapper.charAt(0)
-					);
-			
-				JsonArray membersStates = new JsonArray();
-				
-				//TODO check members against the db 
-				for(Member member : members) {
-
-					JsonObject memberState = new JsonObject();
-					List<Member> found = memberService.findMember(member);
-					if(found.size() == 0){
-						
-						//TODO add him
-						
-						memberState.addProperty("state", "added");
-						memberState.addProperty("key", member.getKey());
-						memberState.addProperty("name", member.getFirstName() + " " + member.getLastName());
-						
-					} else if (found.size() == 1){
-						memberState.addProperty("state", "exists");
-						memberState.addProperty("key", member.getKey());
-						memberState.addProperty("name", member.getFirstName() + " " + member.getLastName());
-						
-					} else if (found.size() > 1){
-						
-						//TODO return ambiguous members
-						memberState.addProperty("state", "ambiguous");
-					}
-					membersStates.add(memberState);
-				}
-				
-				response.add("members", membersStates);
-				
-			} catch (DataException e) {
-				logger.error(e.getLocalizedMessage(), e);
-				response.addProperty("error", serializeException(e));
+			if(fields.length == 0 || !Arrays.asList(fields).contains("email")){
+				throw new DataException("CSV fields must contains at least the email.");
 			}
 			
+			Collection<Member> members =  memberImportHelper.readFromCsv(
+					stream, 
+					fields, 
+					ignoreHeader, 
+					delimiter.charAt(0), 
+					wrapper.charAt(0)
+				);
+		
+			JsonArray membersStates = new JsonArray();
+			
+			//TODO check members against the db 
+			for(Member member : members) {
+
+				JsonObject memberState = new JsonObject();
+				List<Member> found = memberService.findMember(member);
+				if(found.size() == 0){
+					if(memberService.save(member)){
+						memberState.addProperty("state", "added");
+						memberState.add("member", serializeRegistrant(member));
+					}
+				} else if (found.size() == 1){
+					memberState.addProperty("state", "exists");
+					memberState.add("member", serializeRegistrant(found.get(0)));
+					
+				} else if (found.size() > 1){
+					
+					memberState.addProperty("state", "ambiguous");
+					memberState.add("given", serializeRegistrant(member));
+					JsonArray ambiguous = new JsonArray();
+					for(Member foundMember : found){
+						ambiguous.add(serializeRegistrant(foundMember));
+					}
+					memberState.add("ambiguous", ambiguous);
+				}
+				membersStates.add(memberState);
+			}
+			
+			response.add("members", membersStates);
+			
+		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
+			response.addProperty("error", serializeException(e));
 		}
 		return serializer.get().toJson(response);
+	}
+	
+	/**
+	 * Serialize partially a member to a JsonObject
+	 * @param member the member to serialize
+	 * @return the JsonObject that represents the member
+	 */
+	private JsonObject serializeRegistrant(Member member){
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("key", member.getKey());
+		jsonObject.addProperty("name", member.getName());
+		jsonObject.addProperty("company", member.getCompany());
+		jsonObject.addProperty("email", member.getEmail());
+		return jsonObject;
 	}
 }

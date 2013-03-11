@@ -94,7 +94,7 @@ public class MemberImportHelper {
 	                	member.setFirstName(row.get("firstName").toString());
 	                }
 	                if(row.containsKey("lastName")){
-	                	member.setFirstName(row.get("lastName").toString());
+	                	member.setLastName(row.get("lastName").toString());
 	                }
 	                if(row.containsKey("name")){
 	                	parseMemberName(row.get("name").toString(), member);

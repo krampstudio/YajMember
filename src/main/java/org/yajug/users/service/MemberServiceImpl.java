@@ -14,7 +14,6 @@ import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.Role;
 import org.yajug.users.persistence.dao.MemberMongoDao;
 import org.yajug.users.persistence.dao.MembershipMongoDao;
-import org.yajug.users.test.it.dao.MemberDaoTest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
