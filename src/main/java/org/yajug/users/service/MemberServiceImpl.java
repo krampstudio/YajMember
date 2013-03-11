@@ -14,6 +14,7 @@ import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.Role;
 import org.yajug.users.persistence.dao.MemberMongoDao;
 import org.yajug.users.persistence.dao.MembershipMongoDao;
+import org.yajug.users.test.it.dao.MemberDaoTest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -248,5 +249,23 @@ public class MemberServiceImpl implements MemberService {
 			throw new DataException("Cannot save a null member");
 		}
 		return  membershipMongoDao.remove(membership);
+	}
+
+	@Override
+	public List<Member> findMember(Member member) {
+		List<Member> found = new ArrayList<>();
+		if(member != null){
+			//search field by field: email, name
+			List<Member> foundByEmail = memberMongoDao.search(member.getEmail());
+			if(foundByEmail.size() == 0){
+				List<Member> foundByName = memberMongoDao.search(member.getLastName());
+				if(foundByName.size() > 0){
+					found.addAll(foundByName);
+				}
+			} else {
+				found.addAll(foundByEmail);
+			}
+		}
+		return found;
 	}
 }

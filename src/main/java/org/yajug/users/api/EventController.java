@@ -1,11 +1,6 @@
 package org.yajug.users.api;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,26 +27,21 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.supercsv.cellprocessor.constraint.NotNull;
-import org.supercsv.cellprocessor.ift.CellProcessor;
-import org.supercsv.io.CsvBeanReader;
-import org.supercsv.io.ICsvBeanReader;
-import org.supercsv.prefs.CsvPreference;
 import org.yajug.users.api.helper.MemberImportHelper;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
 import org.yajug.users.domain.Member;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
+import org.yajug.users.service.MemberService;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.common.io.CharStreams;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
@@ -72,6 +62,9 @@ public class EventController extends RestController {
 	
 	/** The service instance that manages events */
 	@Inject private EventService eventService;
+	
+	/** The service instance that manages members */
+	@Inject private MemberService memberService;
 	
 	@Inject private MemberImportHelper memberImportHelper;
 	
@@ -449,16 +442,49 @@ public class EventController extends RestController {
 		if(bodyPart == null || !bodyPart.getMediaType().isCompatible(new MediaType("text", "csv"))){
 			response.addProperty("error", "Unknow or unsupported file type");
 		} else {
-		
+
+			//TODO validate options
+			
 			String[] fields = serializer.get().fromJson(order, String[].class);
 			
-			
 			try {
-				Collection<Member> members =  memberImportHelper.readFromCsv(stream, fields, ignoreHeader, delimiter.charAt(0), wrapper.charAt(0));
+				Collection<Member> members =  memberImportHelper.readFromCsv(
+						stream, 
+						fields, 
+						ignoreHeader, 
+						delimiter.charAt(0), 
+						wrapper.charAt(0)
+					);
 			
-				//TODO check members against the db 
+				JsonArray membersStates = new JsonArray();
 				
-				response.addProperty("members", members.size());
+				//TODO check members against the db 
+				for(Member member : members) {
+
+					JsonObject memberState = new JsonObject();
+					List<Member> found = memberService.findMember(member);
+					if(found.size() == 0){
+						
+						//TODO add him
+						
+						memberState.addProperty("state", "added");
+						memberState.addProperty("key", member.getKey());
+						memberState.addProperty("name", member.getFirstName() + " " + member.getLastName());
+						
+					} else if (found.size() == 1){
+						memberState.addProperty("state", "exists");
+						memberState.addProperty("key", member.getKey());
+						memberState.addProperty("name", member.getFirstName() + " " + member.getLastName());
+						
+					} else if (found.size() > 1){
+						
+						//TODO return ambiguous members
+						memberState.addProperty("state", "ambiguous");
+					}
+					membersStates.add(memberState);
+				}
+				
+				response.add("members", membersStates);
 				
 			} catch (DataException e) {
 				logger.error(e.getLocalizedMessage(), e);

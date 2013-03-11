@@ -8,11 +8,13 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.ift.CellProcessor;
-import org.supercsv.io.CsvBeanReader;
-import org.supercsv.io.ICsvBeanReader;
+import org.supercsv.io.CsvMapReader;
+import org.supercsv.io.ICsvMapReader;
 import org.supercsv.prefs.CsvPreference;
 import org.yajug.users.domain.Member;
 import org.yajug.users.service.DataException;
@@ -68,28 +70,41 @@ public class MemberImportHelper {
 			throw new DataException("Error while reading csv stream", e);
 		}
 		if(content != null){
-			try(ICsvBeanReader beanReader = new CsvBeanReader(
+			try(ICsvMapReader  mapReader = new CsvMapReader(
 					new StringReader(content), 
 					preferences
 				)){
 				
 				if(ignoreHeader){
-					beanReader.getHeader(true);
+					mapReader.getHeader(true);
 				}
 				CellProcessor[] processors = new CellProcessor[fields.length];
 				for(int i = 0; i < fields.length ; i++){
 					if(!AVAILABLE_FIELDS.contains(fields[i])){
 						processors[i] = null; //ignore
 					} else {
-						if("name".equals(fields[i])){
-							//TODO create a cellprocessor
-						}
 						processors[i] = new NotNull();
 					}
 				}
 				
-				Member member;
-	            while( (member = beanReader.read(Member.class, fields, processors)) != null ) {
+				Map<String, Object> row;
+	            while( (row = mapReader.read(fields, processors)) != null ) {
+	                Member member = new Member();
+	                if(row.containsKey("firstName")){
+	                	member.setFirstName(row.get("firstName").toString());
+	                }
+	                if(row.containsKey("lastName")){
+	                	member.setFirstName(row.get("lastName").toString());
+	                }
+	                if(row.containsKey("name")){
+	                	parseMemberName(row.get("name").toString(), member);
+	                }
+	                if(row.containsKey("company")){
+	                	member.setCompany(row.get("company").toString());
+	                }
+	                if(row.containsKey("email")){
+	                	member.setEmail(row.get("email").toString());
+	                }
 	                members.add(member);
 	            }
 	            
@@ -98,5 +113,31 @@ public class MemberImportHelper {
 			}
 		} 
 		return members;
+	}
+	
+	/**
+	 * Parse a string composed by first name and last name and assign them to the Member
+	 * @param name
+	 * @param member 
+	 */
+	private void parseMemberName(String name, Member member){
+
+		final Pattern upperCase = Pattern.compile("^[A-Z\\p{P}\\s]+$");
+		
+		int spaceIndex = name.indexOf(' ');
+		if(spaceIndex > 0){
+			String seq1 = name.substring(0,spaceIndex);
+			String seq2 = name.substring(spaceIndex);
+			//upper case is lastName
+			if(upperCase.matcher(seq1).find() && !upperCase.matcher(seq1).find()){
+				member.setLastName(seq1);
+				member.setFirstName(seq2);
+			} else {
+				member.setFirstName(seq1);
+				member.setLastName(seq2);
+			}
+		} else {
+			member.setLastName(name);
+		}
 	}
 }

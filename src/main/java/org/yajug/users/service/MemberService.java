@@ -2,6 +2,8 @@ package org.yajug.users.service;
 
 
 import java.util.Collection;
+import java.util.List;
+
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 
@@ -90,4 +92,6 @@ public interface MemberService {
 	 * @throws DataException
 	 */
 	boolean removeMembership(Membership membership) throws DataException;
+	
+	List<Member> findMember(Member member);
 }

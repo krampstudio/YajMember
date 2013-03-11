@@ -4,14 +4,14 @@
 		<form method="post" enctype="multipart/form-data" 
 		target="tf"
 		action="http://dev.yajmember.fr:8000/YajMember/api/event/importRegistrants/1">
-			<input id="reg-add" name="reg-add" type="text" style="width:40%;" />
-			<input id="reg-import-file" name="reg-import-file" type="file" />
-			<input id="reg-import-opts-no-head" name="reg-import-opts-no-head" type="checkbox" checked="checked" value="true" />
-			<input id="reg-import-opts-del" class="small" name="reg-import-opts-del" type="text" value="," />
-			<input id="reg-import-opts-wrap" class="small" name="reg-import-opts-wrap" type="text" value='"' />
-			<input type="text" name="reg-import-opts-order" value="" />
-			<input type="submit" value="submit" />
-			<iframe id="tf" name="tf" />
+			reg-add<input id="reg-add" name="reg-add" type="text" /><br />
+			reg-import-file<input id="reg-import-file" name="reg-import-file" type="file" /><br />
+			reg-import-opts-no-head<input id="reg-import-opts-no-head" name="reg-import-opts-no-head" type="checkbox" checked="checked" value="true" /><br />
+			reg-import-opts-del<input id="reg-import-opts-del" class="small" name="reg-import-opts-del" type="text" value="," /><br />
+			reg-import-opts-wrap<input id="reg-import-opts-wrap" class="small" name="reg-import-opts-wrap" type="text" value='"' /><br />
+			reg-import-opts-order<input type="text" name="reg-import-opts-order" value="" /><br />
+			<input type="submit" value="submit" /><br />
+			<iframe id="tf" name="tf"  width="600px" height="400px"/><br />
 		</form>
 	</body>
 </html>
