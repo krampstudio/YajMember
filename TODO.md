@@ -14,7 +14,7 @@
  - [ ] Generate the participants list for an event (with QR codes to mark registered as participants)
  - [x] Update model to include company sponsor memberships
  - [x] Extract serializer to be shared for mongo and rest (especially for the timezone handling)
- - [ ] Change jquery.tmpl is it is not maintained anymore
+ - [ ] Change jquery.tmpl is it is not maintained anymore (see `template` branch)
  - [ ] Update jquery and jquery ui to the last version (the use of spinners would be cool)
  - [ ] Try to find a way to exclude files from the war into gradle
  - [ ] Optimize also CSS in the grunt optimize task
@@ -24,3 +24,4 @@
  - [ ] Split the event/flyer services and controllers
  - [ ] Refactor app.js and form/lists to use an event bus instead of the overriding model
  - [ ] Refactor form/lists to use a js crud layer that communicate with the server
+ - [ ] Remove key and use _id instead
