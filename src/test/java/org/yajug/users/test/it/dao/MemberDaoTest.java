@@ -1,35 +1,37 @@
 package org.yajug.users.test.it.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
-import org.jukito.JukitoModule;
-import org.jukito.JukitoRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.yajug.users.config.ModuleHelper;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Guice;
+import org.testng.annotations.Test;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Role;
 import org.yajug.users.persistence.dao.MemberMongoDao;
+import org.yajug.users.test.it.TestModule;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+
+import static org.testng.Assert.*;
 
 /**
  * Integration test that check basic CRUD operations on the {@link MemberMongoDao}
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
-@RunWith(JukitoRunner.class)
+@Guice(modules=TestModule.class)
 public class MemberDaoTest {
 	
 	@Inject private MemberMongoDao dao;
 	
-	@Test
+	@BeforeTest()
+	public void loadMembers(){
+		//TODO
+	}
+	
+	@Test(enabled=false)
 	public void testGetMembers(){
 		assertNotNull(dao);
 		
@@ -78,10 +80,4 @@ public class MemberDaoTest {
 		assertNull(deleted);
 	}
 	
-	public static class  TestModule extends JukitoModule{
-		@Override
-		protected void configureTest() {
-			ModuleHelper.bindProperties(binder());
-		}
-	}
 }

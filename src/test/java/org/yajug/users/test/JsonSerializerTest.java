@@ -1,6 +1,6 @@
 package org.yajug.users.test;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 import org.yajug.users.domain.DomainObject;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;

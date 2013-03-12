@@ -58,8 +58,9 @@ dependencies {
 	compile "ch.qos.logback:logback-classic:$logbackVersion"
 	providedCompile "javax.servlet:servlet-api:$servletVersion"
 	runtime "org.codehaus.groovy:groovy:$groovyVersion"
-	testCompile "junit:junit:$junitVersion"
-	testCompile "org.jukito:jukito:$jukitoVersion"
+	testCompile "org.testng:testng:6.8"
+	/*testCompile "junit:junit:$junitVersion"
+	testCompile "org.jukito:jukito:$jukitoVersion"*/
 }
 
 //Override the war task
@@ -70,6 +71,7 @@ war{
 
 //Override the test task
 test {
+	useTestNG()
 	//makes the standard streams (err and out) visible at console when running tests
 	testLogging.showStandardStreams = true
 }
