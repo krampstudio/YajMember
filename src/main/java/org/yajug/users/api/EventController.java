@@ -176,13 +176,10 @@ public class EventController extends RestController {
 	@GET
 	@Path("getOne")
 	@Produces({MediaType.APPLICATION_JSON})
-	public String getOne(@QueryParam("id") Long id){
+	public String getOne(@QueryParam("id") String id){
 		String response = "";
 		
 		try {
-			if (id == null || id.longValue() <= 0) {
-				throw new DataException("Unable to retrieve an event from a wrong id");
-			}
 			Event event = eventService.getOne(id);
 			response = serializer.get().toJson(event);
 			
@@ -261,21 +258,17 @@ public class EventController extends RestController {
 	@DELETE
 	@Path("remove/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
-	public String remove(@PathParam("id") long id){
+	public String remove(@PathParam("id") String id){
 		
 		JsonObject response = new JsonObject();
 		boolean removed = false;
 		
-		if (id > 0) {
-			try {
-				Event event = new Event();
-				event.setKey(id);
-				removed = eventService.remove(event);
-			} catch (DataException e) {
-				logger.error(e.getLocalizedMessage(), e);
-				response.addProperty("error", e.getLocalizedMessage());
-			} 
-		}
+		try {
+			removed = eventService.remove(new Event(id));
+		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
+			response.addProperty("error", e.getLocalizedMessage());
+		} 
 		response.addProperty("removed", removed);
 		
 		return  serializer.get().toJson(response);
@@ -298,7 +291,7 @@ public class EventController extends RestController {
 			@FormDataParam("flyer") InputStream stream,
 			@FormDataParam("flyer") FormDataContentDisposition contentDisposition,
 			@FormDataParam("flyer") FormDataBodyPart bodyPart, 
-			@PathParam("id") long id) {
+			@PathParam("id") String id) {
 		
 		JsonObject response = new JsonObject();
 		boolean saved = false;
@@ -342,24 +335,21 @@ public class EventController extends RestController {
 	 */
 	@DELETE
 	@Path("/removeFlyer/{id}")
-	public String removeFlyer(@PathParam("id") long id){
+	public String removeFlyer(@PathParam("id") String id){
 		JsonObject response = new JsonObject();
 		boolean removed = false;
 		
-		if(id > 0){
-			
-			try {
-				Event event = eventService.getOne(id);
-				if(event != null){
-					final String flyerFullPath = servletContext.getRealPath(flyerPath);
-					Flyer flyer = new Flyer(flyerFullPath, event);
-					
-					removed = eventService.removeFlyer(flyer);
-				}
-			} catch (DataException e) {
-				logger.error(e.getLocalizedMessage(), e);
-				response.addProperty("error", serializeException(e));
+		try {
+			Event event = eventService.getOne(id);
+			if(event != null){
+				final String flyerFullPath = servletContext.getRealPath(flyerPath);
+				Flyer flyer = new Flyer(flyerFullPath, event);
+				
+				removed = eventService.removeFlyer(flyer);
 			}
+		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
+			response.addProperty("error", serializeException(e));
 		}
 		response.addProperty("removed", removed);
 		return serializer.get().toJson(response);
@@ -381,44 +371,42 @@ public class EventController extends RestController {
 	@Produces({MediaType.APPLICATION_JSON})
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public String updateParticipant(
-			@PathParam("id") long id, 
-			@FormParam("registrant") String registeredData, 
-			@FormParam("participant") String participantData){
+			@PathParam("id") String id, 
+			@FormParam("registrant")  @DefaultValue("[]") String registeredData, 
+			@FormParam("participant") @DefaultValue("[]") String participantData){
 		
 		JsonObject response = new JsonObject();
 		boolean saved = false;
 		
-		if(id > 0){
 		
-			//unserialize the JSON ids to lists
-			Type listType = new TypeToken<ArrayList<Long>>() {}.getType();
-			List<Long> registeredIds = serializer.get().fromJson(registeredData, listType);
-			List<Long> participantIds = serializer.get().fromJson(participantData, listType);
+		//unserialize the JSON ids to lists
+		Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+		List<String> registeredIds = serializer.get().fromJson(registeredData, listType);
+		List<String> participantIds = serializer.get().fromJson(participantData, listType);
+	
+		//function used to map an id to a member
+		Function <String, Member> idToMember = new Function<String, Member>() {
+			@Override public Member apply(String input) {
+				return new Member(input);
+			}
+		};
 		
-			//function used to map an id to a member
-			Function <Long, Member> idToMember = new Function<Long, Member>() {
-				@Override public Member apply(Long input) {
-					return new Member(input.longValue());
-				}
-			};
-			
-			//do the mapping
-			List<Member> registereds = Lists.transform(registeredIds, idToMember);
-			List<Member> participants = Lists.transform(participantIds, idToMember);
-			
-			try {
-				//create a bag instance
-				Event event = eventService.getOne(id);
-				if(event != null){
-					event.setParticipants(participants);
-					event.setRegistrants(registereds);
-					saved = eventService.save(event);
-				}
-			} catch (DataException e) {
-				logger.error(e.getLocalizedMessage(), e);
-				response.addProperty("error", serializeException(e));
-			} 
-		}
+		//do the mapping
+		List<Member> registereds = Lists.transform(registeredIds, idToMember);
+		List<Member> participants = Lists.transform(participantIds, idToMember);
+		
+		try {
+			//create a bag instance
+			Event event = eventService.getOne(id);
+			if(event != null){
+				event.setParticipants(participants);
+				event.setRegistrants(registereds);
+				saved = eventService.save(event);
+			}
+		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
+			response.addProperty("error", serializeException(e));
+		} 
 		response.addProperty("saved", saved);
 		return serializer.get().toJson(response);
 	}
@@ -435,7 +423,7 @@ public class EventController extends RestController {
 			@FormDataParam("reg-import-opts-del") @DefaultValue(",") String delimiter,
 			@FormDataParam("reg-import-opts-wrap") @DefaultValue("\"") String wrapper,
 			@FormDataParam("reg-import-opts-order") @DefaultValue("") String order,
-			@PathParam("id") long id){
+			@PathParam("id") String id){
 		
 		JsonObject response = new JsonObject();
 		

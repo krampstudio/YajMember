@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
+import org.yajug.users.domain.utils.KeyValidator;
 import org.yajug.users.domain.utils.MappingHelper;
 import org.yajug.users.persistence.dao.EventMongoDao;
 import org.yajug.users.persistence.dao.MemberMongoDao;
@@ -53,10 +54,9 @@ public class EventServiceImpl implements EventService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Event getOne(long key) throws DataException {
-		
-		if (key <= 0) {
-			throw new DataException("Unable to retrieve an event from a wrong id");
+	public Event getOne(String key) throws DataException {
+		if (!KeyValidator.validate(key)) {
+			throw new ValidationException("Unable to retrieve an event from a wrong id");
 		}
 		return loadParticipants(eventMongoDao.getOne(key));
 	}
@@ -70,11 +70,11 @@ public class EventServiceImpl implements EventService {
 	 */
 	private Event loadParticipants(Event event){
 		if(event.getParticipants() != null && event.getParticipants().size() > 0){
-			Set<Long> participantKeys = mappingHelper.extractKeys(event.getParticipants());
+			Set<String> participantKeys = mappingHelper.extractKeys(event.getParticipants());
 			event.setParticipants(memberMongoDao.getAllIn(participantKeys));
 		}
 		if(event.getRegistrants() != null && event.getRegistrants().size() > 0){
-			Set<Long> registrantKeys = mappingHelper.extractKeys(event.getRegistrants());
+			Set<String> registrantKeys = mappingHelper.extractKeys(event.getRegistrants());
 			event.setRegistrants(memberMongoDao.getAllIn(registrantKeys));
 		}
 		return event;
@@ -87,7 +87,7 @@ public class EventServiceImpl implements EventService {
 	public boolean save(Event event) throws DataException{
 		
 		if (event == null) {
-			throw new DataException("Cannot save a null event");
+			throw new ValidationException("Cannot save a null event");
 		}
 		
 		List<Event> events = new ArrayList<Event>();
@@ -103,19 +103,21 @@ public class EventServiceImpl implements EventService {
 	public boolean save(Collection<Event> events) throws DataException {
 		
 		if (events == null) {
-			throw new DataException("Cannot save null events");
+			throw new ValidationException("Cannot save null events");
 		}
 		
 		int expected = events.size();
 		int saved = 0;
 		for (Event event : events) {
-			if(eventMongoDao.isNew(event)){
-				if(eventMongoDao.insert(event)){
-					saved++;
-				}
-			} else {
-				if(eventMongoDao.update(event)){
-					saved++;
+			if(event != null){
+				if(eventMongoDao.isNew(event)){
+					if(eventMongoDao.insert(event)){
+						saved++;
+					}
+				} else if (KeyValidator.validate(event.getKey())){
+					if(eventMongoDao.update(event)){
+						saved++;
+					}
 				}
 			}
 		}
@@ -128,8 +130,8 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public boolean remove(Event event) throws DataException {
 
-		if (event == null || event.getKey() <= 0) {
-			throw new DataException("Trying to remove a null or non-identified event.");
+		if (event == null || !KeyValidator.validate(event.getKey())) {
+			throw new ValidationException("Trying to remove a null or non-identified event.");
 		}
 		
 		return eventMongoDao.remove(event);
@@ -180,7 +182,7 @@ public class EventServiceImpl implements EventService {
 		boolean removed = false;
 		
 		if (flyer == null || flyer.getFile() == null) {
-			throw new DataException("Trying to remove a null flyer.");
+			throw new ValidationException("Trying to remove a null flyer.");
 		}
 		
 		try{
@@ -195,6 +197,4 @@ public class EventServiceImpl implements EventService {
 		}
 		return removed;
 	}
-	
-	
 }

@@ -54,12 +54,12 @@ public interface MemberService {
 	Collection<Membership> getMemberships(Member member) throws DataException;
 	
 	/**
-	 * Get a {@link Membership} from it's identiier
-	 * @param id
-	 * @return
+	 * Get a {@link Membership} from it's identifier
+	 * @param key the membership identifier
+	 * @return the membership instance
 	 * @throws DataException
 	 */
-	Membership getMembership(long id) throws DataException;
+	Membership getMembership(String key) throws DataException;
 	
 	/**
 	 * Save  a collection of {@link Members}

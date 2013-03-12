@@ -27,7 +27,7 @@ public class Member extends DomainObject implements Comparable<Member>{
 	 * Key based constructor
 	 * @param key
 	 */
-	public Member(long key){
+	public Member(String key){
 		super(key);
 	}
 	
@@ -222,6 +222,9 @@ public class Member extends DomainObject implements Comparable<Member>{
 		if(o == null){
 			return 1;
 		}
-		return (int)(this.key - o.getKey());
+		if(this._getId() != null){
+			return this._getId().compareTo(o._getId());
+		}
+		return 0;
 	}
 }

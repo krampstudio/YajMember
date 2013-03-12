@@ -26,7 +26,7 @@ public interface EventService {
 	 * @return the {@link Event} or null
 	 * @throws DataException
 	 */
-	Event getOne(long key) throws DataException;
+	Event getOne(String key) throws DataException;
 	
 	/**
 	 * Save an {@link Event}

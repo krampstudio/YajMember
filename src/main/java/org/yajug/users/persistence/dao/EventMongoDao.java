@@ -3,6 +3,8 @@ package org.yajug.users.persistence.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.utils.MappingHelper;
 import org.yajug.users.persistence.MongoDao;
@@ -13,11 +15,22 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 
+/**
+ * Enables you to access {@link Event} data stored onto a Mongo database.
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 @Singleton
 public class EventMongoDao extends MongoDao<Event> {
 
+	/**
+	 * The name of the collection in mongo
+	 */
 	private final static String COLLECTION_NAME = "events";
 	
+	/**
+	 * This instance provides some mapping facilities
+	 */
 	@Inject private MappingHelper mappingHelper;
 	
 	/**
@@ -28,6 +41,10 @@ public class EventMongoDao extends MongoDao<Event> {
 		return getCollection(COLLECTION_NAME);
 	}
 	
+	/**
+	 * Get all the events from the store
+	 * @return a list of the events
+	 */
 	public List<Event> getAll(){
 		List<Event> events = new ArrayList<>();
 		
@@ -45,77 +62,76 @@ public class EventMongoDao extends MongoDao<Event> {
 		return events;
 	}
 	
+	/**
+	 * Get an event from its identifier
+	 * @param key the event identifier
+	 * @return the event instance or null if not found
+	 */
 	@Override
-	public Event getOne(long key){
+	public Event getOne(String key){
+		
+		assert StringUtils.isNotBlank(key);
+		
 		Event event = null;
-		if(key > 0){
-			DBCursor cursor = events().find(new BasicDBObject("key", key)).limit(1);
-			try {
-	            while(cursor.hasNext()) {
-	            	event = map(Event.class, (BasicDBObject)cursor.next());
-	            }
-	        } finally {
-	            cursor.close();
-	        }
-		}
+		DBCursor cursor = events().find(new BasicDBObject("key", key)).limit(1);
+		try {
+            while(cursor.hasNext()) {
+            	event = map(Event.class, (BasicDBObject)cursor.next());
+            }
+        } finally {
+            cursor.close();
+        }
 		return event;
 	}	
 	
+	//TODO retrieve OID
 	public boolean insert(Event event){
-		boolean saved = false;
-		if(event != null){
-			//get next key
-			if(event.getKey() <= 0){
-				event.setKey(getNextKey(COLLECTION_NAME));
-			}
-			BasicDBObject doc =  new BasicDBObject("key", event.getKey())
-                    .append("title", event.getTitle())
-                    .append("description",  event.getDescription())
-                    .append("date",  event.getDate());
-			if(event.getParticipants() != null){
-				doc.append("participants", mappingHelper.extractKeys(event.getParticipants()));
-			}
-			if(event.getRegistrants() != null){
-				doc.append("registrants", mappingHelper.extractKeys(event.getRegistrants()));
-			}
-			saved = handleWriteResult(
-						events().insert(doc)
-					);
+		
+		assert event != null;
+		
+		BasicDBObject doc =  new BasicDBObject("title", event.getTitle())
+							                    .append("description",  event.getDescription())
+							                    .append("date",  event.getDate());
+		if(event.getParticipants() != null){
+			doc.append("participants", mappingHelper.extractKeys(event.getParticipants()));
 		}
-		return saved;
+		if(event.getRegistrants() != null){
+			doc.append("registrants", mappingHelper.extractKeys(event.getRegistrants()));
+		}
+		return handleWriteResult(events().insert(doc));
 	}
 	
 	public boolean update(Event event){
+		
+		assert event != null;
+		assert StringUtils.isNotBlank(event.getKey());
+		
 		boolean saved = false;
-		if(event != null){
-			//get next key
-			if(event.getKey() > 0){
-				BasicDBObject query =  new BasicDBObject("key", event.getKey());
-				BasicDBObject doc =  
-						new BasicDBObject("title", event.getTitle())
-				                    .append("description",  event.getDescription())
-				                    .append("date",  event.getDate());
-				if(event.getParticipants() != null){
-					doc.append("participants", mappingHelper.extractKeys(event.getParticipants()));
-				}
-				if(event.getRegistrants() != null){
-					doc.append("registrants", mappingHelper.extractKeys(event.getRegistrants()));
-				}
-				saved = handleWriteResult(
-						events().update(query, new BasicDBObject("$set", doc))
-					);
-			}
+		BasicDBObject query =  new BasicDBObject("_id", new ObjectId(event.getKey()));
+		BasicDBObject doc =  
+				new BasicDBObject("title", event.getTitle())
+		                    .append("description",  event.getDescription())
+		                    .append("date",  event.getDate());
+		if(event.getParticipants() != null){
+			doc.append("participants", mappingHelper.extractKeys(event.getParticipants()));
 		}
+		if(event.getRegistrants() != null){
+			doc.append("registrants", mappingHelper.extractKeys(event.getRegistrants()));
+		}
+		saved = handleWriteResult(
+				events().update(query, new BasicDBObject("$set", doc))
+			);
+		
 		return saved;
 	}
 	
 	public boolean remove(Event event){
-		boolean removed = false;
-		if(event != null && event.getKey() > 0){
-			removed = handleWriteResult(
-						events().remove(new BasicDBObject("key", event.getKey()))
-					);
-		}
-		return removed;
+		
+		assert event != null;
+		assert StringUtils.isNotBlank(event.getKey());
+		
+		return handleWriteResult(
+					events().remove(new BasicDBObject("_id", new ObjectId(event.getKey())))
+				);
 	}
 }

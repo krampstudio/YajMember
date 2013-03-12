@@ -38,7 +38,7 @@ public class MemberDaoTest {
 		assertNotNull(members);
 		assertTrue(members.size() > 0);
 		assertNotNull(members.get(0));
-		assertTrue(members.get(0).getKey() > 0);
+		assertTrue(members.get(0).getKey() != null);
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class MemberDaoTest {
 		assertTrue(dao.insert(m));
 		
 		//check if the new key is assigned
-		assertTrue(m.getKey() > 0);
+		assertTrue(m.getKey() != null);
 	
 		//try to retrieve the inserted member
 		Member inserted = dao.getOne(m.getKey());

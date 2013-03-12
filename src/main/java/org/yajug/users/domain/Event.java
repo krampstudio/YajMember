@@ -26,7 +26,7 @@ public class Event  extends DomainObject{
 	 * Key based constructor
 	 * @param key
 	 */
-	public Event(long key){
+	public Event(String key){
 		super(key);
 	}
 	

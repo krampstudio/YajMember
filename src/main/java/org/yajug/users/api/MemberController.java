@@ -52,7 +52,7 @@ public class MemberController extends RestController {
 	 * TODO remove and use a cache at the service layer
 	 * Cache of member list 
 	 */
-	private Map<Long, Member> members;
+	private Map<String, Member> members;
 	
 	/**
 	 * List {@link Member}s regarding some filerting and ordering parameters
@@ -342,17 +342,12 @@ public class MemberController extends RestController {
 	@DELETE
 	@Path("removeMembership/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
-	public String removeMembership(@PathParam("id") Long id){
+	public String removeMembership(@PathParam("id") String id){
 		JsonObject response = new JsonObject();
 		boolean removed = false;
 		
 		try {
-			
-			if(id == null || id.longValue() <= 0){
-				throw new DataException("Unable to remove member from a wrong id");
-			}
-			
-			Membership membership = memberService.getMembership(id.longValue());
+			Membership membership = memberService.getMembership(id);
 			if(membership != null){
 				removed = memberService.removeMembership(membership);
 			}
@@ -372,12 +367,12 @@ public class MemberController extends RestController {
 	 * @return the map of members, with the member's id as key
 	 * @throws DataException
 	 */
-	private Map<Long, Member> getMembers() throws DataException{
+	private Map<String, Member> getMembers() throws DataException{
 		if(this.members == null){
 			Collection<Member> membersList = memberService.getAll();
 			
 			//needs of thread safety
-			this.members = new ConcurrentHashMap<Long, Member>(membersList.size());
+			this.members = new ConcurrentHashMap<String, Member>(membersList.size());
 			for(Member member : membersList){
 				this.members.put(member.getKey(), member);
 			}
@@ -397,10 +392,10 @@ public class MemberController extends RestController {
 	 * @param membersMap
 	 * @return
 	 */
-	private static List<Member> getMembersList(Map<Long, Member> membersMap){
+	private static List<Member> getMembersList(Map<String, Member> membersMap){
 		List<Member> membersList = new ArrayList<Member>();
 		if(membersMap != null){
-			for(Long key : membersMap.keySet()){
+			for(String key : membersMap.keySet()){
 				membersList.add(membersMap.get(key));
 			}
 		}

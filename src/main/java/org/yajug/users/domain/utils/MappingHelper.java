@@ -18,10 +18,10 @@ public class MappingHelper {
 	 * @param domains
 	 * @return the set of the domains keys
 	 */
-	public Set<Long> extractKeys(List<? extends DomainObject> domains){
-		Set<Long> keys = new HashSet<>();
-		keys.addAll(Lists.transform(domains, new Function<DomainObject, Long>() {
-			@Override public Long apply(DomainObject input) {
+	public Set<String> extractKeys(List<? extends DomainObject> domains){
+		Set<String> keys = new HashSet<>();
+		keys.addAll(Lists.transform(domains, new Function<DomainObject, String>() {
+			@Override public String apply(DomainObject input) {
 				return (input != null) ? input.getKey() : null;
 			}
 		}));

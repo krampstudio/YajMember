@@ -29,7 +29,7 @@ public class Membership  extends DomainObject {
 	public Membership(){
 	}
 	
-	public Membership(long key) {
+	public Membership(String key) {
 		super(key);
 	}
 

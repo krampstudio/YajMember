@@ -122,11 +122,11 @@ public class JsonSerializerTest {
 						//if this is Domain Objects
 						if(domainList){
 							//we get the JSON array of ids
-							List<Long> ids = gson.fromJson(json, new TypeToken<ArrayList<Long>>(){}.getType());
+							List<String> ids = gson.fromJson(json, new TypeToken<ArrayList<String>>(){}.getType());
 							//and transform it into a list of instance with only the key set
-							return Lists.transform(ids, new Function<Long, DomainObject>() {
+							return Lists.transform(ids, new Function<String, DomainObject>() {
 
-								@Override public DomainObject apply(Long input) {
+								@Override public DomainObject apply(String input) {
 									DomainObject domainObject = null;
 									try {
 										 domainObject = (DomainObject) Class.forName(typeOfT.getClass().getName()).newInstance() ;

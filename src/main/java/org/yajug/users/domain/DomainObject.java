@@ -1,5 +1,7 @@
 package org.yajug.users.domain;
 
+import org.bson.types.ObjectId;
+
 
 /**
  * Provides shared properties by all the domain objects like the identifier.
@@ -11,36 +13,33 @@ public abstract class DomainObject {
 	protected static final String TEXT_PATTERN = "^[\\w\\t \\-_+:'\\\"]{1,250}$";
 	protected static final String BLOCK_PATTERN = "^[\\w\\s\\-_+:'\\\"]*$";
 	
-	protected String _id;
+	protected transient ObjectId _id;
 	
-	protected long  key;
+	protected String key;
 	
 	public DomainObject(){
 	}
 	
-	public DomainObject(long  key){
+	public DomainObject(String  key){
 		this.key = key;
 	}
 
-	/**
-	 * @return the key
-	 */
-	public long getKey() {
+	public String getKey() {
 		return key;
 	}
 
-	/**
-	 * @param key the key to set
-	 */
-	public void setKey(long key) {
+	public void setKey(String key) {
 		this.key = key;
 	}
 	
-	public String _getId() {
+	public ObjectId _getId() {
 		return _id;
 	}
 
-	public void _setId(String _id) {
+	public void _setId(ObjectId _id) {
 		this._id = _id;
+		if(this._id != null){
+			this.key = _id.toString();
+		}
 	}
 }

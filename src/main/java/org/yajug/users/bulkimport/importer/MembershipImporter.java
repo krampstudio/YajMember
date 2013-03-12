@@ -10,6 +10,7 @@ import org.yajug.users.bulkimport.reader.DomainReader;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
+import org.yajug.users.domain.utils.KeyValidator;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 import org.yajug.users.service.MemberService;
@@ -50,7 +51,7 @@ public class MembershipImporter implements DomainImporter {
 						logger.warn("Multiple members found for email " + membership.getMember().getEmail() + ", skipped.");
 					} else {
 						Member member = foundMembers.iterator().next();
-						if(member.getKey() <= 0){
+						if(KeyValidator.validate(member.getKey())){
 							logger.warn("Invalid key " + member.getKey() + " for member " + membership.getMember().getEmail() + ", skipped.");
 						} else {
 							membership.setMember(member);

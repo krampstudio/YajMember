@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.utils.MappingHelper;
 import org.yajug.users.persistence.MongoDao;
@@ -18,15 +19,21 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 /**
- * Manage members data from/to the Mongo collection
+ * Enables you to access {@link Member} data stored onto a Mongo database.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Singleton
 public class MemberMongoDao extends MongoDao<Member>{
 	
+	/**
+	 * The name of the collection in mongo
+	 */
 	private final static String COLLECTION_NAME = "members";
 	
+	/**
+	 * This instance provides some mapping facilities
+	 */
 	@Inject private MappingHelper mappingHelper;
 	
 	/**
@@ -37,6 +44,10 @@ public class MemberMongoDao extends MongoDao<Member>{
 		return getCollection(COLLECTION_NAME);
 	}
 
+	/**
+	 * Get all the members from the store
+	 * @return the list of members
+	 */
 	public List<Member> getAll(){
 		List<Member> members = new ArrayList<>();
 		
@@ -54,14 +65,16 @@ public class MemberMongoDao extends MongoDao<Member>{
 		return members;
 	}
 	
-	public List<Member> getAllIn(Set<Long> keys){
+	//TODO check IN OID
+	public List<Member> getAllIn(Set<String> keys){
 		List<Member> members = new ArrayList<>();
 		if(keys != null && keys.size() > 0){
 			
-			BasicDBList docKeys = new BasicDBList();
-			docKeys.addAll(keys);
-			DBObject query = new BasicDBObject("key", new BasicDBObject("$in", docKeys));
-			
+			BasicDBList inKeys = new BasicDBList();
+			for(String key : keys){
+				inKeys.add(new ObjectId(key));
+			}
+			DBObject query = new BasicDBObject("key", new BasicDBObject("$in", inKeys));
 			
 			DBCursor cursor = members().find(query);
 			try {
@@ -78,22 +91,33 @@ public class MemberMongoDao extends MongoDao<Member>{
 		return members;
 	}
 	
+	/**
+	 * Get a member from its identifier
+	 * @param key the member identifier
+	 * @return the member instance if the key matches
+	 */
 	@Override
-	public Member getOne(long key){
+	public Member getOne(String key){
+		
+		assert StringUtils.isNotBlank(key);
+		
 		Member member = null;
-		if(key > 0){
-			DBCursor cursor = members().find(new BasicDBObject("key", key)).limit(1);
-			try {
-	            while(cursor.hasNext()) {
-	            	member = map(Member.class, (BasicDBObject)cursor.next());
-	            }
-	        } finally {
-	            cursor.close();
-	        }
-		}
+		DBCursor cursor = members().find(new BasicDBObject("_id", new ObjectId(key))).limit(1);
+		try {
+            while(cursor.hasNext()) {
+            	member = map(Member.class, (BasicDBObject)cursor.next());
+            }
+        } finally {
+            cursor.close();
+        }
 		return member;
 	}
 	
+	/**
+	 * Keyword search of members, by looking into the firstName, lastName, email and company fields
+	 * @param expression the search pattern
+	 * @return the list of matching members
+	 */
 	public List<Member> search(String expression){
 		List<Member> members = new ArrayList<>();
 		
@@ -120,6 +144,11 @@ public class MemberMongoDao extends MongoDao<Member>{
 		return members;
 	}
 	
+	/**
+	 * Search company names 
+	 * @param expression the search pattern
+	 * @return the list of matching company names
+	 */
 	public List<String> getCompanies(String expression){
 		List<String> companies = new ArrayList<>();
 		
@@ -139,57 +168,45 @@ public class MemberMongoDao extends MongoDao<Member>{
 	}
 	
 	public boolean insert(Member member){
-		boolean saved = false;
-		if(member != null){
-			//get next key
-			if(member.getKey() <= 0){
-				member.setKey(getNextKey(COLLECTION_NAME));
-			}
-			BasicDBObject doc =  new BasicDBObject("key", member.getKey())
-                    .append("firstName", member.getFirstName())
-                    .append("lastName",  member.getLastName())
-                    .append("company",  member.getCompany())
-                    .append("email", member.getEmail());
-			if(member.getRoles() != null){
-				doc.append("roles", mappingHelper.enumsToStrings(member.getRoles()));
-			}
-			saved = handleWriteResult(
-						members().insert(doc)
-					);
-		}
 		
-		return saved;
+		assert member != null;
+		
+		BasicDBObject doc =  new BasicDBObject("firstName", member.getFirstName())
+                .append("lastName",  member.getLastName())
+                .append("company",  member.getCompany())
+                .append("email", member.getEmail());
+		if(member.getRoles() != null){
+			doc.append("roles", mappingHelper.enumsToStrings(member.getRoles()));
+		}
+		return handleWriteResult(members().insert(doc));
 	}
 	
 	public boolean update(Member member){
-		boolean saved = false;
-		if(member != null){
-			//get next key
-			if(member.getKey() > 0){
-				BasicDBObject query =  new BasicDBObject("key", member.getKey());
-				BasicDBObject doc = 
-						new BasicDBObject("firstName", member.getFirstName())
-			                    	.append("lastName", member.getLastName())
-			                    	.append("company", member.getCompany())
-			                    	.append("email", member.getEmail());
-				if(member.getRoles() != null){
-					doc.append("roles", mappingHelper.enumsToStrings(member.getRoles()));
-				}
-				saved = handleWriteResult(
-						members().update(query, new BasicDBObject("$set", doc))
-					);
-			}
+		
+		assert member != null;
+		assert StringUtils.isNotBlank(member.getKey());
+		
+		BasicDBObject query =  new BasicDBObject("_id", new ObjectId(member.getKey()));
+		BasicDBObject doc = 
+				new BasicDBObject("firstName", member.getFirstName())
+	                    	.append("lastName", member.getLastName())
+	                    	.append("company", member.getCompany())
+	                    	.append("email", member.getEmail());
+		if(member.getRoles() != null){
+			doc.append("roles", mappingHelper.enumsToStrings(member.getRoles()));
 		}
-		return saved;
+		return handleWriteResult(
+				members().update(query, new BasicDBObject("$set", doc))
+			);
 	}
 	
 	public boolean remove(Member member){
-		boolean removed = false;
-		if(member != null && member.getKey() > 0){
-			removed = handleWriteResult(
-						members().remove(new BasicDBObject("key", member.getKey()))
-					);
-		}
-		return removed;
+		
+		assert member != null;
+		assert StringUtils.isNotBlank(member.getKey());
+		
+		return handleWriteResult(
+					members().remove(new BasicDBObject("_id", new ObjectId(member.getKey())))
+				);
 	}
 }

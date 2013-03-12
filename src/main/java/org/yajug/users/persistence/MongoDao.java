@@ -1,6 +1,5 @@
 package org.yajug.users.persistence;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.yajug.users.domain.DomainObject;
 import org.yajug.users.json.Serializer;
@@ -8,7 +7,6 @@ import org.yajug.users.json.Serializer;
 import com.google.inject.Inject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.MongoException;
 import com.mongodb.WriteResult;
 import com.mongodb.util.JSON;
@@ -23,12 +21,13 @@ public abstract class MongoDao<T extends DomainObject> {
 	@Inject private MongoConnector connector;
 	@Inject private Serializer serializer; 
 	
+	
 	/**
 	 * Get an domain object from it's key
-	 * @param key it's key identifier (different from _id)
+	 * @param key it's identifier (string representation of mongo _id)
 	 * @return the Domain object
 	 */
-	public abstract T getOne(long key);
+	public abstract T getOne(String key);
 	
 	/**
 	 * Check if an instance don't exists in the store
@@ -37,7 +36,7 @@ public abstract class MongoDao<T extends DomainObject> {
 	 */
 	public boolean isNew(T model){
 		boolean neew = true;
-		if(StringUtils.isNotBlank(model._getId())){
+		if(model._getId() != null && !model._getId().isNew()){
 			neew = false;
 		} else {
 			if(this.getOne(model.getKey()) != null){
@@ -93,31 +92,10 @@ public abstract class MongoDao<T extends DomainObject> {
 			T domain = serializer.get().fromJson(JSON.serialize(dbObject), clazz);
 			
 			if(id != null){
-				domain._setId(id.toString());
+				domain._setId(id);
 			}
 			return domain;
 		}
 		return null;
-	}
-	
-	/**
-	 * Get the next key of a collection since we use a minimified id to expose data instead of mongo _id field
-	 * @param collectionName the name of the collection to get the key for
-	 * @return the next key to insert
-	 */
-	protected long getNextKey(String collectionName){
-		
-		long next = 1l;
-		
-		DBCursor cursor = getCollection(collectionName).find().sort(new BasicDBObject("key", "1")).limit(1);
-		try{
-			while(cursor.hasNext()){
-				BasicDBObject dbObject = ((BasicDBObject)cursor.next());
-				next = dbObject.getLong("key", 0) + 1;
-			}
-		} finally {
-            cursor.close();
-        }
-		return next;
 	}
 }
