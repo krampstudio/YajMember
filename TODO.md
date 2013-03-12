@@ -24,4 +24,4 @@
  - [ ] Split the event/flyer services and controllers
  - [ ] Refactor app.js and form/lists to use an event bus instead of the overriding model
  - [ ] Refactor form/lists to use a js crud layer that communicate with the server
- - [ ] Remove key and use _id instead
+ - [ ] Remove key and use _id instead (see `mongoId` branch)
