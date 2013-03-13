@@ -68,6 +68,10 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 		return membership;
 	}
 
+	/**
+	 * Get all the memberships from the store
+	 * @return the list of memberships
+	 */
 	public List<Membership> getAll(){
 		List<Membership> memberships = new ArrayList<>();
 		
@@ -85,6 +89,11 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 		return memberships;
 	}
 	
+	/**
+	 * Get all the memberships that belongs to a member
+	 * @param memberKey the key of the member to check
+	 * @return the list of memberships
+	 */
 	public List<Membership> getAllByMember(String memberKey){
 		
 		assert StringUtils.isNotBlank(memberKey);
@@ -105,6 +114,11 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 		return memberships;
 	}
 	
+	/**
+	 * Get a membership from its identifier
+	 * @param key the membership identifier
+	 * @return the membership instance if the key match
+	 */
 	@Override
 	public Membership getOne(String key){
 		
@@ -122,13 +136,19 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 		return membership;
 	}
 	
+	/**
+	 * Insert a {@link Membership} to the store
+	 * @param membership the instance to insert, if the insertion is successful the key is set 
+	 * @return true if inserted
+	 */
 	public boolean insert(Membership membership){
 		
 		assert membership != null;
 		assert StringUtils.isNotBlank(membership.getKey());
 		
-		BasicDBObject doc = new BasicDBObject("_id", new ObjectId(membership.getKey()))
-							.append("year",  membership.getYear())
+		boolean inserted = false;
+		
+		BasicDBObject doc = new BasicDBObject("year",  membership.getYear())
 				            .append("type", membership.getType().name());
 		switch(membership.getType()){
 			case PERSONNAL:
@@ -145,9 +165,19 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 		if(membership.getMember() != null){
 			doc.append("member", membership.getMember().getKey());
 		}
-		return handleWriteResult(memberships().insert(doc));
+		
+		inserted = handleWriteResult(memberships().insert(doc));
+		if(doc.get( "_id") != null){
+			membership._setId((ObjectId)doc.get( "_id"));
+		}
+		return inserted; 
 	}
 	
+	/**
+	 * Update a {@link Membership} 
+	 * @param membership the instance to update, the key is used to identify it
+	 * @return true if updated
+	 */
 	public boolean update(Membership membership){
 		
 		assert membership != null;
@@ -172,6 +202,11 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 			);
 	}
 	
+	/**
+	 * Removes a {@link Membership} from the store
+	 * @param membership the instance to remove, the key is used to identify it
+	 * @return true if removed
+	 */
 	public boolean remove(Membership membership){
 		
 		assert membership != null;

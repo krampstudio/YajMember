@@ -38,10 +38,6 @@ public abstract class MongoDao<T extends DomainObject> {
 		boolean neew = true;
 		if(model._getId() != null && !model._getId().isNew()){
 			neew = false;
-		} else {
-			if(this.getOne(model.getKey()) != null){
-				neew = false;
-			}
 		}
 		return neew;
 	}

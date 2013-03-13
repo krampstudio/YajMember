@@ -84,10 +84,16 @@ public class EventMongoDao extends MongoDao<Event> {
 		return event;
 	}	
 	
-	//TODO retrieve OID
+	/**
+	 * Insert an {@link Event} to the store
+	 * @param event the instance to insert, if the insertion is successful the key is set 
+	 * @return true if inserted
+	 */
 	public boolean insert(Event event){
 		
 		assert event != null;
+		
+		boolean inserted = false;
 		
 		BasicDBObject doc =  new BasicDBObject("title", event.getTitle())
 							                    .append("description",  event.getDescription())
@@ -98,9 +104,18 @@ public class EventMongoDao extends MongoDao<Event> {
 		if(event.getRegistrants() != null){
 			doc.append("registrants", mappingHelper.extractKeys(event.getRegistrants()));
 		}
-		return handleWriteResult(events().insert(doc));
+		inserted = handleWriteResult(events().insert(doc));
+		if(doc.get( "_id") != null){
+			event._setId((ObjectId)doc.get( "_id"));
+		}
+		return inserted;
 	}
 	
+	/**
+	 * Update a {@link Event} 
+	 * @param event the instance to update, the key is used to identify it
+	 * @return true if updated
+	 */
 	public boolean update(Event event){
 		
 		assert event != null;
@@ -125,6 +140,11 @@ public class EventMongoDao extends MongoDao<Event> {
 		return saved;
 	}
 	
+	/**
+	 * Removes a {@link Event} from the store
+	 * @param event the instance to remove, the key is used to identify it
+	 * @return true if removed
+	 */
 	public boolean remove(Event event){
 		
 		assert event != null;

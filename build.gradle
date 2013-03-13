@@ -71,7 +71,19 @@ war{
 
 //Override the test task
 test {
-	useTestNG()
+	useTestNG() {
+		includeGroups 'unit'
+	}
+	//makes the standard streams (err and out) visible at console when running tests
+	testLogging.showStandardStreams = true
+}
+
+task integrationTest(type: Test, dependsOn: 'test') {
+	useTestNG() {
+		includeGroups 'integration'
+	}
+	ext.useDefaultListeners = true
+	ext.workingDirectory = 'build/'
 	//makes the standard streams (err and out) visible at console when running tests
 	testLogging.showStandardStreams = true
 }

@@ -2,9 +2,7 @@ package org.yajug.users.bulkimport.reader.processor;
 
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ParseInt;
-import org.supercsv.cellprocessor.ParseLong;
 import org.supercsv.cellprocessor.constraint.NotNull;
-import org.supercsv.cellprocessor.constraint.UniqueHashCode;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.yajug.users.domain.Membership;
 
@@ -19,7 +17,6 @@ public class MembershipCellProcessor implements DomainCellProcessor {
 	
 	public MembershipCellProcessor() {
 		cellProcessors = new CellProcessor[] { 
-				new UniqueHashCode(new ParseLong()), 			// key (must be unique)
 				new NotNull(new ParseInt()), 					// year
 				new NotNull(new ParseMembershipType()),			// type
                 new Optional(new ParseInt()), 					// amount

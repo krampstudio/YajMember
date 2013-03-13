@@ -31,3 +31,6 @@ bin
 #node js
 npm-debug.log
 node_modules
+
+#test
+test-output

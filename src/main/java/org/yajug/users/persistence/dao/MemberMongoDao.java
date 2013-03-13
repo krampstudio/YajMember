@@ -167,9 +167,16 @@ public class MemberMongoDao extends MongoDao<Member>{
 		return companies;
 	}
 	
+	/**
+	 * Insert an {@link Member} to the store
+	 * @param member the instance to insert, if the insertion is successful the key is set 
+	 * @return true if inserted
+	 */
 	public boolean insert(Member member){
 		
 		assert member != null;
+		
+		boolean inserted = false;
 		
 		BasicDBObject doc =  new BasicDBObject("firstName", member.getFirstName())
                 .append("lastName",  member.getLastName())
@@ -178,9 +185,18 @@ public class MemberMongoDao extends MongoDao<Member>{
 		if(member.getRoles() != null){
 			doc.append("roles", mappingHelper.enumsToStrings(member.getRoles()));
 		}
-		return handleWriteResult(members().insert(doc));
+		inserted = handleWriteResult(members().insert(doc));
+		if(doc.get( "_id") != null){
+			member._setId((ObjectId)doc.get( "_id"));
+		}
+		return inserted;
 	}
 	
+	/**
+	 * Update a {@link Member} 
+	 * @param member the instance to update, the key is used to identify it
+	 * @return true if updated
+	 */
 	public boolean update(Member member){
 		
 		assert member != null;
@@ -200,6 +216,11 @@ public class MemberMongoDao extends MongoDao<Member>{
 			);
 	}
 	
+	/**
+	 * Removes a {@link Member} from the store
+	 * @param member the instance to remove, the key is used to identify it
+	 * @return true if removed
+	 */
 	public boolean remove(Member member){
 		
 		assert member != null;
