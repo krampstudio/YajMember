@@ -7,7 +7,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.List;
 
-import org.testng.annotations.BeforeGroups;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import org.yajug.users.domain.Member;
@@ -32,13 +34,17 @@ import com.mongodb.DBObject;
 @Test(groups={"integration", "dao"})
 public class MemberDaoTest {
 	
+	private final static Logger logger = LoggerFactory.getLogger(MemberDaoTest.class);
+	
 	@Inject private MemberMongoDao dao;
 	@Inject private MongoConnector connector;
 	
-	@BeforeGroups(groups={"integration"})
+	@BeforeClass
 	public void loadMembers(){
 		//clean up and insert data to the collection
 		DBCollection members = connector.getDatabase().getCollection("members");
+		
+		logger.debug("clean up members collection");
 		
 		members.remove(new BasicDBObject());
 		BasicDBList docs = (BasicDBList) com.mongodb.util.JSON.parse(
@@ -46,6 +52,8 @@ public class MemberDaoTest {
 			"{'firstName': 'Megan', 'lastName': 'Perry', 'email': 'megan.perry@qmail.com', 'company': '', 'roles': ['MEMBER']}," +
 			"{'firstName': 'Ryan', 'lastName': 'Harris', 'email': 'harrisr01@zahoo.biz', 'company': 'Zaboo & Co', 'roles': ['OLD_MEMBER', 'SPONSOR']}]"
 		);
+		
+		logger.debug("inserting {} documents", docs.size());
 		
 		for(Object doc : docs){
 			members.insert((DBObject)doc);
@@ -59,12 +67,13 @@ public class MemberDaoTest {
 		//get the members list
 		List<Member> members = dao.getAll();
 		assertNotNull(members);
-		assertTrue(members.size() > 0);
+		assertEquals(3, members.size());
 		assertNotNull(members.get(0));
 		assertTrue(members.get(0).getKey() != null);
+		assertEquals(members.get(0).getEmail(), "jturner@zib.com");
 	}
 	
-	@Test(enabled=false)
+	@Test(enabled=true)
 	public void testInsertUpdateDelete(){
 		Member m = new Member("john", "doe",  "ano", "jdoe@gmail.com", Lists.newArrayList(Role.OLD_MEMBER));
 		
