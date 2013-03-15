@@ -15,6 +15,14 @@ import org.yajug.users.domain.Membership;
 public interface MemberService {
 
 	/**
+	 * Get a member from its identifier
+	 * @param key the identifier
+	 * @return the member or null
+	 * @throws DataException
+	 */
+	Member getOne(String key)  throws DataException;
+	
+	/**
 	 * Get all the members
 	 * @return a list of members
 	 * @throws DataException

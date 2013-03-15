@@ -82,6 +82,17 @@ public class MemberServiceImpl implements MemberService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public Member getOne(String key) throws DataException {
+		if (!KeyValidator.validate(key)) {
+			throw new ValidationException("Unable to retrieve a member from a wrong id");
+		}
+		return memberMongoDao.getOne(key);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public List<Member> getAll() throws DataException {
 		List<Member> members = memberMongoDao.getAll();
 		if(members != null){

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -49,12 +47,6 @@ public class MemberController extends RestController {
 	@Inject private MemberService memberService;
 	
 	/**
-	 * TODO remove and use a cache at the service layer
-	 * Cache of member list 
-	 */
-	private Map<String, Member> members;
-	
-	/**
 	 * List {@link Member}s regarding some filerting and ordering parameters
 	 * 
 	 * @param callback the JSONP callback
@@ -82,7 +74,7 @@ public class MemberController extends RestController {
 			if(StringUtils.isNotBlank(search)){
 				membersList = Lists.newArrayList(memberService.findAll(search));
 			} else {
-				membersList = getMembersList(getMembers());
+				membersList = Lists.newArrayList(memberService.getAll());
 			}
 			
 			//ordering
@@ -184,11 +176,7 @@ public class MemberController extends RestController {
 			if(StringUtils.isBlank(id)){
 				throw new DataException("Unable to retrieve member from a wrong id");
 			}
-			
-			//check the cache
-			if(getMembers().containsKey(id)){
-				response = serializer.get().toJson(getMembers().get(id));
-			}
+			response = serializer.get().toJson(memberService.getOne(id));
 			
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);
@@ -214,12 +202,12 @@ public class MemberController extends RestController {
 			if(StringUtils.isBlank(id)){
 				throw new DataException("Unable to retrieve member from a wrong id");
 			}
-			
-			//check the cache
-			if(getMembers().containsKey(id)){
-				Member member = getMembers().get(id);
-				response = serializer.get().toJson(memberService.getMemberships(member));
+			Collection<Membership> memberships = new ArrayList<>();
+			Member member = memberService.getOne(id);
+			if(member != null){
+				memberships = memberService.getMemberships(member);
 			}
+			response = serializer.get().toJson(memberships);
 			
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);
@@ -272,9 +260,7 @@ public class MemberController extends RestController {
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);
 			response.addProperty("error", e.getLocalizedMessage());
-		} finally {
-			this.clearMembers();
-		}
+		} 
 		response.addProperty("saved", saved);
 		
 		return serializer.get().toJson(response);
@@ -301,9 +287,7 @@ public class MemberController extends RestController {
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);
 			response.addProperty("error", e.getLocalizedMessage());
-		} finally {
-			this.clearMembers();
-		}
+		} 
 		response.addProperty("saved", saved);
 		
 		return serializer.get().toJson(response);
@@ -323,17 +307,15 @@ public class MemberController extends RestController {
 				throw new DataException("Unable to remove member from a wrong id");
 			}
 			
-			//get it from the local cache
-			if(getMembers().containsKey(id)){
-				removed = memberService.remove(getMembers().get(id));
+			Member member = memberService.getOne(id);
+			if(member != null){
+				removed = memberService.remove(member);
 			}
 		
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);
 			response.addProperty("error", e.getLocalizedMessage());
-		} finally {
-			this.clearMembers();
-		}
+		} 
 		response.addProperty("removed", removed);
 			
 		return serializer.get().toJson(response);
@@ -347,58 +329,19 @@ public class MemberController extends RestController {
 		boolean removed = false;
 		
 		try {
+			
 			Membership membership = memberService.getMembership(id);
 			if(membership != null){
 				removed = memberService.removeMembership(membership);
 			}
-		
+			
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);
 			response.addProperty("error", e.getLocalizedMessage());
-		} finally {
-			this.clearMembers();
-		}
+		} 
 		response.addProperty("removed", removed);
 			
 		return serializer.get().toJson(response);
 	}
-	/**
-	 * get the members (from cache or the service layer)
-	 * @return the map of members, with the member's id as key
-	 * @throws DataException
-	 */
-	private Map<String, Member> getMembers() throws DataException{
-		if(this.members == null){
-			Collection<Member> membersList = memberService.getAll();
-			
-			//needs of thread safety
-			this.members = new ConcurrentHashMap<String, Member>(membersList.size());
-			for(Member member : membersList){
-				this.members.put(member.getKey(), member);
-			}
-		}
-		return this.members;
-	}
-	
-	/**
-	 * Clear the current member's cache
-	 */
-	private void clearMembers(){
-		this.members = null;
-	}
-	
-	/**
-	 * convert the member's map to a list
-	 * @param membersMap
-	 * @return
-	 */
-	private static List<Member> getMembersList(Map<String, Member> membersMap){
-		List<Member> membersList = new ArrayList<Member>();
-		if(membersMap != null){
-			for(String key : membersMap.keySet()){
-				membersList.add(membersMap.get(key));
-			}
-		}
-		return membersList;
-	}
+
 }
