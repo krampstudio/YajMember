@@ -44,7 +44,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				event.preventDefault();
 				
 				var member = self.serializeMember($(this)),
-					udpate = (member.key && member.key > 0);
+					udpate = (member.key && member.key.length > 0);
 						
 				$.ajax({
 					type		: (udpate) ? 'POST' : 'PUT',

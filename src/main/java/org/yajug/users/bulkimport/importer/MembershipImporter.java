@@ -51,7 +51,7 @@ public class MembershipImporter implements DomainImporter {
 						logger.warn("Multiple members found for email " + membership.getMember().getEmail() + ", skipped.");
 					} else {
 						Member member = foundMembers.iterator().next();
-						if(KeyValidator.validate(member.getKey())){
+						if(!KeyValidator.validate(member.getKey())){
 							logger.warn("Invalid key " + member.getKey() + " for member " + membership.getMember().getEmail() + ", skipped.");
 						} else {
 							membership.setMember(member);
