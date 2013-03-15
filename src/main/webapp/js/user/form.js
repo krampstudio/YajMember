@@ -271,7 +271,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 		 */
 		loadMember : function(memberId, callback){
 			var self = this;
-			if(memberId && memberId > 0){
+			if(memberId){
 				self.toggleForm();
 				
 				$.ajax({
@@ -307,7 +307,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 		 */
 		loadMemberships: function(memberId, callback){
 			var self = this;
-			if(memberId && memberId > 0){
+			if(memberId){
 				self.toggleForm();
 				
 				$.ajax({

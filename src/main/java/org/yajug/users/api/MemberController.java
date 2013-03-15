@@ -176,12 +176,12 @@ public class MemberController extends RestController {
 	@GET
 	@Path("getOne")
 	@Produces({MediaType.APPLICATION_JSON})
-	public String getOne(@QueryParam("id") Long id){
+	public String getOne(@QueryParam("id") String id){
 		String response = "";
 		
 		try {
 			
-			if(id == null || id.longValue() <= 0){
+			if(StringUtils.isBlank(id)){
 				throw new DataException("Unable to retrieve member from a wrong id");
 			}
 			
@@ -206,12 +206,12 @@ public class MemberController extends RestController {
 	@GET
 	@Path("getMemberships")
 	@Produces({MediaType.APPLICATION_JSON})
-	public String getMemberships(@QueryParam("id") Long id){
+	public String getMemberships(@QueryParam("id") String id){
 		String response = "";
 		
 		try {
 			
-			if(id == null || id.longValue() <= 0){
+			if(StringUtils.isBlank(id)){
 				throw new DataException("Unable to retrieve member from a wrong id");
 			}
 			
@@ -284,13 +284,13 @@ public class MemberController extends RestController {
 	@Path("updateMemberships/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public String updateMemberships(@FormParam("memberships") String data, @PathParam("id") Long id) {
+	public String updateMemberships(@FormParam("memberships") String data, @PathParam("id") String id) {
 		
 		JsonObject response = new JsonObject();
 		boolean saved = false;
 		
 		try {
-			if(id == null || id.longValue() <= 0){
+			if(StringUtils.isBlank(id)){
 				throw new DataException("Unable to retrieve member from a wrong id");
 			}
 			Type listType = new TypeToken<ArrayList<Membership>>() {}.getType();
@@ -313,13 +313,13 @@ public class MemberController extends RestController {
 	@DELETE
 	@Path("remove/{id}")
 	@Produces({MediaType.APPLICATION_JSON})
-	public String remove(@PathParam("id") Long id){
+	public String remove(@PathParam("id") String id){
 		JsonObject response = new JsonObject();
 		boolean removed = false;
 		
 		try {
 			
-			if(id == null || id.longValue() <= 0){
+			if(StringUtils.isBlank(id)){
 				throw new DataException("Unable to remove member from a wrong id");
 			}
 			

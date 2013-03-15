@@ -83,7 +83,11 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public List<Member> getAll() throws DataException {
-		return memberMongoDao.getAll();
+		List<Member> members = memberMongoDao.getAll();
+		if(members != null){
+			this.checkValidity(members, false);
+		}
+		return members;
 	}
 	
 	/**
@@ -100,6 +104,9 @@ public class MemberServiceImpl implements MemberService {
 				throw new ValidationException("Invalid search pattern");
 			}
 			members = memberMongoDao.search(expression);
+			if(members != null){
+				this.checkValidity(members, false);
+			}
 		}
 		return members;
 	}

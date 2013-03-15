@@ -26,7 +26,7 @@ define( ['jquery', 'store', 'notify', 'gridy'], function($, store, notify){
 				clickFx		: true,
 				resize		: true,
 				height		: 700,
-				width		: 975,
+				width		: 950,
 				before		: function(){
 					$('.gridy-search :button').button({disabled : false});
 				},
@@ -36,7 +36,7 @@ define( ['jquery', 'store', 'notify', 'gridy'], function($, store, notify){
 						event.preventDefault();
 						
 						//extract the id and store it 
-						store.set('member', $(this).attr('href').replace('#', ''));
+						store.set('member',  $(this).attr('href').replace('#', ''));
 						
 						//opens the edit tab
 						$('#actions').tabs('select', 1);
@@ -62,7 +62,6 @@ define( ['jquery', 'store', 'notify', 'gridy'], function($, store, notify){
 				 * the column list must match the template defined in index.html! 
 				 */
 				columns	: [
-				    { name: 'Id', value: 'key', width: 45 },
 					{ name: 'Valid',value: 'valid', width: 50 },
 					{ name: 'First Name', value: 'firstName', width: 125 },
 					{ name: 'Last Name', value: 'lastName', width: 125 },

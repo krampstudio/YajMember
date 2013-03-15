@@ -404,7 +404,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 		loadEvent : function(eventId, callback){
 			var self	= this; 
 			
-			if(eventId && eventId > 0){
+			if(eventId){
 				$.ajax({
 					type		: 'GET',
 					url			: 'api/event/getOne',

@@ -73,7 +73,7 @@ public class EventMongoDao extends MongoDao<Event> {
 		assert StringUtils.isNotBlank(key);
 		
 		Event event = null;
-		DBCursor cursor = events().find(new BasicDBObject("key", key)).limit(1);
+		DBCursor cursor = events().find(new BasicDBObject("_id", new ObjectId(key))).limit(1);
 		try {
             while(cursor.hasNext()) {
             	event = map(Event.class, (BasicDBObject)cursor.next());

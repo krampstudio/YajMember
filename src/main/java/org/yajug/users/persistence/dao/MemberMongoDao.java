@@ -74,7 +74,7 @@ public class MemberMongoDao extends MongoDao<Member>{
 			for(String key : keys){
 				inKeys.add(new ObjectId(key));
 			}
-			DBObject query = new BasicDBObject("key", new BasicDBObject("$in", inKeys));
+			DBObject query = new BasicDBObject("_id", new BasicDBObject("$in", inKeys));
 			
 			DBCursor cursor = members().find(query);
 			try {
