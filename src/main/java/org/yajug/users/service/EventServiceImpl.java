@@ -17,7 +17,7 @@ import org.yajug.users.domain.Flyer;
 import org.yajug.users.domain.utils.KeyValidator;
 import org.yajug.users.domain.utils.MappingHelper;
 import org.yajug.users.persistence.dao.EventMongoDao;
-import org.yajug.users.persistence.dao.MemberMongoDao;
+import org.yajug.users.persistence.dao.MemberDao;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -34,7 +34,7 @@ import com.google.inject.Singleton;
 public class EventServiceImpl implements EventService {
 
 	@Inject private EventMongoDao eventMongoDao;
-	@Inject private MemberMongoDao memberMongoDao;
+	@Inject private MemberDao memberMongoDao;
 	@Inject private MappingHelper mappingHelper;
 	
 	/**

@@ -21,7 +21,7 @@ import com.mongodb.DBCursor;
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Singleton
-public class EventMongoDao extends MongoDao<Event> {
+public class EventMongoDao extends MongoDao<Event> implements EventDao {
 
 	/**
 	 * The name of the collection in mongo
@@ -42,9 +42,9 @@ public class EventMongoDao extends MongoDao<Event> {
 	}
 	
 	/**
-	 * Get all the events from the store
-	 * @return a list of the events
+	 * {@inheritDoc}
 	 */
+	@Override
 	public List<Event> getAll(){
 		List<Event> events = new ArrayList<>();
 		
@@ -63,9 +63,7 @@ public class EventMongoDao extends MongoDao<Event> {
 	}
 	
 	/**
-	 * Get an event from its identifier
-	 * @param key the event identifier
-	 * @return the event instance or null if not found
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Event getOne(String key){
@@ -85,10 +83,9 @@ public class EventMongoDao extends MongoDao<Event> {
 	}	
 	
 	/**
-	 * Insert an {@link Event} to the store
-	 * @param event the instance to insert, if the insertion is successful the key is set 
-	 * @return true if inserted
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean insert(Event event){
 		
 		assert event != null;
@@ -112,10 +109,9 @@ public class EventMongoDao extends MongoDao<Event> {
 	}
 	
 	/**
-	 * Update a {@link Event} 
-	 * @param event the instance to update, the key is used to identify it
-	 * @return true if updated
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean update(Event event){
 		
 		assert event != null;
@@ -141,10 +137,9 @@ public class EventMongoDao extends MongoDao<Event> {
 	}
 	
 	/**
-	 * Removes a {@link Event} from the store
-	 * @param event the instance to remove, the key is used to identify it
-	 * @return true if removed
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean remove(Event event){
 		
 		assert event != null;

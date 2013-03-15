@@ -24,7 +24,7 @@ import com.mongodb.DBObject;
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Singleton
-public class MemberMongoDao extends MongoDao<Member>{
+public class MemberMongoDao extends MongoDao<Member> implements MemberDao{
 	
 	/**
 	 * The name of the collection in mongo
@@ -45,9 +45,9 @@ public class MemberMongoDao extends MongoDao<Member>{
 	}
 
 	/**
-	 * Get all the members from the store
-	 * @return the list of members
+	 * {@inheritDoc}
 	 */
+	@Override
 	public List<Member> getAll(){
 		List<Member> members = new ArrayList<>();
 		
@@ -65,7 +65,10 @@ public class MemberMongoDao extends MongoDao<Member>{
 		return members;
 	}
 	
-	//TODO check IN OID
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public List<Member> getAllIn(Set<String> keys){
 		List<Member> members = new ArrayList<>();
 		if(keys != null && keys.size() > 0){
@@ -92,9 +95,7 @@ public class MemberMongoDao extends MongoDao<Member>{
 	}
 	
 	/**
-	 * Get a member from its identifier
-	 * @param key the member identifier
-	 * @return the member instance if the key matches
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Member getOne(String key){
@@ -114,10 +115,9 @@ public class MemberMongoDao extends MongoDao<Member>{
 	}
 	
 	/**
-	 * Keyword search of members, by looking into the firstName, lastName, email and company fields
-	 * @param expression the search pattern
-	 * @return the list of matching members
+	 * {@inheritDoc}
 	 */
+	@Override
 	public List<Member> search(String expression){
 		List<Member> members = new ArrayList<>();
 		
@@ -145,10 +145,9 @@ public class MemberMongoDao extends MongoDao<Member>{
 	}
 	
 	/**
-	 * Search company names 
-	 * @param expression the search pattern
-	 * @return the list of matching company names
+	 * {@inheritDoc}
 	 */
+	@Override
 	public List<String> getCompanies(String expression){
 		List<String> companies = new ArrayList<>();
 		
@@ -168,10 +167,9 @@ public class MemberMongoDao extends MongoDao<Member>{
 	}
 	
 	/**
-	 * Insert an {@link Member} to the store
-	 * @param member the instance to insert, if the insertion is successful the key is set 
-	 * @return true if inserted
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean insert(Member member){
 		
 		assert member != null;
@@ -193,10 +191,9 @@ public class MemberMongoDao extends MongoDao<Member>{
 	}
 	
 	/**
-	 * Update a {@link Member} 
-	 * @param member the instance to update, the key is used to identify it
-	 * @return true if updated
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean update(Member member){
 		
 		assert member != null;
@@ -217,10 +214,9 @@ public class MemberMongoDao extends MongoDao<Member>{
 	}
 	
 	/**
-	 * Removes a {@link Member} from the store
-	 * @param member the instance to remove, the key is used to identify it
-	 * @return true if removed
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean remove(Member member){
 		
 		assert member != null;

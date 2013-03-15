@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Role;
 import org.yajug.users.persistence.MongoConnector;
+import org.yajug.users.persistence.dao.MemberDao;
 import org.yajug.users.persistence.dao.MemberMongoDao;
 import org.yajug.users.test.it.TestModule;
 
@@ -36,7 +37,7 @@ public class MemberDaoTest {
 	
 	private final static Logger logger = LoggerFactory.getLogger(MemberDaoTest.class);
 	
-	@Inject private MemberMongoDao dao;
+	@Inject private MemberDao dao;
 	@Inject private MongoConnector connector;
 	
 	@BeforeClass

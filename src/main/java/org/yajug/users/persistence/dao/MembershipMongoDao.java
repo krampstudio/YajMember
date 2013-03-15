@@ -22,7 +22,7 @@ import com.mongodb.DBCursor;
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Singleton
-public class MembershipMongoDao extends MongoDao<Membership>{
+public class MembershipMongoDao extends MongoDao<Membership> implements MembershipDao{
 	
 	/**
 	 * The name of the collection in mongo
@@ -69,9 +69,9 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 	}
 
 	/**
-	 * Get all the memberships from the store
-	 * @return the list of memberships
+	 * {@inheritDoc}
 	 */
+	@Override
 	public List<Membership> getAll(){
 		List<Membership> memberships = new ArrayList<>();
 		
@@ -90,10 +90,9 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 	}
 	
 	/**
-	 * Get all the memberships that belongs to a member
-	 * @param memberKey the key of the member to check
-	 * @return the list of memberships
+	 * {@inheritDoc}
 	 */
+	@Override
 	public List<Membership> getAllByMember(String memberKey){
 		
 		assert StringUtils.isNotBlank(memberKey);
@@ -115,9 +114,7 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 	}
 	
 	/**
-	 * Get a membership from its identifier
-	 * @param key the membership identifier
-	 * @return the membership instance if the key match
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Membership getOne(String key){
@@ -137,10 +134,9 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 	}
 	
 	/**
-	 * Insert a {@link Membership} to the store
-	 * @param membership the instance to insert, if the insertion is successful the key is set 
-	 * @return true if inserted
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean insert(Membership membership){
 		
 		assert membership != null;
@@ -174,10 +170,9 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 	}
 	
 	/**
-	 * Update a {@link Membership} 
-	 * @param membership the instance to update, the key is used to identify it
-	 * @return true if updated
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean update(Membership membership){
 		
 		assert membership != null;
@@ -203,10 +198,9 @@ public class MembershipMongoDao extends MongoDao<Membership>{
 	}
 	
 	/**
-	 * Removes a {@link Membership} from the store
-	 * @param membership the instance to remove, the key is used to identify it
-	 * @return true if removed
+	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean remove(Membership membership){
 		
 		assert membership != null;

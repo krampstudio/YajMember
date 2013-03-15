@@ -12,6 +12,7 @@ import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import org.yajug.users.domain.Event;
 import org.yajug.users.persistence.MongoConnector;
+import org.yajug.users.persistence.dao.EventDao;
 import org.yajug.users.persistence.dao.EventMongoDao;
 import org.yajug.users.test.it.TestModule;
 
@@ -32,7 +33,7 @@ public class EventDaoTest {
 	
 	private final static Logger logger = LoggerFactory.getLogger(EventDaoTest.class);
 	
-	@Inject private EventMongoDao dao;
+	@Inject private EventDao dao;
 	@Inject private MongoConnector connector;
 	
 	@BeforeClass
@@ -45,8 +46,8 @@ public class EventDaoTest {
 		members.remove(new BasicDBObject());
 		BasicDBList docs = (BasicDBList) com.mongodb.util.JSON.parse("[" +
 			"{ 'title' : 'YaJUG++ Hackerfest at Hackerspace' , 'description' : \"An informal hackers gathering. No strings attached, no presentation, bring your laptops and favorite beverages and hack away with your fellow Juggers\" , 'date' : { '$date' : '2012-10-10T00:00:00.000Z'}}," +
-			"{ 'title' : 'De la synchronisation aux transactions en mémoire et aux acteurs' , 'description' : \"Depuis la généralisation des processeurs multicoeurs, il n'est plus possible à la JVM de mentir : le multithread exécute bien du code en parallèle.\" , 'date' : { '$date' : '2012-06-26T00:00:00.000Z'}}," +
-			"{ 'title' : 'Les 5 mercenaires de Devops' , 'description' : \"5 cowboys mercenaires viennent des 4 coins de l'Europe francophone pour venir vous présenter en avant-première leur session de Devoxx France.\" , 'date' : { '$date' : '2012-04-16T00:00:00.000Z'}},"+
+			"{ 'title' : 'De la synchronisation aux transactions en mï¿½moire et aux acteurs' , 'description' : \"Depuis la gï¿½nï¿½ralisation des processeurs multicoeurs, il n'est plus possible ï¿½ la JVM de mentir : le multithread exï¿½cute bien du code en parallï¿½le.\" , 'date' : { '$date' : '2012-06-26T00:00:00.000Z'}}," +
+			"{ 'title' : 'Les 5 mercenaires de Devops' , 'description' : \"5 cowboys mercenaires viennent des 4 coins de l'Europe francophone pour venir vous prï¿½senter en avant-premiï¿½re leur session de Devoxx France.\" , 'date' : { '$date' : '2012-04-16T00:00:00.000Z'}},"+
 			"{ 'title' : 'XWiki' , 'description' : \"When developing a web application the traditional way is to develop the application from scratch using a general purpose language such as PHP, Grails, Java/JSP, etc.\" , 'date' : { '$date' : '2012-03-20T00:00:00.000Z'}}"+
 		"]");
 		
