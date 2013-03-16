@@ -13,25 +13,39 @@ import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.Role;
 import org.yajug.users.domain.utils.KeyValidator;
-import org.yajug.users.persistence.dao.MemberMongoDao;
-import org.yajug.users.persistence.dao.MembershipMongoDao;
+import org.yajug.users.persistence.dao.MemberDao;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Implementation of the {@link MemberService} that use JPA to persist data.
+ * Implementation of the {@link MemberService} API that delegates
+ * persistence calls to DAOs.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Singleton
 public class MemberServiceImpl implements MemberService {
 
+	/**
+	 * The logger
+	 */
 	private final static Logger logger = LoggerFactory.getLogger(MemberServiceImpl.class);
 	
-	@Inject private MemberMongoDao memberMongoDao;
-	@Inject private MembershipMongoDao membershipMongoDao;
+	/**
+	 * To manage the {@link Member} related data against the store.
+	 */
+	@Inject private MemberDao memberDao;
 	
+	/**
+	 * Use to update the memberships that belongs to a member
+	 */
+	@Inject private MembershipService membershipService;
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void checkValidity(Collection<Member> members, boolean updateRole) throws DataException{
 		if(members != null){
 			Collection<Member> membersToUpdate = new ArrayList<>();
@@ -39,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
 			
 			for(Member member : members){
 				boolean saveMember = false;
-				Collection<Membership> memberships = getMemberships(member);
+				Collection<Membership> memberships = membershipService.getAllByMember(member);
 				
 				for(Membership membership : memberships){
 					if(membership.getYear() > 0 && membership.getYear() == currentYear){
@@ -70,15 +84,6 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	/**
-	 * Validate search expression: only alpha num chars, dot and \@ are allowed
-	 * @param expression
-	 * @return
-	 */
-	private boolean validateSearchExpression(String expression){
-		return Pattern.compile("^[\\p{Alnum}.@]*$").matcher(expression).find();
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -86,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
 		if (!KeyValidator.validate(key)) {
 			throw new ValidationException("Unable to retrieve a member from a wrong id");
 		}
-		return memberMongoDao.getOne(key);
+		return memberDao.getOne(key);
 	}
 	
 	/**
@@ -94,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public List<Member> getAll() throws DataException {
-		List<Member> members = memberMongoDao.getAll();
+		List<Member> members = memberDao.getAll();
 		if(members != null){
 			this.checkValidity(members, false);
 		}
@@ -114,7 +119,7 @@ public class MemberServiceImpl implements MemberService {
 			if(!validateSearchExpression(expression)){
 				throw new ValidationException("Invalid search pattern");
 			}
-			members = memberMongoDao.search(expression);
+			members = memberDao.search(expression);
 			if(members != null){
 				this.checkValidity(members, false);
 			}
@@ -132,32 +137,11 @@ public class MemberServiceImpl implements MemberService {
 			if(!validateSearchExpression(expression)){
 				throw new ValidationException("Invalid search pattern");
 			}
-			companies = memberMongoDao.getCompanies(expression);
+			companies = memberDao.getCompanies(expression);
 		}
 		return companies;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Collection<Membership> getMemberships(Member member) throws DataException {
-		if(member == null || !KeyValidator.validate(member.getKey())){
-			throw new ValidationException("Unable to retrieve a membership from an empty or invalid member");
-		}
-		return  membershipMongoDao.getAllByMember(member.getKey());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Membership getMembership(String key) throws DataException {
-		if (!KeyValidator.validate(key)) {
-			throw new ValidationException("Unable to retrieve a membership from an empty or invalid key");
-		}
-		return  membershipMongoDao.getOne(key);
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -189,12 +173,12 @@ public class MemberServiceImpl implements MemberService {
 		int saved = 0;
 		for(Member member : members){
 			if(member != null){
-				if(memberMongoDao.isNew(member)){
-					if(memberMongoDao.insert(member)){
+				if(KeyValidator.validate(member.getKey())) {
+					if(memberDao.update(member)){
 						saved++;
 					}
-				} else if(KeyValidator.validate(member.getKey())) {
-					if(memberMongoDao.update(member)){
+				} else {
+					if(memberDao.insert(member)){
 						saved++;
 					}
 				}
@@ -203,44 +187,6 @@ public class MemberServiceImpl implements MemberService {
 		return saved == expected;
 	}
 	
-	@Override
-	public boolean saveMemberships(Collection<Membership> memberships) throws DataException {
-		
-		if(memberships == null){
-			throw new ValidationException("Cannot save null memberships");
-		}
-		
-		//do the checks prior the save operations in a non transactionnal context
-		for(Membership membership : memberships){
-			if(membership == null){
-				throw new ValidationException("Can't save a null membership!");
-			}
-			if(membership.getYear() < 1990 || membership.getYear() > 2050){
-				throw new ValidationException("Wrong membership year : " + membership.getYear());
-			}
-			if(membership.getType() == null){
-				throw new ValidationException("Membership type is required.");
-			}
-		}
-		
-		int expected = memberships.size();
-		int saved = 0;
-		for(Membership membership : memberships){
-			if(membership != null){
-				if(membershipMongoDao.isNew(membership)){
-					if(membershipMongoDao.insert(membership)){
-						saved++;
-					}
-				} else if (KeyValidator.validate(membership.getKey())) {
-					if(membershipMongoDao.update(membership)){
-						saved++;
-					}
-				}
-			}
-		}
-		return saved == expected;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -250,35 +196,27 @@ public class MemberServiceImpl implements MemberService {
 			throw new ValidationException("Cannot remove an empty or invalid member");
 		}
 		//remove also member's memberships
-		for(Membership membership : this.getMemberships(member)){
+		for(Membership membership : membershipService.getAllByMember(member)){
 			try{
-				this.removeMembership(membership);
+				membershipService.remove(membership);
 			} catch(DataException dae){
 				logger.error("Error while removing a membership, continue removals", dae);
 			}
 		}
-		return  memberMongoDao.remove(member);
+		return  memberDao.remove(member);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean removeMembership(Membership membership) throws DataException {
-		if(membership == null || !KeyValidator.validate(membership.getKey())){
-			throw new DataException("Cannot remove an empty or invalid membership");
-		}
-		return  membershipMongoDao.remove(membership);
-	}
-
-	@Override
 	public List<Member> findMember(Member member) {
 		List<Member> found = new ArrayList<>();
 		if(member != null){
 			//search field by field: email, name
-			List<Member> foundByEmail = memberMongoDao.search(member.getEmail());
+			List<Member> foundByEmail = memberDao.search(member.getEmail());
 			if(foundByEmail.size() == 0){
-				List<Member> foundByName = memberMongoDao.search(member.getLastName());
+				List<Member> foundByName = memberDao.search(member.getLastName());
 				if(foundByName.size() > 0){
 					found.addAll(foundByName);
 				}
@@ -287,5 +225,14 @@ public class MemberServiceImpl implements MemberService {
 			}
 		}
 		return found;
+	}
+	
+	/**
+	 * Validate search expression: only alpha num chars, dot and \@ are allowed
+	 * @param expression
+	 * @return
+	 */
+	private boolean validateSearchExpression(String expression){
+		return Pattern.compile("^[\\p{Alnum}.@]*$").matcher(expression).find();
 	}
 }

@@ -14,6 +14,7 @@ import org.yajug.users.domain.utils.KeyValidator;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.EventService;
 import org.yajug.users.service.MemberService;
+import org.yajug.users.service.MembershipService;
 
 import com.google.inject.Inject;
 
@@ -27,6 +28,7 @@ public class MembershipImporter implements DomainImporter {
 	private final static Logger logger = LoggerFactory.getLogger(MembershipImporter.class);
 	
 	@Inject private DomainReader<Membership> reader;
+	@Inject private MembershipService membershipService;
 	@Inject private MemberService memberService;
 	@Inject private EventService eventService;
 	
@@ -68,7 +70,7 @@ public class MembershipImporter implements DomainImporter {
 				}
 			}
 			
-			if(memberService.saveMemberships(memberships)){
+			if(membershipService.save(memberships)){
 				imported = memberships.size();
 			}
 			

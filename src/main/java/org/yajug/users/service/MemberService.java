@@ -2,10 +2,8 @@ package org.yajug.users.service;
 
 
 import java.util.Collection;
-import java.util.List;
 
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.Membership;
 
 /**
  * The service provides common management of {@link Member}s
@@ -14,6 +12,14 @@ import org.yajug.users.domain.Membership;
  */
 public interface MemberService {
 
+	/**
+	 * Check the current validity of {@link Member}s regarding their roles and memberships
+	 * @param members the members to check, the {@link Member}'s valid field is updated.
+	 * @param updateRole if the method should update the roles that don't reflect the current validity
+	 * @throws DataException
+	 */
+	void checkValidity(Collection<Member> members, boolean updateRole) throws DataException;
+	
 	/**
 	 * Get a member from its identifier
 	 * @param key the identifier
@@ -53,21 +59,6 @@ public interface MemberService {
 	 */
 	boolean save(Member member) throws DataException;
 	
-	/**
-	 * Get the member's {@link Membership}
-	 * @param member the member to get the membership from
-	 * @return
-	 * @throws DataException
-	 */
-	Collection<Membership> getMemberships(Member member) throws DataException;
-	
-	/**
-	 * Get a {@link Membership} from it's identifier
-	 * @param key the membership identifier
-	 * @return the membership instance
-	 * @throws DataException
-	 */
-	Membership getMembership(String key) throws DataException;
 	
 	/**
 	 * Save  a collection of {@link Members}
@@ -77,13 +68,6 @@ public interface MemberService {
 	 */
 	boolean save(Collection<Member> members) throws DataException;
 	
-	/**
-	 * Save a collection of {@link Membership}
-	 * @param memberships
-	 * @return true if saved
-	 * @throws DataException
-	 */
-	boolean saveMemberships(Collection<Membership> memberships) throws DataException;
 	
 	/**
 	 * Remove a member
@@ -94,12 +78,9 @@ public interface MemberService {
 	boolean remove(Member member) throws DataException;
 	
 	/**
-	 * Remove a membership
-	 * @param membership the memebership to remove
-	 * @return true if removed
-	 * @throws DataException
+	 * Find an existing member regarding the data of the member in parameter
+	 * @param member the search member
+	 * @return the matching members
 	 */
-	boolean removeMembership(Membership membership) throws DataException;
-	
-	List<Member> findMember(Member member);
+	Collection<Member> findMember(Member member);
 }

@@ -3,9 +3,17 @@ package org.yajug.users.domain;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
+/**
+ * Represents an event's flyer.
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class Flyer {
 
-	public final static String TYPE = "png";
+	/** the image format */
+	public final static String FORMAT = "png";
+	
+	/** used by the naming pattern */
 	private final static String THUMB_SUFFIX = "small";
 	
 	private String basePath; 
@@ -27,7 +35,7 @@ public class Flyer {
 			this.basePath += File.separatorChar;
 		}
 		this.name = name;
-		this.file = new File(this.basePath + this.name + "." + TYPE);
+		this.file = new File(this.basePath + this.name + "." + FORMAT);
 		if(!isThumb){
 			this.thumbnail = new Flyer(basePath, name + "-" + THUMB_SUFFIX, true);
 		}

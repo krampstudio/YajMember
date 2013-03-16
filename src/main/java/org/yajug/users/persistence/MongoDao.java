@@ -30,19 +30,6 @@ public abstract class MongoDao<T extends DomainObject> {
 	public abstract T getOne(String key);
 	
 	/**
-	 * Check if an instance don't exists in the store
-	 * @param model the instance
-	 * @return true is the instance don't exist
-	 */
-	public boolean isNew(T model){
-		boolean neew = true;
-		if(model._getId() != null && !model._getId().isNew() || model.getKey() != null){
-			neew = false;
-		}
-		return neew;
-	}
-	
-	/**
 	 * Get a mongo collection
 	 * @param name the collection name
 	 * @return the collection

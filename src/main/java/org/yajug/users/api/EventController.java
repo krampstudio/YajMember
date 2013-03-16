@@ -454,7 +454,7 @@ public class EventController extends RestController {
 			for(Member member : members) {
 
 				JsonObject memberState = new JsonObject();
-				List<Member> found = memberService.findMember(member);
+				List<Member> found = Lists.newArrayList(memberService.findMember(member));
 				if(found.size() == 0){
 					if(memberService.save(member)){
 						memberState.addProperty("state", "added");

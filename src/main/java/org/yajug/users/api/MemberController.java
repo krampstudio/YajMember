@@ -26,6 +26,7 @@ import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.utils.MemberComparator;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.MemberService;
+import org.yajug.users.service.MembershipService;
 import org.yajug.users.vo.GridVo;
 
 import com.google.common.collect.Lists;
@@ -45,6 +46,7 @@ public class MemberController extends RestController {
 	private final static Logger logger = LoggerFactory.getLogger(MemberController.class);
 
 	@Inject private MemberService memberService;
+	@Inject private MembershipService membershipService;
 	
 	/**
 	 * List {@link Member}s regarding some filerting and ordering parameters
@@ -205,7 +207,7 @@ public class MemberController extends RestController {
 			Collection<Membership> memberships = new ArrayList<>();
 			Member member = memberService.getOne(id);
 			if(member != null){
-				memberships = memberService.getMemberships(member);
+				memberships = membershipService.getAllByMember(member);
 			}
 			response = serializer.get().toJson(memberships);
 			
@@ -282,7 +284,7 @@ public class MemberController extends RestController {
 			Type listType = new TypeToken<ArrayList<Membership>>() {}.getType();
 			List<Membership> memberships = serializer.get().fromJson(data, listType);
 			
-			saved = memberService.saveMemberships(memberships);
+			saved = membershipService.save(memberships);
 			
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);
@@ -330,9 +332,9 @@ public class MemberController extends RestController {
 		
 		try {
 			
-			Membership membership = memberService.getMembership(id);
+			Membership membership = membershipService.getOne(id);
 			if(membership != null){
-				removed = memberService.removeMembership(membership);
+				removed = membershipService.remove(membership);
 			}
 			
 		} catch (DataException e) {

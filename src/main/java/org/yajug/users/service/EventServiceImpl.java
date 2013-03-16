@@ -14,9 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.imgscalr.Scalr;
 import org.yajug.users.domain.Event;
 import org.yajug.users.domain.Flyer;
+import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.utils.KeyValidator;
 import org.yajug.users.domain.utils.MappingHelper;
-import org.yajug.users.persistence.dao.EventMongoDao;
+import org.yajug.users.persistence.dao.EventDao;
 import org.yajug.users.persistence.dao.MemberDao;
 
 import com.google.common.base.Function;
@@ -26,15 +27,27 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Implementation of the {@link MemberService} that use JPA to persist data.
+ * Implementation of the {@link EventService} API that delegates
+ * persistence calls to DAOs.
  * 
  * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
  */
 @Singleton
 public class EventServiceImpl implements EventService {
 
-	@Inject private EventMongoDao eventMongoDao;
-	@Inject private MemberDao memberMongoDao;
+	/**
+	 * To manage the {@link Event} related data against the store.
+	 */
+	@Inject private EventDao eventDao;
+	
+	/**
+	 * To manage the {@link Membership} related data against the store.
+	 */
+	@Inject private MemberDao memberDao;
+	
+	/**
+	 * Helps you to map/extract some fields
+	 */
 	@Inject private MappingHelper mappingHelper;
 	
 	/**
@@ -42,7 +55,7 @@ public class EventServiceImpl implements EventService {
 	 */
 	@Override
 	public Collection<Event> getAll() throws DataException {
-		Collection<Event> events = eventMongoDao.getAll();
+		Collection<Event> events = eventDao.getAll();
 		return Collections2.transform(events, new Function<Event, Event>(){
 			@Override public Event apply(Event input) {
 				return loadParticipants(input);
@@ -58,7 +71,7 @@ public class EventServiceImpl implements EventService {
 		if (!KeyValidator.validate(key)) {
 			throw new ValidationException("Unable to retrieve an event from a wrong id");
 		}
-		return loadParticipants(eventMongoDao.getOne(key));
+		return loadParticipants(eventDao.getOne(key));
 	}
 	
 	/**
@@ -71,11 +84,11 @@ public class EventServiceImpl implements EventService {
 	private Event loadParticipants(Event event){
 		if(event.getParticipants() != null && event.getParticipants().size() > 0){
 			Set<String> participantKeys = mappingHelper.extractKeys(event.getParticipants());
-			event.setParticipants(memberMongoDao.getAllIn(participantKeys));
+			event.setParticipants(memberDao.getAllIn(participantKeys));
 		}
 		if(event.getRegistrants() != null && event.getRegistrants().size() > 0){
 			Set<String> registrantKeys = mappingHelper.extractKeys(event.getRegistrants());
-			event.setRegistrants(memberMongoDao.getAllIn(registrantKeys));
+			event.setRegistrants(memberDao.getAllIn(registrantKeys));
 		}
 		return event;
 	}
@@ -110,12 +123,12 @@ public class EventServiceImpl implements EventService {
 		int saved = 0;
 		for (Event event : events) {
 			if(event != null){
-				if(eventMongoDao.isNew(event)){
-					if(eventMongoDao.insert(event)){
+				if (KeyValidator.validate(event.getKey())){
+					if(eventDao.update(event)){
 						saved++;
 					}
-				} else if (KeyValidator.validate(event.getKey())){
-					if(eventMongoDao.update(event)){
+				} else {
+					if(eventDao.insert(event)){
 						saved++;
 					}
 				}
@@ -134,7 +147,7 @@ public class EventServiceImpl implements EventService {
 			throw new ValidationException("Trying to remove a null or non-identified event.");
 		}
 		
-		return eventMongoDao.remove(event);
+		return eventDao.remove(event);
 	}
 
 	/**
@@ -154,7 +167,7 @@ public class EventServiceImpl implements EventService {
 		try {
 			//save base flyer to format
 			BufferedImage img = ImageIO.read(input);
-			saved = ImageIO.write(img, Flyer.TYPE, flyer.getFile());
+			saved = ImageIO.write(img, Flyer.FORMAT, flyer.getFile());
 			
 			//and creates the thumbnail
 			BufferedImage thumbnail = Scalr.resize(
@@ -165,7 +178,7 @@ public class EventServiceImpl implements EventService {
 					256, 
 					Scalr.OP_ANTIALIAS
 				);
-			saved = saved && ImageIO.write(thumbnail, Flyer.TYPE, flyer.getThumbnail().getFile());
+			saved = saved && ImageIO.write(thumbnail, Flyer.FORMAT, flyer.getThumbnail().getFile());
 			
 		} catch (IOException e) {
 			throw new DataException("An error occured while saving the flyer", e);
