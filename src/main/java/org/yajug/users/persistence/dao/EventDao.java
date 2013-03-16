@@ -23,7 +23,7 @@ public interface EventDao {
 	 * @return the event instance or null if not found
 	 */
 	Event getOne(String key);
-
+	
 	/**
 	 * Insert an {@link Event} to the store
 	 * @param event the instance to insert, if the insertion is successful the key is set 

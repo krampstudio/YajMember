@@ -75,4 +75,8 @@ public class DateSerializer implements JsonSerializer<Date>, JsonDeserializer<Da
 			return date;
 		}
 	}
+	
+	public SimpleDateFormat getFormatter() {
+		return formatter;
+	}
 }
