@@ -67,11 +67,13 @@ public class EventController extends RestController {
 	/** The service instance that manages members */
 	@Inject private MemberService memberService;
 	
+	/** Helps you to parse and import event's registrants */
 	@Inject private MemberImportHelper memberImportHelper;
 	
 	/** Enables you to access the current servlet context within an action (it's thread safe) */
 	@Context private ServletContext servletContext;
 	
+	/** The path where the flyers are saved */
 	@Inject @Named("flyer.path") private String flyerPath;
 	
 	/**
@@ -79,7 +81,6 @@ public class EventController extends RestController {
 	 * 
 	 * Example:<br>
 	 * {@code curl -i -H "Accept: application/json" http://localhost:8000/YajMember/api/event/list?current=true}
-	 * 
 	 * 
 	 * @param current if true we load the events of the current year
 	 * @param year if current is false, it defines which year we load the events for
@@ -131,7 +132,12 @@ public class EventController extends RestController {
 	}
 	
 	/**
-	 * Get the list of years where there was events. The current year is always present.
+	 * Get the list of years where there was events. 
+	 * The current year is always present.<br>
+	 * 
+	 * Example:<br>
+	 * {@code curl -i -H "Accept: application/json" http://localhost:8000/YajMember/api/event/getYears}
+	 * 
 	 * @return a JSON representation of the list.
 	 */
 	@GET
@@ -278,8 +284,8 @@ public class EventController extends RestController {
 	 * Update the event flyer's file. The method handles an HTTP file upload.
 	 * 
 	 * @param stream uploaded file data
-	 * @param contentDisposition file upload meta
-	 * @param bodyPart file upload meta
+	 * @param contentDisposition uploaded file meta
+	 * @param bodyPart uploaded file meta
 	 * @param id the event identifier the flyer is linked to
 	 * @return  a JSON object that contains the 'saved' property
 	 */
@@ -328,13 +334,17 @@ public class EventController extends RestController {
 	}
 	
 	/**
-	 * Removes a flyer 
+	 * Removes a flyer.<br>
+	 * 
+	 * Example:<br>
+	 * {@code curl -i -H "Accept: application/json" -X DELETE  http://localhost:8000/YajMember/api/event/removeFlyer/1}
 	 * 
 	 * @param id the event identifier the flyer belongs to
 	 * @return  a JSON object that contains the 'removed' property
 	 */
 	@DELETE
 	@Path("/removeFlyer/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
 	public String removeFlyer(@PathParam("id") String id){
 		JsonObject response = new JsonObject();
 		boolean removed = false;
@@ -356,7 +366,7 @@ public class EventController extends RestController {
 	}
 	
 	/**
-	 * Update an the participants of an event<br>
+	 * Update an the participants of an event.<br>
 	 * 
 	 * Example:<br>
 	 * {@code curl -i -H "Accept: application/json" -X POST -d "registered=[1,...]&participant=[2,...]"  http://localhost:8000/YajMember/api/event/updateParticipant/12}
@@ -411,6 +421,19 @@ public class EventController extends RestController {
 		return serializer.get().toJson(response);
 	}
 	
+	/**
+	 * Import registrant from a CSV file.
+	 * 
+	 * @param stream  uploaded file data.
+	 * @param contentDisposition  uploaded file meta
+	 * @param bodyPart uploaded file meta
+	 * @param ignoreHeader option to ignore the 1st line of the file, true by default
+	 * @param delimiter the CSV delimiter, <i>,</i> by default
+	 * @param wrapper the CSV field wrapper, <i>"</i>  by default
+	 * @param order a JSON encoded array of the fields to import, in the same order than the file columns
+	 * @param id the event id
+	 * @return a JSON object that contains the status of the import
+	 */
 	@POST
 	@Path("importRegistrants/{id}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)

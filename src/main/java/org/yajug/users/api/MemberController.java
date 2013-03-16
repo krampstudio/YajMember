@@ -1,8 +1,5 @@
 package org.yajug.users.api;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yajug.users.domain.Member;
-import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.utils.MemberComparator;
 import org.yajug.users.service.DataException;
 import org.yajug.users.service.MemberService;
@@ -32,7 +28,6 @@ import org.yajug.users.vo.GridVo;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 
 /**
@@ -188,37 +183,6 @@ public class MemberController extends RestController {
 	}
 	
 	/**
-	 * Get the {@link Membership}s of a {@link Member} from it's identifier 
-	 * 
-	 * @param id the {@link Member} id : {@link Member#getKey()}
-	 * @return a JSON representation of the {@link Membership}s 
-	 */
-	@GET
-	@Path("getMemberships")
-	@Produces({MediaType.APPLICATION_JSON})
-	public String getMemberships(@QueryParam("id") String id){
-		String response = "";
-		
-		try {
-			
-			if(StringUtils.isBlank(id)){
-				throw new DataException("Unable to retrieve member from a wrong id");
-			}
-			Collection<Membership> memberships = new ArrayList<>();
-			Member member = memberService.getOne(id);
-			if(member != null){
-				memberships = membershipService.getAllByMember(member);
-			}
-			response = serializer.get().toJson(memberships);
-			
-		} catch (DataException e) {
-			logger.error(e.getLocalizedMessage(), e);
-			response = serializeException(e);
-		} 
-		return response;
-	}
-	
-	/**
 	 * Insert a {@link Member}
 	 * @param member the JSON representation of the {@link Member} to insert
 	 * @return a JSON response : {@code {saved: true|false}
@@ -268,33 +232,6 @@ public class MemberController extends RestController {
 		return serializer.get().toJson(response);
 	}
 	
-	@POST
-	@Path("updateMemberships/{id}")
-	@Produces({MediaType.APPLICATION_JSON})
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public String updateMemberships(@FormParam("memberships") String data, @PathParam("id") String id) {
-		
-		JsonObject response = new JsonObject();
-		boolean saved = false;
-		
-		try {
-			if(StringUtils.isBlank(id)){
-				throw new DataException("Unable to retrieve member from a wrong id");
-			}
-			Type listType = new TypeToken<ArrayList<Membership>>() {}.getType();
-			List<Membership> memberships = serializer.get().fromJson(data, listType);
-			
-			saved = membershipService.save(memberships);
-			
-		} catch (DataException e) {
-			logger.error(e.getLocalizedMessage(), e);
-			response.addProperty("error", e.getLocalizedMessage());
-		} 
-		response.addProperty("saved", saved);
-		
-		return serializer.get().toJson(response);
-	}
-	
 	
 	@DELETE
 	@Path("remove/{id}")
@@ -322,28 +259,4 @@ public class MemberController extends RestController {
 			
 		return serializer.get().toJson(response);
 	}
-	
-	@DELETE
-	@Path("removeMembership/{id}")
-	@Produces({MediaType.APPLICATION_JSON})
-	public String removeMembership(@PathParam("id") String id){
-		JsonObject response = new JsonObject();
-		boolean removed = false;
-		
-		try {
-			
-			Membership membership = membershipService.getOne(id);
-			if(membership != null){
-				removed = membershipService.remove(membership);
-			}
-			
-		} catch (DataException e) {
-			logger.error(e.getLocalizedMessage(), e);
-			response.addProperty("error", e.getLocalizedMessage());
-		} 
-		response.addProperty("removed", removed);
-			
-		return serializer.get().toJson(response);
-	}
-
 }

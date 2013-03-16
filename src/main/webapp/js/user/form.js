@@ -124,7 +124,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				
 				$.ajax({
 					type		: 'POST',
-					url			: 'api/member/updateMemberships/'+memberId,
+					url			: 'api/membership/save',
 					contentType	: 'application/x-www-form-urlencoded',
 					dataType	: 'json',
 					data		: {
@@ -312,10 +312,10 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 				
 				$.ajax({
 					type		: 'GET',
-					url			: 'api/member/getMemberships',
+					url			: 'api/membership/get',
 					dataType	: 'json',
 					data		: {
-						id : memberId
+						member : memberId
 					}
 				}).done(function(data) {	
 					var i = 0;
@@ -461,7 +461,7 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 			if(membershipId){
 				$.ajax({
 					type		: 'DELETE',
-					url			: 'api/member/removeMembership/'+membershipId,
+					url			: 'api/membership/remove/'+membershipId,
 					dataType	: 'json'
 				}).done(function(data) {
 					if(!data.removed || data.error){

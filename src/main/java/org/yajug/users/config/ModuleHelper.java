@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.yajug.users.api.EventController;
 import org.yajug.users.api.MemberController;
+import org.yajug.users.api.MembershipController;
 import org.yajug.users.persistence.dao.EventDao;
 import org.yajug.users.persistence.dao.EventMongoDao;
 import org.yajug.users.persistence.dao.MemberDao;
@@ -53,6 +54,7 @@ public class ModuleHelper {
 		
 		//bind controllers
 		binder.bind(MemberController.class);
+		binder.bind(MembershipController.class);
 		binder.bind(EventController.class);
         
 		//biond services
