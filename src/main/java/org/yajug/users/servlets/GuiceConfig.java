@@ -2,13 +2,7 @@ package org.yajug.users.servlets;
 
 import java.util.Properties;
 
-import org.yajug.users.api.EventController;
-import org.yajug.users.api.MemberController;
 import org.yajug.users.config.ModuleHelper;
-import org.yajug.users.service.EventService;
-import org.yajug.users.service.EventServiceImpl;
-import org.yajug.users.service.MemberService;
-import org.yajug.users.service.MemberServiceImpl;
 import org.yajug.users.servlets.auth.AuthenticationFilter;
 import org.yajug.users.servlets.auth.GoogleOauthCallbackServlet;
 import org.yajug.users.servlets.auth.GoogleOauthServlet;
@@ -48,12 +42,7 @@ public class GuiceConfig extends GuiceServletContextListener {
 	         protected void configureServlets() {
 				
 				ModuleHelper.bindProperties(binder());
-				
-	            bind(MemberController.class);
-	            bind(EventController.class);
-	            
-	            bind(MemberService.class).to(MemberServiceImpl.class);
-	            bind(EventService.class).to(EventServiceImpl.class);
+				ModuleHelper.bindApis(binder());
 	            
 	            if(authEnabled){
 	            
