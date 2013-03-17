@@ -2,7 +2,9 @@
  * Manage event's Form UI and IO
  * @module event/form
  */
-define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], function($, MultiForm, notify, store){
+define(
+	['jquery', 'event/controller', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], 
+	function($, EventController, MultiForm, notify, store){
 	
 	'use strict';
 	
@@ -66,24 +68,8 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 			$form.bind('submit', function(e){
 				e.preventDefault();
 				
-				var udpate = $('#key', $(this)).val().length > 0;
+				EventController.save(self.serializeEvent($(this)));
 						
-				$.ajax({
-					type		: (udpate) ? 'POST' : 'PUT',
-					url			: (udpate) ? 'api/event/update' : 'api/event/add',
-					contentType	: 'application/x-www-form-urlencoded',
-					dataType	: 'json',
-					data		: {
-						event : JSON.stringify(self.serializeEvent($(this)))
-					}
-				}).done(function(data) {
-					if(!data.saved || data.error){
-						$.error("Error : " + data.error ? data.error : "unknown");
-					} else {
-						notify('success', 'Saved');
-					}
-				});
-				
 				return false;
 			});
 		},
@@ -267,9 +253,6 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 				//clean up 
 				$("#postImportFrame", $form).remove();
 				
-				console.log($importOptsOrder.sortable("toArray"))
-				console.log(JSON.stringify($importOptsOrder.sortable("toArray")))
-				
 				//set the order values to the hidden fields
 				$("input[name='reg-import-opts-order']", $form).val(
 						JSON.stringify($importOptsOrder.sortable("toArray"))
@@ -404,43 +387,30 @@ define(['jquery', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], fun
 		loadEvent : function(eventId, callback){
 			var self	= this; 
 			
-			if(eventId){
-				$.ajax({
-					type		: 'GET',
-					url			: 'api/event/getOne',
-					dataType	: 'json',
-					data		: {
-						id : eventId
-					}
-				}).done(function(data) {	
-					if(!data || data.error){
-						$.error("Error : " + (data.error ? data.error : "unknown"));
-					} else {
-						
-						$(':input', self.getForm('infos')).each(function(){
-							if(data[$(this).attr('id')]){
-								$(this).val(data[$(this).attr('id')]);
-							}
-						});
-						if(data.date){
-							$('#current-flyer',  self.getForm('flyer')).attr('src', 'img/events/event-'+data.date.replace(/\-/g,'')+'-small.png');
-						}
-						if(data.description){
-							$('#description', self.getForm('infos')).htmlarea('html', data.description.replace(/\\n/g, '<br />'));
-						}
-						$('#date', self.getForm('infos')).trigger('change');
-						if(data.registrants){
-							self.addParticipant(data.registrants, 'registrant');
-						}
-						if(data.participants){
-							self.addParticipant(data.participants, 'participant');
-						}
-						if(typeof callback === 'function'){
-							callback();
-						}
+			EventController.getOne(eventId, function(event){
+				$(':input', self.getForm('infos')).each(function(){
+					if(event[$(this).attr('id')]){
+						$(this).val(event[$(this).attr('id')]);
 					}
 				});
-			}
+				if(event.date){
+					$('#current-flyer',  self.getForm('flyer')).attr('src', 'img/events/event-'+event.date.replace(/\-/g,'')+'-small.png');
+				}
+				if(event.description){
+					$('#description', self.getForm('infos')).htmlarea('html', event.description.replace(/\\n/g, '<br />'));
+				}
+				$('#date', self.getForm('infos')).trigger('change');
+				if(event.registrants){
+					self.addParticipant(event.registrants, 'registrant');
+				}
+				if(event.participants){
+					self.addParticipant(event.participants, 'participant');
+				}
+				
+				if(typeof callback === 'function'){
+					callback();
+				}
+			});
 		},
 		
 		/**

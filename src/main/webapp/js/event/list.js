@@ -2,7 +2,7 @@
  * Manage event's list UI and IO
  * @module event/list
  */
-define(['jquery', 'store', 'notify'], function($, store, notify){
+define(['jquery', 'event/controller', 'store', 'notify'], function($, EventController, store, notify){
 	
 	'use strict';
 	
@@ -20,68 +20,41 @@ define(['jquery', 'store', 'notify'], function($, store, notify){
 			var self = this;
 			
 			//load the years list
-			$.ajax({
-				type		: 'GET',
-				url			: 'api/event/getYears',
-				dataType	: 'json'
-			}).done(function(data) {	
-				if(!data || data.error || data.length === 0){
-					$.error("Error : " + (data.error ? data.error : "unknown"));
-				} else {
+			EventController.getYears(function(years){
+				$('#events').empty();
+				
+				//create the HTML structure for the years accordion
+				var template = $('#events-acc-template');
+				$.tmpl(template, {years: years}).appendTo('#events');
+				
+				//set up the accordion
+				$('#events').accordion({
+					active: false,
+					collapsible: true,
+					clearStyle : true,
 					
-					$('#events').empty();
-					
-					//create the HTML structure for the years accordion
-					var template = $('#events-acc-template');
-					$.tmpl(template, {years: data}).appendTo('#events');
-					
-					//set up the accordion
-					$('#events').accordion({
-						active: false,
-						collapsible: true,
-						clearStyle : true,
-						//load the event list by activating a 
-						changestart: function(event, ui){
-							var $eventList = ui.newContent.find('ul');
-							$eventList.find('li').remove('li');
-							self.loadEvents(
-								ui.newContent.find('ul'), 
-								ui.newHeader.find('a').attr('href').replace('#', ''),
-								function(){
-									self._setUpEventsControls($eventList);
-								}
-							);
-							return false;
-						}
-					});
-				}
-			});
-		},
-		
-		/**
-		 * Load a list of events of a year onto a container 
-		 * @memberOf module:event/list
-		 * @param {Object} $container jQuery element of the events container (an ul element)
-		 * @param {Number} year the year to retrieve the events for
-		 * @param {Function} [callback] a callback executed once the events are loaded
-		 */
-		loadEvents: function($container, year, callback){
-			//load events
-			$.ajax({
-				type		: 'GET',
-				url			: 'api/event/list',
-				dataType	: 'json',
-				data		: {year : year}
-			}).done(function(data) {	
-				if(!data || data.error){
-					$.error("Error : " + (data.error ? data.error : "unknown"));
-				} else {
-					var template = $('#event-item-template');
-					$container.append($.tmpl(template, data));
-				}
-				if(typeof callback === 'function'){
-					callback();
-				}
+					//load the events list by activating a pad 
+					changestart: function(event, ui){
+						
+						var $container = ui.newContent.find('ul'),
+							year = ui.newHeader.find('a').attr('href').replace('#', '');
+						
+						$container.find('li').remove('li');
+						
+						//load events
+						EventController.getAll(year, function(events){
+							
+							//build the event list
+							var template = $('#event-item-template');
+							$container.append($.tmpl(template, events));
+							
+							//set up the widgets 
+							self._setUpEventsControls($container);
+						});
+						
+						return false;
+					}
+				});
 			});
 		},
 		
@@ -92,7 +65,7 @@ define(['jquery', 'store', 'notify'], function($, store, notify){
 		 * @param {Object} $container jQuery element of the events container (an ul element)
 		 */
 		_setUpEventsControls: function($container){
-			var self = this;
+	
 			var getEventId = function($elt){
 				return $elt.parents('li.event').attr('id').replace('event-', '');
 			};
@@ -115,29 +88,8 @@ define(['jquery', 'store', 'notify'], function($, store, notify){
 			$('.event-deletor', $container)
 				.button({icons: { primary: "icon-evt-delete" }})
 				.click(function(){
-					var eventId = getEventId($(this));
-					notify('confirm', 'You really want to remove this event?', function(){
-						self._rmEvent(eventId);
-					});
+					EventController.remove(getEventId($(this)));
 				});
-		},
-		
-		/**
-		 * Removes an event
-		 * @private
-		 * @memberOf module:event/list
-		 * @param {Number} eventId the id of the event to remove
-		 */
-		_rmEvent: function(eventId){
-			$.ajax({
-				type		: 'DELETE',
-				url			: 'api/event/remove/'+eventId,
-				dataType	: 'json'
-			}).done(function(data) {	
-				if(data && data.removed === true){
-					notify('success', 'Event removed');
-				}
-			});
 		}
 	};
 	
