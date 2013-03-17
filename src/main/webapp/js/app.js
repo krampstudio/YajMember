@@ -26,14 +26,14 @@ require(['config/app'], function(){
 					//Do the initializations by tab, once loaded
 					switch(ui.index) {
 						case 0 : 
-							requirejs(['user/list'], function(list) {
+							requirejs(['member/list'], function(memberList) {
 								//build the member list
-								list.build();
+								memberList.build();
 							});
 							break;
 						case 1:
-							requirejs(['user/form'], function(userForm) {
-								userForm.initFormControls(function(){
+							requirejs(['member/form'], function(memberForm) {
+								memberForm.initFormControls(function(){
 									if(!initialized.member){
 										if(store.isset('member')){
 											userForm.loadMember(store.get('member'), function(){
@@ -70,7 +70,7 @@ require(['config/app'], function(){
 	
 					//User
 					if(initialized.member){
-						requirejs(['user/form'], function(userForm) {
+						requirejs(['member/form'], function(userForm) {
 							if(ui.index === 1){
 								if(store.isset('member')){
 									//load the member
@@ -88,7 +88,7 @@ require(['config/app'], function(){
 							}
 						});
 						if(ui.index === 0){
-							requirejs(['user/list'], function(userList) {
+							requirejs(['member/list'], function(userList) {
 								userList.reload();
 							});
 						}
@@ -119,6 +119,6 @@ require(['config/app'], function(){
 				}
 			});
 		});
-		
 	});
+	
 });
