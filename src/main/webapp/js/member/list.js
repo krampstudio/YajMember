@@ -1,25 +1,29 @@
-/**
- * Manage the users list widget
- * @module user/list
- */
-define( ['jquery', 'store', 'notify', 'gridy'], function($, store, notify){
+define( ['jquery', 'store', 'notify', 'eventbus', 'gridy'], function($, store, notify, EventBus){
 	
 	'use strict';
 	
 	/**
-	 * @exports user/list
+	 * Creates a grid like list widget for the members
+	 * @exports member/list
 	 */
-	return {
+	var MemberList = {
+			
+		_$container : $('#users'),
 		
 		/**
-		 * Build the list
-		 * @memberOf user/list
+		 * Initialize the grid
 		 */
-		build: function(){
+		setUp: function(){
 			
 			var self = this;
 			
-			$("#users").gridy({
+			//listen for reload event to reload the grid
+			EventBus.subscribe('memberlist.reload',function(){
+				self._$container.gridy('reload');
+			});
+			
+			//build the grid
+			this._$container.gridy({
 				url		: 'api/member/list',
 				dataType	: 'jsonp',
 				evenOdd		: true,
@@ -97,14 +101,8 @@ define( ['jquery', 'store', 'notify', 'gridy'], function($, store, notify){
 					}
 				});
 			}
-		},
-		
-		/**
-		 * Reload the list
-		 * @memberOf user/list
-		 */
-		reload : function(){
-			$("#users").gridy('reload');
 		}
 	};
+	
+	return MemberList;
 });

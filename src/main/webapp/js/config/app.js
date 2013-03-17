@@ -14,7 +14,8 @@ requirejs.config({
 		'multiform'		: 'helpers/multiform',
 		'notify'		: 'helpers/notify',
 		'store'			: 'helpers/store',
-		'uri'			: 'helpers/uri'
+		'uri'			: 'helpers/uri',
+		'eventbus'		: 'helpers/eventbus'
 	},
 	//dependencies
 	shim: {

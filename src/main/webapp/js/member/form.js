@@ -2,7 +2,7 @@
  * Manage user's Form UI and IO
  * @module event/form
  */
-define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, MultiForm, notify, store){
+define(['jquery', 'multiform', 'notify', 'store', 'eventbus', 'modernizr'], function($, MultiForm, notify, store, EventBus){
 	
 	'use strict';
 
@@ -28,6 +28,14 @@ define(['jquery', 'multiform', 'notify', 'store', 'modernizr'], function($, Mult
 		 */
 		_formNames : ['details', 'membership'],
 		
+		setUp: function(){
+			var self = this;
+			EventBus.subscribe('memberform.cleanup', function(){
+				self.clearForms(function(){
+					store.rm('member');
+				});
+			});
+		},
 		
 		/**
 		 * Initialize the controls for the Details sub form.

@@ -3,8 +3,8 @@ require(['config/app'], function(){
 	
 	'use strict';
 
-	require(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store'],  
-		function($, ui, tmpl, notify, store){
+	require(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store', 'eventbus'],  
+		function($, ui, tmpl, notify, store, EventBus){
 	
 		$(function(){
 			
@@ -27,17 +27,17 @@ require(['config/app'], function(){
 					switch(ui.index) {
 						case 0 : 
 							requirejs(['member/list'], function(memberList) {
-								//build the member list
-								memberList.build();
+								memberList.setUp();
 							});
 							break;
 						case 1:
 							requirejs(['member/form'], function(memberForm) {
+								memberForm.setUp();
 								memberForm.initFormControls(function(){
 									if(!initialized.member){
 										if(store.isset('member')){
-											userForm.loadMember(store.get('member'), function(){
-												userForm.loadMemberships(store.get('member'));
+											memberForm.loadMember(store.get('member'), function(){
+												memberForm.loadMemberships(store.get('member'));
 											});	
 										}
 										initialized.member = true;
@@ -67,37 +67,31 @@ require(['config/app'], function(){
 			
 				//do some clean and load at each tab opening
 				show : function(event, ui) {
+					
+					if(ui.index === 0){
+						EventBus.publish('memberlist.reload', [ 't2' ]);
+					}
 	
+					if(initialized.member !== undefined && ui.index !== 0){
+						EventBus.publish('memberform.cleanup');
+					}
+					
 					//User
 					if(initialized.member){
-						requirejs(['member/form'], function(userForm) {
+						requirejs(['member/form'], function(memberForm) {
 							if(ui.index === 1){
 								if(store.isset('member')){
 									//load the member
-									userForm.loadMember(store.get('member'), function(){
-										userForm.loadMemberships(store.get('member'));
+									memberForm.loadMember(store.get('member'), function(){
+										memberForm.loadMemberships(store.get('member'));
 									});		
 								} else {
-									userForm._buildMembershipTabs();
+									memberForm._buildMembershipTabs();
 								}
-							} else {
-								//clean up
-								userForm.clearForms(function(){
-									store.rm('member');
-								});
-							}
+							} 
 						});
-						if(ui.index === 0){
-							requirejs(['member/list'], function(userList) {
-								userList.reload();
-							});
-						}
+						
 					}
-					
-					//rename the tab if we are add or editing
-					$('#actions ul:first li:nth-child(2) a').text(
-						(ui.index === 1 && store.isset('member')) ? 'Edit member' : 'Add a member'
-					);
 					
 					//Event
 					if(initialized.event){
@@ -112,6 +106,12 @@ require(['config/app'], function(){
 							}
 						});
 					}
+					
+					//rename the tab if we are add or editing
+					$('#actions ul:first li:nth-child(2) a').text(
+						(ui.index === 1 && store.isset('member')) ? 'Edit member' : 'Add a member'
+					);
+					
 					//rename the tab if we are add or editing
 					$('#actions ul:first li:nth-child(4) a').text(
 						(ui.index === 3 && store.isset('event')) ? 'Edit event' : 'Add an event'
