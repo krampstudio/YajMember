@@ -3,8 +3,8 @@
  * @module event/form
  */
 define(
-	['jquery', 'event/controller', 'multiform', 'notify', 'store', 'jhtmlarea', 'modernizr'], 
-	function($, EventController, MultiForm, notify, store){
+	['jquery', 'controller/event', 'multiform', 'notify', 'store', 'eventbus', 'jhtmlarea', 'modernizr'], 
+	function($, EventController, MultiForm, notify, store, EventBus){
 	
 	'use strict';
 	
@@ -29,6 +29,15 @@ define(
 		 * @see module:form#_id
 		 */
 		_formNames	: ['infos', 'flyer', 'participant'],
+		
+		setUp: function(){
+			var self = this;
+			EventBus.subscribe('eventform.cleanup', function(){
+				self.clearForms(function(){
+					store.rm('event');
+				});
+			});
+		},
 		
 		/**
 		 * Initialize the controls for the Infos form.

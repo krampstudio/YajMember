@@ -52,6 +52,7 @@ require(['config/app'], function(){
 							break;
 						case 3:
 							requirejs(['event/form'], function(eventForm) {
+								eventForm.setUp();
 								eventForm.initFormControls(function(){
 									if(!initialized.event){
 										if( store.isset('event')){
@@ -68,43 +69,36 @@ require(['config/app'], function(){
 				//do some clean and load at each tab opening
 				show : function(event, ui) {
 					
-					if(ui.index === 0){
-						EventBus.publish('memberlist.reload', [ 't2' ]);
-					}
-	
-					if(initialized.member !== undefined && ui.index !== 0){
-						EventBus.publish('memberform.cleanup');
-					}
 					
 					//User
-					if(initialized.member){
-						requirejs(['member/form'], function(memberForm) {
-							if(ui.index === 1){
-								if(store.isset('member')){
-									//load the member
-									memberForm.loadMember(store.get('member'), function(){
-										memberForm.loadMemberships(store.get('member'));
-									});		
-								} else {
-									memberForm._buildMembershipTabs();
-								}
-							} 
-						});
+					if(ui.index === 0){
+						EventBus.publish('memberlist.reload', [ 't2' ]);
+					} 
+					if(ui.index === 1 && initialized.member === true){
 						
+						EventBus.publish('memberform.cleanup');
+						
+						requirejs(['member/form'], function(memberForm) {
+							if(store.isset('member')){
+								//load the member
+								memberForm.loadMember(store.get('member'), function(){
+									memberForm.loadMemberships(store.get('member'));
+								});		
+							} else {
+								memberForm._buildMembershipTabs();
+							}
+						});
 					}
 					
 					//Event
-					if(initialized.event){
-						requirejs(['event/form'], function(eventForm) {
-							if(ui.index === 3 && store.isset('event')){
+					if(ui.index === 3 && initialized.event === true){
+						EventBus.publish('eventform.cleanup');
+						
+						if(store.isset('event')){
+							requirejs(['event/form'], function(eventForm) {
 								eventForm.loadEvent(store.get('event'));
-							} else {
-								//clean up
-								eventForm.clearForms(function(){
-									store.rm('event');
-								});
-							}
-						});
+							});
+						}
 					}
 					
 					//rename the tab if we are add or editing

@@ -1,4 +1,6 @@
-define( ['jquery', 'store', 'notify', 'eventbus', 'gridy'], function($, store, notify, EventBus){
+define( 
+	['jquery', 'controller/member', 'store', 'notify', 'eventbus', 'gridy'], 
+	function($, MemberController, store, notify, EventBus){
 	
 	'use strict';
 	
@@ -51,13 +53,9 @@ define( ['jquery', 'store', 'notify', 'eventbus', 'gridy'], function($, store, n
 					$('.member-remove').click(function(event){
 						event.preventDefault();
 						
-						//extract the id and store it 
-						var id = $(this).attr('href').replace('#', '');
-						if(id){
-							notify('confirm', 'You really want to remove this member ?', function(){
-								self._rmMember(id);
-							});
-						}
+						MemberController.remove($(this).attr('href').replace('#', ''), function(){
+							self.reload();
+						});
 						return false;
 					});
 				},
@@ -75,32 +73,6 @@ define( ['jquery', 'store', 'notify', 'eventbus', 'gridy'], function($, store, n
 					{ name: 'Actions', width: 200 }
 				]
 			});
-		},
-		
-		/**
-		 * Removes a member
-		 * @private
-		 * @memberOf user/list
-		 * @params {Number} memberId - the identifier of the member to remove
-		 */
-		_rmMember: function(memberId){
-			var self = this;
-			
-			if(memberId){
-				$.ajax({
-					type		: 'DELETE',
-					url			: 'api/member/remove/'+memberId,
-					dataType	: 'json'
-				}).done(function(data) {
-					if(!data.removed || data.error){
-						$.error("Error : " + data.error ? data.error : "unknown");
-					} else {
-						store.rm(memberId);
-						self.reload();
-						notify('success', 'Removed');
-					}
-				});
-			}
 		}
 	};
 	

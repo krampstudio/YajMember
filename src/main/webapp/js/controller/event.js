@@ -4,7 +4,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 	
 	/**
 	 * Enables you to send and retrieve event's data from/to the server
-	 * @exports event/controller
+	 * @exports controller/event
 	 */
 	var EventController = {
 
@@ -57,7 +57,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		/**
 		 * Call the API to get an event
 		 * @param {String} key - the event identifier
-		 * @param {EventCallback} callback 
+		 * @param {EventCallback} callback - called with the retrieved event
 		 */
 		getOne : function(key, callback){
 			if(!key){
@@ -83,7 +83,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		/**
 		 * Call the API to save an event
 		 * @param {Object} event - the event to save, if it has no key attribute, it will be inserted
-		 * @param {BaseCallback}Â callback
+		 * @param {Function} callback - called if there was no errors
 		 */
 		save : function(event, callback){
 			if(!event){
@@ -129,6 +129,9 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 						if(!data.removed  || data.error){
 							$.error("Error : " + data.error ? data.error : "unknown");
 						} else {
+							if(store.get('event') === key){
+								store.rm('event');
+							}
 							notify('success', 'Event removed');
 							if(typeof callback === 'function'){
 								callback();

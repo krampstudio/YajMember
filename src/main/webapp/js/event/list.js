@@ -2,7 +2,7 @@
  * Manage event's list UI and IO
  * @module event/list
  */
-define(['jquery', 'event/controller', 'store', 'notify'], function($, EventController, store, notify){
+define(['jquery', 'controller/event', 'store', 'notify'], function($, EventController, store, notify){
 	
 	'use strict';
 	

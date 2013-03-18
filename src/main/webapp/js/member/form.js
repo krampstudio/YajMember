@@ -2,7 +2,9 @@
  * Manage user's Form UI and IO
  * @module event/form
  */
-define(['jquery', 'multiform', 'notify', 'store', 'eventbus', 'modernizr'], function($, MultiForm, notify, store, EventBus){
+define(
+	['jquery', 'multiform', 'controller/member', 'controller/membership', 'controller/event', 'notify', 'store', 'eventbus', 'modernizr'], 
+	function($, MultiForm, MemberController, MembershipController, EventController, notify, store, EventBus){
 	
 	'use strict';
 
@@ -51,24 +53,8 @@ define(['jquery', 'multiform', 'notify', 'store', 'eventbus', 'modernizr'], func
 			$form.submit(function(event){
 				event.preventDefault();
 				
-				var member = self.serializeMember($(this)),
-					udpate = (member.key && member.key.length > 0);
-						
-				$.ajax({
-					type		: (udpate) ? 'POST' : 'PUT',
-					url			: (udpate) ? 'api/member/update' : 'api/member/add',
-					contentType	: 'application/x-www-form-urlencoded',
-					dataType	: 'json',
-					data		: {
-						member : JSON.stringify(member)
-					}
-				}).done(function(data) {
-					if(!data.saved || data.error){
-						$.error("Error : " + data.error ? data.error : "unknown");
-					} else {
-						notify('success', 'Saved');
-					}
-				});
+				MemberController.save(self.serializeMember($(this)));
+				
 				return false;
 			});
 		},
@@ -130,23 +116,11 @@ define(['jquery', 'multiform', 'notify', 'store', 'eventbus', 'modernizr'], func
 					return;
 				}
 				
-				$.ajax({
-					type		: 'POST',
-					url			: 'api/membership/save',
-					contentType	: 'application/x-www-form-urlencoded',
-					dataType	: 'json',
-					data		: {
-						memberships : JSON.stringify(self.serializeMemberships($form, memberId))
-					}
-				}).done(function(data) {
-					if(!data.saved || data.error){
-						$.error("Error : " + data.error ? data.error : "unknown");
-					} else {
-						notify('success', 'Saved');
-					}
-				});
+				MembershipController.save(self.serializeMemberships($form, memberId));
+				
 				return false;
 			});
+			
 			$form.submit(function(event){
 				event.preventDefault();
 				return false;
@@ -210,16 +184,11 @@ define(['jquery', 'multiform', 'notify', 'store', 'eventbus', 'modernizr'], func
 				}).click(function(event){
 					event.preventDefault();
 					
-					var id = $(this).attr('href').replace('#', '');
-					if(id){
-						notify('confirm', 'You really want to remove this membership ?', function(){
-							self._rmMembership(id, function(){
-								$container.remove();
-								$("#memberships > ul li a[href='#membership-form-"+membership.year+"']", $form).remove();
-								self._buildMembershipTabs();
-							});
-						});
-					}
+					MembershipController.remove($(this).attr('href').replace('#', ''), function(){
+						$container.remove();
+						$("#memberships > ul li a[href='#membership-form-"+membership.year+"']", $form).remove();
+						self._buildMembershipTabs();
+					});
 					return false;
 				});
 				
@@ -282,26 +251,15 @@ define(['jquery', 'multiform', 'notify', 'store', 'eventbus', 'modernizr'], func
 			if(memberId){
 				self.toggleForm();
 				
-				$.ajax({
-					type		: 'GET',
-					url			: 'api/member/getOne',
-					dataType	: 'json',
-					data		: {
-						id : memberId
-					}
-				}).done(function(data) {	
+				MemberController.getOne(memberId, function(member){
 					self.toggleForm();
-					if(!data || data.error){
-						$.error("Error : " + (data.error ? data.error : "unknown"));
-					} else {
-						$(':input', self.getForm('details')).each(function(){
-							if(data[$(this).attr('id')]){
-								$(this).val(data[$(this).attr('id')]);
-							}
-						});
-						if(typeof callback === 'function'){
-							callback();
+					$(':input', self.getForm('details')).each(function(){
+						if(member[$(this).attr('id')]){
+							$(this).val(member[$(this).attr('id')]);
 						}
+					});
+					if(typeof callback === 'function'){
+						callback();
 					}
 				});
 			}
@@ -318,33 +276,19 @@ define(['jquery', 'multiform', 'notify', 'store', 'eventbus', 'modernizr'], func
 			if(memberId){
 				self.toggleForm();
 				
-				$.ajax({
-					type		: 'GET',
-					url			: 'api/membership/get',
-					dataType	: 'json',
-					data		: {
-						member : memberId
-					}
-				}).done(function(data) {	
+				MembershipController.getByMember(memberId, function(memberships){
 					var i = 0;
-					
 					self.toggleForm();
-					if(!data || data.error){
-						$.error("Error : " + (data.error ? data.error : "unknown"));
-					} else {
-						
-						if(data.length > 0 ){
-							//build the form
-							for(i in data){
-								self._buildMembershipForm(data[i], function(){
-									self._buildMembershipTabs();
-								});
-							}
+					if(memberships){
+						//build the form
+						for(i in memberships){
+							self._buildMembershipForm(memberships[i], function(){
+								self._buildMembershipTabs();
+							});
 						}
-						
-						if(typeof callback === 'function'){
-							callback();
-						}
+					}
+					if(typeof callback === 'function'){
+						callback();
 					}
 				});
 			}
@@ -359,20 +303,11 @@ define(['jquery', 'multiform', 'notify', 'store', 'eventbus', 'modernizr'], func
 		loadEvents : function (year, callback){
 			
 			var selector = '#membership-' + year + '-event',
-				params = {year: year};
+				template = "<option value='${key}'>${date} - ${title}</option>";
 			
-			//load events
-			$.ajax({
-				type		: 'GET',
-				url			: 'api/event/list',
-				dataType	: 'json',
-				data		: params
-			}).done(function(data) {	
-				if(!data || data.error){
-					$.error("Error : " + (data.error ? data.error : "unknown"));
-				} else if(data.length){
-					var template = "<option value='${key}'>${date} - ${title}</option>";
-					$(selector).empty().append($.tmpl(template, data));
+			EventController.getAll(year, function(events){
+				if(events && $.isArray(events)){
+					$(selector).empty().append($.tmpl(template, events));
 				}
 				if(typeof callback === 'function'){
 					callback();
@@ -461,27 +396,6 @@ define(['jquery', 'multiform', 'notify', 'store', 'eventbus', 'modernizr'], func
 				}
 			}
 			return memberships;
-		},
-		
-		_rmMembership : function(membershipId, success){
-			var self = this;
-			
-			if(membershipId){
-				$.ajax({
-					type		: 'DELETE',
-					url			: 'api/membership/remove/'+membershipId,
-					dataType	: 'json'
-				}).done(function(data) {
-					if(!data.removed || data.error){
-						$.error("Error : " + data.error ? data.error : "unknown");
-					} else {
-						if(typeof success === 'function'){
-							success();
-						}
-						notify('success', 'Removed');
-					} 
-				});
-			}
 		},
 		
 		/**
