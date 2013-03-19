@@ -3,7 +3,7 @@
  * @module event/form
  */
 define(
-	['jquery', 'controller/event', 'multiform', 'notify', 'store', 'eventbus', 'jhtmlarea', 'modernizr'], 
+	['jquery', 'controller/event', 'multiform', 'notify', 'store', 'eventbus', 'jhtmlarea', 'modernizr', 'filesender'], 
 	function($, EventController, MultiForm, notify, store, EventBus){
 	
 	'use strict';
@@ -130,7 +130,19 @@ define(
 			$('.submiter', $form).click(function(e){
 				e.preventDefault();
 				
-				//clean up 
+				$form.sendfile({
+					url : 'api/event/flyer/'+self.getEventId(),
+					loaded : function(result){
+						if(result && result.saved === true){
+							$('#current-flyer').attr('src', result.thumb);
+							notify('success', 'Flyer uploaded');
+						} else {
+							notify('error', 'Flyer upload error');
+						}
+					}
+				});
+				
+				/*//clean up 
 				$("#postFlyerFrame", $form).remove();
 				
 				//we create an hidden frame as the action of the upload form (to prevent page reload)
@@ -159,7 +171,7 @@ define(
 						'target'	: 'postFlyerFrame'
 					})
 					.append($postFrame)
-					.submit();
+					.submit();*/
 				return false;
 			});
 		},

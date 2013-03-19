@@ -15,7 +15,8 @@ requirejs.config({
 		'notify'		: 'helpers/notify',
 		'store'			: 'helpers/store',
 		'uri'			: 'helpers/uri',
-		'eventbus'		: 'helpers/eventbus'
+		'eventbus'		: 'helpers/eventbus',
+		'filesender'	: 'ui/filesender'
 	},
 	//dependencies
 	shim: {
@@ -24,6 +25,7 @@ requirejs.config({
 	    'gridy'				: ['jquery', 'jquery-tmpl'],
 	    'jhtmlarea'			: ['jquery', 'jquery-ui'],
 	    'noty'			 	: ['jquery'],
-	    'notify'			: ['noty']
+	    'notify'			: ['noty'],
+	    'filesender'		: ['jquery']
 	}
 });
