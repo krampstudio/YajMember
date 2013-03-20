@@ -53,14 +53,6 @@ require(['config/app'], function(){
 						case 3:
 							requirejs(['event/form'], function(eventForm) {
 								eventForm.setUp();
-								eventForm.initFormControls(function(){
-									if(!initialized.event){
-										if( store.isset('event')){
-											eventForm.loadEvent(store.get('event'));
-										}
-										initialized.event = true;
-									}
-								});
 							});
 							break;
 					}
@@ -74,31 +66,29 @@ require(['config/app'], function(){
 					if(ui.index === 0){
 						EventBus.publish('memberlist.reload', [ 't2' ]);
 					} 
-					if(ui.index === 1 && initialized.member === true){
+					if(initialized.member === true){
 						
-						EventBus.publish('memberform.cleanup');
-						
-						requirejs(['member/form'], function(memberForm) {
-							if(store.isset('member')){
-								//load the member
-								memberForm.loadMember(store.get('member'), function(){
-									memberForm.loadMemberships(store.get('member'));
-								});		
-							} else {
-								memberForm._buildMembershipTabs();
-							}
-						});
+						if(ui.index === 1){
+							requirejs(['member/form'], function(memberForm) {
+								if(store.isset('member')){
+									//load the member
+									memberForm.loadMember(store.get('member'), function(){
+										memberForm.loadMemberships(store.get('member'));
+									});		
+								} else {
+									memberForm._buildMembershipTabs();
+								}
+							});
+						} else {
+							EventBus.publish('memberform.cleanup');
+						}
 					}
 					
 					//Event
-					if(ui.index === 3 && initialized.event === true){
+					if(ui.index === 3){
+						EventBus.publish('eventform.load');
+					} else {
 						EventBus.publish('eventform.cleanup');
-						
-						if(store.isset('event')){
-							requirejs(['event/form'], function(eventForm) {
-								eventForm.loadEvent(store.get('event'));
-							});
-						}
 					}
 					
 					//rename the tab if we are add or editing

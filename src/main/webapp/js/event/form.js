@@ -1,18 +1,14 @@
-/**
- * Manage event's Form UI and IO
- * @module event/form
- */
 define(
-	['jquery', 'controller/event', 'multiform', 'notify', 'store', 'eventbus', 'jhtmlarea', 'modernizr', 'filesender'], 
-	function($, EventController, MultiForm, notify, store, EventBus){
+	['jquery', 'controller/event', 'controller/flyer', 'multiform', 'notify', 'store', 'eventbus', 'jhtmlarea', 'modernizr', 'filesender'], 
+	function($, EventController, FlyerController, MultiForm, notify, store, EventBus){
 	
 	'use strict';
 	
 	/**
+	 * Manage event's Form UI and IO.
 	 * The EventForm extends from the Form object
-	 * @constructor
 	 * @see module:multiform 
-	 * @alias module:event/form
+	 * @exports event/form
 	 */
 	var EventForm = $.extend({}, MultiForm, {
 		
@@ -30,20 +26,38 @@ define(
 		 */
 		_formNames	: ['infos', 'flyer', 'participant'],
 		
+		/**
+		 * Initialize the form and the events
+		 */
 		setUp: function(){
 			var self = this;
+			
+			//to load an event
+			EventBus.subscribe('eventform.load', function(){
+				if(store.isset('event')){
+					self.loadEvent(store.get('event'));
+				};
+			});
+			
+			//to clear the form
 			EventBus.subscribe('eventform.cleanup', function(){
 				self.clearForms(function(){
 					store.rm('event');
 				});
 			});
+			
+			//initialize the controls
+			self.initFormControls(function(){
+				
+				//if there is a selected event, we load it
+				EventBus.publish('eventform.load');
+			});
 		},
 		
 		/**
-		 * Initialize the controls for the Infos form.
+		 * Initialize the controls for the Infos subform.
 		 * @see module:multiform#initFormControls
 		 * @private
-		 * @memberOf module:event/form
 		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_initInfosControls : function($form){
@@ -56,9 +70,9 @@ define(
 				});
 			}
 			
-			//TODO show on freshly added event.
 			$date.on('change', function(){
-				if(self.getEventId() !== undefined  && this.value && this.value.length === 10){
+				if(self.getEventId() !== undefined  
+						&& this.value && this.value.length === 10){
 					self.getForm('flyer').show();
 				} else {
 					self.getForm('flyer').hide();
@@ -75,11 +89,13 @@ define(
                 css : 'css/lib/jhtmlarea/jhtmlarea-editor.css'
 			});
 			
-			// on form submit
+			//save the event's info
 			$form.bind('submit', function(e){
 				e.preventDefault();
 				
-				EventController.save(self.serializeEvent($(this)));
+				EventController.save(self.serializeEvent($(this)), function(){
+					self.getForm('flyer').show();
+				});
 						
 				return false;
 			});
@@ -89,59 +105,70 @@ define(
 		 * Initialize the controls for the Flyer form.
 		 * @see module:multiform#initFormControls
 		 * @private
-		 * @memberOf module:event/form
 		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_initFlyerControls : function($form){
-			var self = this;
+			var self 					= this,
+				$currentFlyerContainer	= $('.current-flyer-field', $form),
+				$currentFlyer			= $('#current-flyer', $form),
+				
+				/**
+				 * Add a thumbnail of the flyer
+				 * @param {String} src - the thumbnail uri
+				 * @param {Boolean} bust - add a bust to miss the cache 
+				 */
+				addThumb = function(src, bust){
+					$currentFlyerContainer.show();
+					if(bust && bust === true){
+						src +=  (src.indexOf('?') > -1) ? '&' : '?';
+						src += 'bust=' + (new Date()).getTime();
+					}
+					$currentFlyer.attr('src', src);
+				},
+				
+				/**
+				 * Remove the flyer's thumbnail 
+				 */
+				rmThumb = function(){
+					$currentFlyerContainer.hide();
+					$currentFlyer.removeAttr('src');
+				};
+				
+			//preview display
+			if($currentFlyer.attr('src').length > 0){
+				$currentFlyerContainer.show();
+			} else {
+				$currentFlyerContainer.hide();
+			}
 			
+			//removes the flyer
 			$('#flyer-remover').button({
 				icons : { primary: "icon-delete" },
 				text : false
 			}).click(function(){
-				notify('confirm', 'You really want to remove this image ?', function(){
-					var eventId = self.getEventId();
-					if(eventId){
-						$.ajax({
-							type		: 'DELETE',
-							url			: 'api/event/removeFlyer/'+eventId,
-							dataType	: 'json'
-						}).done(function(data) {
-							if(!data.removed || data.error){
-								$.error("Error : " + data.error ? data.error : "unknown");
-							} else {
-								$('#current-flyer').removeAttr('src');
-								notify('success', 'Removed');
-							} 
-						});
-					} else {
-						$('#current-flyer').removeAttr('src');
-					}
-				});
+				FlyerController.remove(self.getEventId(), rmThumb);
 			});
 			
+			//view the flyer in an other window
 			$('#flyer-viewer').button({
 				icons : { primary: "icon-image" },
 				text : false
 			}).click(function(){
 				if($('#current-flyer')){
-					window.open($('#current-flyer').attr('src').replace('-small', ''));
+					window.open($currentFlyer.attr('src').replace('-small', ''));
 				}
 			});
 			
-			//TODO show the preview before the upload
-			
+			//save the flyer
 			$('.submiter', $form).click(function(e){
 				e.preventDefault();
 				
-				//post file form 
+				//we post the file
 				$form.sendfile({
 					url : 'api/event/flyer/'+self.getEventId(),
 					loaded : function(result){
 						if(result && result.saved === true){
-							
-							//TODO force cache reload
-							$('#current-flyer').attr('src', result.thumb);
+							addThumb(result.thumb, true);
 							notify('success', 'Flyer uploaded');
 						} else {
 							notify('error', 'Flyer upload error');
@@ -156,7 +183,6 @@ define(
 		 * Initialize the controls for the Participant form.
 		 * @see module:multiform#initFormControls
 		 * @private
-		 * @memberOf module:event/form
 		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_initParticipantControls : function($form){
@@ -180,7 +206,7 @@ define(
 				 * @param {String} key - the required member's identifier
 				 * @param {String} name - the required member's name
 				 */
-				addRegistrant			= function(key, name){
+				addRegistrant = function(key, name){
 					if(key && name){
 						var $item = $('<li></li>')
 							.addClass('ui-state-default')
@@ -284,12 +310,12 @@ define(
 								}
 							});
 							if(stats.exists){
-								info += stats.exists + ' existing members.\n'
+								infos += stats.exists + ' existing members.\n';
 							}
 							if(stats.added){
-								info += stats.added + ' new members.\n'
+								infos += stats.added + ' new members.\n';
 							}
-							notify('info', stats.exists);
+							notify('info', infos);
 							
 							if(stats.ambiguous){
 								notify('warning', "Ambiguous state : Some members of the file cannot " +
@@ -396,9 +422,8 @@ define(
 		
 		/**
 		 * Load an event from the server and dispatch the data to the forms
-		 * @memberOf module:event/form
-		 * @param {Number} eventId -  the identifier of the event to load
-		 * @param {formCallback} callback - a callback executed once the event is loaded
+		 * @param {String} eventId -  the identifier of the event to load
+		 * @param {Function} callback - a callback executed once the event is loaded
 		 */
 		loadEvent : function(eventId, callback){
 			var self	= this; 
@@ -411,6 +436,7 @@ define(
 				});
 				if(event.date){
 					$('#current-flyer',  self.getForm('flyer')).attr('src', 'img/events/event-'+event.date.replace(/\-/g,'')+'-small.png');
+					$('.current-flyer-field',  self.getForm('flyer')).show();
 				}
 				if(event.description){
 					$('#description', self.getForm('infos')).htmlarea('html', event.description.replace(/\\n/g, '<br />'));
@@ -460,7 +486,6 @@ define(
 		
 		/**
 		 * Creates an object from the form data
-		 * @memberOf module:event/form
 		 * @param {Object} $form - the jQuery element of the form
 		 * @returns {Object} that represents the inputs data
 		 */
@@ -485,8 +510,7 @@ define(
 		/**
 		 * Get the id of the event currently selected
 		 * from either the store or the input field
-		 * @memberOf module:event/form
-		 * @returns {Number} the id or undefined if not found
+		 * @returns {String} the id or undefined if not found
 		 */
 		getEventId : function(){
 			var $keyField;
@@ -503,8 +527,7 @@ define(
 		 * Clear description field manually
 		 * @see module:multiform#clear
 		 * @private
-		 * @memberOf module:event/form
-		 * @param {Object} $form - the jQuery element of the form
+		 * @param {String} $form - the jQuery element of the form
 		 */
 		_clearInfosForm : function($form){
 			$('#description', $form).htmlarea('updateHtmlArea');
@@ -514,18 +537,12 @@ define(
 		 * Clear the flyer field manually
 		 * @see module:multiform#clear
 		 * @private
-		 * @memberOf module:event/form
-		 * @param {Object} $form - the jQuery element of the form
+		 * @param {String} $form - the jQuery element of the form
 		 */
 		_clearFlyerForm: function($form){
 			$('#current-flyer', $form).removeAttr('src');
 		}
 	});
-	
-	/**
-	 * Global callback, do what you f** you want
-	 * @callback formCallback
-	 */
 	
 	return EventForm;
 });

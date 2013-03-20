@@ -29,6 +29,7 @@ define( ['jquery', 'modernizr'], function($){
 		 * @param {String} value
 		 */
 		set : function(key, value){
+			console.log("set " + key  + " with " + value);
 			if(ls){
 				localStorage.setItem(ns + '.' + key, value);
 			} else {
@@ -40,6 +41,7 @@ define( ['jquery', 'modernizr'], function($){
 		 * @param {String} key
 		 */
 		rm : function(key){
+			console.log("removes " + key );
 			if(ls){
 				localStorage.removeItem(ns + '.' + key);
 			} else {
