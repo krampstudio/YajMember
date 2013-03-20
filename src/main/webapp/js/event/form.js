@@ -55,6 +55,8 @@ define(
 					'dateFormat': 'yy-mm-dd'
 				});
 			}
+			
+			//TODO show on freshly added event.
 			$date.on('change', function(){
 				if(self.getEventId() !== undefined  && this.value && this.value.length === 10){
 					self.getForm('flyer').show();
@@ -127,13 +129,18 @@ define(
 				}
 			});
 			
+			//TODO show the preview before the upload
+			
 			$('.submiter', $form).click(function(e){
 				e.preventDefault();
 				
+				//post file form 
 				$form.sendfile({
 					url : 'api/event/flyer/'+self.getEventId(),
 					loaded : function(result){
 						if(result && result.saved === true){
+							
+							//TODO force cache reload
 							$('#current-flyer').attr('src', result.thumb);
 							notify('success', 'Flyer uploaded');
 						} else {
@@ -141,37 +148,6 @@ define(
 						}
 					}
 				});
-				
-				/*//clean up 
-				$("#postFlyerFrame", $form).remove();
-				
-				//we create an hidden frame as the action of the upload form (to prevent page reload)
-				var $postFrame = $("<iframe id='postFlyerFrame' />");
-				$postFrame
-					.attr('name', 'postFlyerFrame')
-					.css('display', 'none')
-					.load(function(){
-						
-						//we get the response in the frame
-						var result = $.parseJSON($(this).contents().text());
-						if(result && result.saved === true){
-							$('#current-flyer').attr('src', result.thumb);
-							notify('success', 'Flyer uploaded');
-						} else {
-							notify('error', 'Flyer upload error');
-						}
-					});
-				
-				//we update the form attributes according to the frame
-				$form.attr({
-						'action'	: 'api/event/flyer/'+self.getEventId(),
-						'method'	: 'POST',
-						'enctype'	: 'multipart/form-data',
-						'encoding'	: 'multipart/form-data',
-						'target'	: 'postFlyerFrame'
-					})
-					.append($postFrame)
-					.submit();*/
 				return false;
 			});
 		},
@@ -197,7 +173,22 @@ define(
 				$ltr					= $('.list-box-ctrl a.ltr', $form),
 				$rtl					= $('.list-box-ctrl a.rtl', $form),
 				$trash					= $('.list-box-ctrl a.rml', $form),
-				$listBoxes				= $('.list-box ul', $form);
+				$listBoxes				= $('.list-box ul', $form),
+				
+				/**
+				 * Add registrant to his list
+				 * @param {String} key - the required member's identifier
+				 * @param {String} name - the required member's name
+				 */
+				addRegistrant			= function(key, name){
+					if(key && name){
+						var $item = $('<li></li>')
+							.addClass('ui-state-default')
+							.attr('id', 'registrant-' + key)
+							.text(name);
+						$registrantList.append($item);
+					}
+				};
 			
 			$importFields.css('display', 'none');
 			
@@ -209,21 +200,11 @@ define(
 				focus: function(event){
 					//prevent the item value to be displayed in the field
 					event.preventDefault();
-					return false;
 				},
 				select : function(event, ui){
 					event.preventDefault();
-					
-					var $item = $('<li></li>')
-						.addClass('ui-state-default')
-						.attr('id', 'registrant-' + ui.item.value)
-						.text(ui.item.label);
-					
-					$registrantList.append($item);
-					
+					addRegistrant(ui.item.value, ui.item.label);
 					$(this).val('');
-					
-					return false;
 				}
 			});
 			
@@ -271,41 +252,55 @@ define(
 			$('#reg-importer', $form).click(function(e){
 				e.preventDefault();
 				
-				//clean up 
-				$("#postImportFrame", $form).remove();
-				
 				//set the order values to the hidden fields
 				$("input[name='reg-import-opts-order']", $form).val(
 						JSON.stringify($importOptsOrder.sortable("toArray"))
 					);
 				
-				
-				//we create an hidden frame as the action of the upload form (to prevent page reload)
-				var $postFrame = $("<iframe id='postImportFrame' />");
-				$postFrame
-					.attr('name', 'postImportFrame')
-					.css('display', 'none')
-					.load(function(){
-					
-						//we get the response in the frame
-						var result = $.parseJSON($(this).contents().text());
-						if(result && result.saved === true){
+				//send the file
+				$form.sendfile({
+					url : 'api/event/importRegistrants/'+self.getEventId(),
+					loaded : function(result){
+						if(result && result.members){
+							var stats = {}, infos = 'Event registration :';
 							notify('success', 'File uploaded');
+							
+							//TODO improve an test this
+							$.each(result.members, function(index, elt){
+								
+								if(!stats[elt.state]){
+									stats[elt.state] = 0;
+								}
+								stats[elt.state]++;
+								
+								switch(elt.state){
+									case 'exists' :
+										addRegistrant(elt.member.key, elt.member.name);
+										break;
+									case 'added':
+										addRegistrant(elt.member.key, elt.member.name);
+										break;
+									case 'ambiguous':	
+								}
+							});
+							if(stats.exists){
+								info += stats.exists + ' existing members.\n'
+							}
+							if(stats.added){
+								info += stats.added + ' new members.\n'
+							}
+							notify('info', stats.exists);
+							
+							if(stats.ambiguous){
+								notify('warning', "Ambiguous state : Some members of the file cannot " +
+										"be imported because we found more than one member for their data.");
+							}
 						} else {
+							//TODO catch error
 							notify('error', 'File upload error');
 						}
-					});
-				
-				//we update the form attributes according to the frame
-				$form.attr({
-						'action'	: 'api/event/importRegistrants/'+self.getEventId(),
-						'method'	: 'POST',
-						'enctype'	: 'multipart/form-data',
-						'target'	: 'postImportFrame'
-					})
-					.append($postFrame)
-					.submit();
-				
+					}
+				});
 				return false;
 			});
 			
