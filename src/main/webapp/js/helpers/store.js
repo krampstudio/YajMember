@@ -1,21 +1,30 @@
-/**
- * Browser storage, persistent if localStorage is supported 
- * or fallback to DOM data is not.
- */
 define( ['jquery', 'modernizr'], function($){
 	
 	'use strict';
 	
-	var ls = (Modernizr.localstorage === true),
-		ns = 'yajmember',
-	
 	/**
-	 * @class Store
+	 * Browser persistent key/value storage,   
+	 * it uses the localStorage is supported 
+	 * or fallback to DOM data attr but not persistent anymore
+	 * 
+	 * @exports store
 	 */
-	Store = {
+	var Store = {
+			
+		/**
+		 * Is localStorage supported
+		 */
+		_ls : (Modernizr.localstorage === true),
 		
 		/**
-		 * @param {String} key
+		 * namespace the entries to prevent collisions from other sites
+		 */
+		_ns : 'yajmember',
+		
+		/**
+		 * Get an entry from the store
+		 * @param {String} key - the entry key
+		 * @returns the value or undefined
 		 */
 		get : function(key){
 			if(ls){
@@ -25,11 +34,12 @@ define( ['jquery', 'modernizr'], function($){
 		},
 				
 		/**
-		 * @param {String} key
-		 * @param {String} value
+		 * Set an entry to the store
+		 * @param {String} key - the entry key
+		 * @param {String} value - the value bound to the key
 		 */
 		set : function(key, value){
-			console.log("set " + key  + " with " + value);
+		//	console.log("set " + key  + " with " + value);
 			if(ls){
 				localStorage.setItem(ns + '.' + key, value);
 			} else {
@@ -38,10 +48,11 @@ define( ['jquery', 'modernizr'], function($){
 		},
 				
 		/**
-		 * @param {String} key
+		 * Remove an entry from the store 
+		 * @param {String} key - the entry key
 		 */
 		rm : function(key){
-			console.log("removes " + key );
+		//	console.log("removes " + key );
 			if(ls){
 				localStorage.removeItem(ns + '.' + key);
 			} else {
@@ -50,7 +61,8 @@ define( ['jquery', 'modernizr'], function($){
 		},
 		
 		/**
-		 * @param {String} key
+		 * Check if an entry exists in the store
+		 * @param {String} key - the entry key
 		 */
 		isset : function(key){
 			if(ls){

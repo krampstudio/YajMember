@@ -34,7 +34,7 @@ define(
 			EventBus.subscribe('eventform.load', function(){
 				if(store.isset('event')){
 					self.loadEvent(store.get('event'));
-				};
+				}
 			});
 			
 			//to clear the form
@@ -69,8 +69,8 @@ define(
 			}
 			
 			$date.on('change', function(){
-				if(self.getEventId() !== undefined  
-						&& this.value && this.value.length === 10){
+				if(self.getEventId() !== undefined && 
+						this.value && this.value.length === 10){
 					self.getForm('flyer').show();
 				} else {
 					self.getForm('flyer').hide();
@@ -106,7 +106,7 @@ define(
 		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_initFlyerControls : function($form){
-			var self 					= this,
+			var self					= this,
 				$currentFlyerContainer	= $('.current-flyer-field', $form),
 				$currentFlyer			= $('#current-flyer', $form),
 				

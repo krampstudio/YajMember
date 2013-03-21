@@ -29,7 +29,7 @@ require(['config/app'], function(){
 					requirejs([modules[ui.index]], function(module) {
 						
 						//and call the setUp method
-						if(module != undefined && typeof module === 'object'){
+						if(module !== undefined && typeof module === 'object'){
 							if(module.setUp && typeof module.setUp === 'function'){
 								module.setUp();
 							}

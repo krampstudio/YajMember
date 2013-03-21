@@ -16,6 +16,7 @@
             "define",
             "require",
             "requirejs",
-            "Modernizr"
+            "Modernizr",
+            "noty"
         ]
 }
