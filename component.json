@@ -2,13 +2,14 @@
 	"name": "YajMember",
 	"version": "0.1.0",
 	"dependencies": {
-	    "requirejs"		: "~2.1.x",
-	    "jquery"		: "~1.8.3",
-	    "jquery-ui" 	: "~1.8.23",
-	    "jquery-tmpl" 	: "*",
-	    "modernizr"		: "*",
-	    "gridy"			: "git://github.com/wbotelhos/gridy.git",
-	    "noty"			: "git://github.com/needim/noty.git",
-		"jhtmlarea"		: "git@github.com:krampstudio/jhtmlarea.git"
+	    "requirejs"			: "~2.1.x",
+	    "jquery"			: "~1.8.3",
+	    "jquery-ui" 		: "~1.8.23",
+	    "jquery-tmpl" 		: "*",
+	    "modernizr"			: "*",
+	    "gridy"				: "git://github.com/wbotelhos/gridy.git",
+	    "noty"				: "git://github.com/needim/noty.git",
+		"jhtmlarea"			: "git://github.com/krampstudio/jhtmlarea.git",
+		"javascript-debug"	: "git://github.com/cowboy/javascript-debug.git"
 	  }
 }

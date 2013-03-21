@@ -11,6 +11,7 @@ requirejs.config({
 		'modernizr'		: 'lib/modernizr/modernizr',
 		'noty-base'		: 'lib/noty/js/noty',
 		'noty'			: 'lib/noty/js/noty/jquery.noty',
+		'debug'			: 'lib/javascript-debug/ba-debug',
 		'multiform'		: 'helpers/multiform',
 		'notify'		: 'helpers/notify',
 		'store'			: 'helpers/store',
