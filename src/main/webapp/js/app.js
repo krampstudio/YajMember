@@ -8,86 +8,57 @@ require(['config/app'], function(){
 	
 		$(function(){
 			
-			var initialized = {
-				member : false,
-				event : false
-			};
+			//one module by tab. The array index match the tab index!
+			var modules = ['member/list', 'member/form', 'event/list', 'event/form'];
 			
 			//create the tabs
 			$('#actions').tabs({
-				cache: true,
+				//each tab is loaded once!
+				cache: true,		
+				
 				create: function() {
 					//unload splash and display screen
-					$('#splash').fadeOut();
-					$('#main').show('slow');
+					$('#splash').fadeOut(1000, function(){
+						$('#main').fadeIn(800);
+					});
 				},
+				
 				load : function(event, ui) {
 					
-					//Do the initializations by tab, once loaded
-					switch(ui.index) {
-						case 0 : 
-							requirejs(['member/list'], function(memberList) {
-								memberList.setUp();
-							});
-							break;
-						case 1:
-							requirejs(['member/form'], function(memberForm) {
-								memberForm.setUp();
-								memberForm.initFormControls(function(){
-									if(!initialized.member){
-										if(store.isset('member')){
-											memberForm.loadMember(store.get('member'), function(){
-												memberForm.loadMemberships(store.get('member'));
-											});	
-										}
-										initialized.member = true;
-									}
-								});
-							});
-							break;
-						case 2:
-							requirejs(['event/list'], function(eventList) {
-								eventList.setUp();
-							});
-							break;
-						case 3:
-							requirejs(['event/form'], function(eventForm) {
-								eventForm.setUp();
-							});
-							break;
-					}
+					//load the module that match the tab
+					requirejs([modules[ui.index]], function(module) {
+						
+						//and call the setUp method
+						if(module != undefined && typeof module === 'object'){
+							if(module.setUp && typeof module.setUp === 'function'){
+								module.setUp();
+							}
+						}
+						
+					});
 				},
 			
-				//do some clean and load at each tab opening
+				//trigger some events at each opening 
 				show : function(event, ui) {
 					
-					
-					//User
 					if(ui.index === 0){
-						EventBus.publish('memberlist.reload', [ 't2' ]);
+						//trigger the member list reload
+						EventBus.publish('memberlist.reload');
 					} 
-					if(initialized.member === true){
-						
-						if(ui.index === 1){
-							requirejs(['member/form'], function(memberForm) {
-								if(store.isset('member')){
-									//load the member
-									memberForm.loadMember(store.get('member'), function(){
-										memberForm.loadMemberships(store.get('member'));
-									});		
-								} else {
-									memberForm._buildMembershipTabs();
-								}
-							});
-						} else {
-							EventBus.publish('memberform.cleanup');
-						}
+					
+					if(ui.index === 1){
+						//load a member into the form if one is selected
+						EventBus.publish('memberform.load');
+					} else {
+						//clean up the form
+						EventBus.publish('memberform.cleanup');
 					}
 					
-					//Event
 					if(ui.index === 3){
+						//load an event into the form if one is selected
 						EventBus.publish('eventform.load');
 					} else {
+						//clean up the form
 						EventBus.publish('eventform.cleanup');
 					}
 					
@@ -104,5 +75,4 @@ require(['config/app'], function(){
 			});
 		});
 	});
-	
 });

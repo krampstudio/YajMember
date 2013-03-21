@@ -14,14 +14,12 @@ define(
 		
 		/**
 		 * @private 
-		 * @memberOf module:event/form
 		 * @see module:form#_id
 		 */
 		_id : 'event',
 		
 		/**
 		 * @private 
-		 * @memberOf module:event/form
 		 * @see module:form#_id
 		 */
 		_formNames	: ['infos', 'flyer', 'participant'],
@@ -490,18 +488,8 @@ define(
 		 * @returns {Object} that represents the inputs data
 		 */
 		serializeEvent : function($form){
-			var event = {};
-			if($form){
-				if($form.prop('tagName') !== 'FORM'){
-					$.error('Invalid jQuery element for $form. It much match a form tag.');
-				}
-				$.map($form.serializeArray(), function(elt){
-					if(event[elt.name] === undefined && elt.value){
-						if( elt.value.trim().length > 0){
-							event[elt.name] = elt.value;
-						}
-					}
-				});
+			var event = this.serialize($form);
+			if(event){
 				event.description = $('#description', $form).htmlarea('toHtmlString');
 			}
 			return event;

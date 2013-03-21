@@ -1,7 +1,3 @@
-/**
- * Manage user's Form UI and IO
- * @module event/form
- */
 define(
 	['jquery', 'multiform', 'controller/member', 'controller/membership', 'controller/event', 'notify', 'store', 'eventbus', 'modernizr'], 
 	function($, MultiForm, MemberController, MembershipController, EventController, notify, store, EventBus){
@@ -9,33 +5,53 @@ define(
 	'use strict';
 
 	/**
+	 *  Manage user's Form UI and IO
 	 * The UserForm is a MultiForm that manages widgets for the user's forms
-	 * @constructor
 	 * @see module:multiform 
-	 * @alias module:user/form
+	 * @exports member/form
 	 */
-	var UserForm = $.extend({}, MultiForm, {
+	var MemberForm = $.extend({}, MultiForm, {
 			
 		/**
 		 * @private 
-		 * @memberOf module:event/form
 		 * @see module:form#_id
 		 */
 		_id : 'member',
 		
 		/**
 		 * @private 
-		 * @memberOf module:event/form
 		 * @see module:form#_id
 		 */
 		_formNames : ['details', 'membership'],
 		
+		/**
+		 * Initialize the form and the events
+		 */
 		setUp: function(){
 			var self = this;
+			
+			EventBus.subscribe('memberform.load', function(){
+				if(store.isset('member')){
+					//load the member
+					self.loadMember(store.get('member'), function(){
+						self.loadMemberships(store.get('member'));
+					});		
+				} else {
+					self._buildMembershipTabs();
+				}
+			});
+			
 			EventBus.subscribe('memberform.cleanup', function(){
 				self.clearForms(function(){
 					store.rm('member');
 				});
+			});
+			
+			//initialize the controls
+			self.initFormControls(function(){
+				
+				//if there is a selected member, we load it
+				EventBus.publish('memberform.load');
 			});
 		},
 		
@@ -43,7 +59,6 @@ define(
 		 * Initialize the controls for the Details sub form.
 		 * @see module:multiform#initFormControls
 		 * @private
-		 * @memberOf module:user/form
 		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_initDetailsControls : function($form){
@@ -63,7 +78,6 @@ define(
 		 * Initialize the controls for the Membership sub form.
 		 * @see module:multiform#initFormControls
 		 * @private
-		 * @memberOf module:user/form
 		 * @param {Object} $form - the jquery element the reference the form
 		 */
 		_initMembershipControls: function($form){
@@ -130,9 +144,8 @@ define(
 		/**
 		 * Build the form for a membership from templates and initialize the included widgets
 		 * @private
-		 * @memberOf module:user/form
 		 * @param {Object} membership - the complete membership object or at least with the year for new membership
-		 * @param {formCallback} callback - a callback executed once the memberis loaded
+		 * @param {Function} callback - a callback executed once the memberis loaded
 		 */
 		_buildMembershipForm: function(membership, callback){
 			var self = this,
@@ -225,8 +238,7 @@ define(
 		 * Creates a vertical tab widget from the membership form. 
 		 * The tabs are refreshed they already exists.
 		 * @private
-		 * @memberOf module:user/form
-		 * @param {formCallback} callback - a callback executed once the memberis loaded
+		 * @param {Function} callback - a callback executed once the memberis loaded
 		 */
 		_buildMembershipTabs : function(callback){
 			if($('#memberships').hasClass('ui-tabs-vertical')){
@@ -242,9 +254,8 @@ define(
 		
 		/**
 		 * Retrieve a member and populate the details form according to the results
-		 * @memberOf module:user/form
 		 * @param {Number} memberId - the requried identifier of the member
-		 * @param {formCallback} callback - a callback executed once the memberis loaded
+		 * @param {Function} callback - a callback executed once the memberis loaded
 		 */
 		loadMember : function(memberId, callback){
 			var self = this;
@@ -267,9 +278,8 @@ define(
 		
 		/**
 		 * Retrieve the memberships of a member and build the forms according to the results
-		 * @memberOf module:user/form
 		 * @param {Number} memberId - the requried identifier of the member
-		 * @param {formCallback} callback - a callback executed once the memberships are loaded
+		 * @param {Function} callback - a callback executed once the memberships are loaded
 		 */
 		loadMemberships: function(memberId, callback){
 			var self = this;
@@ -296,9 +306,8 @@ define(
 		
 		/**
 		 * Loads the events for a year
-		 * @memberOf module:user/form
 		 * @param {String} year - the year of the events 
-		 * @param {formCallback} callback - a callback executed once the events are loaded
+		 * @param {Function} callback - a callback executed once the events are loaded
 		 */
 		loadEvents : function (year, callback){
 			
@@ -317,38 +326,22 @@ define(
 		
 		/**
 		 * Get a member instance from the form data
-		 * @memberOf module:user/form
 		 * @param {Object} $form - the jQuery element of the form
 		 * @returns {Object} a member
 		 */
 		serializeMember : function($form){
-			var member = {};
-			if($form){
-				if($form.prop('tagName') !== 'FORM'){
-					$.error('Invalid jQuery element for $form. It much match a form tag.');
-				}
-				$.map($form.serializeArray(), function(elt){
-					if(elt.value && elt.value.trim().length > 0){
-						if(member[elt.name] === undefined){
-							member[elt.name] = elt.value;
-						} else {
-							if(!$.isArray(member[elt.name])){
-								member[elt.name] = [member[elt.name]];
-							}
-							member[elt.name].push(elt.value);
-						}
-					}
-				});
-				if(member.roles && !$.isArray(member.roles)){
-					member.roles = [member.roles];
-				}
+			
+			var member = this.serialize($form);
+			
+			if(member.roles && !$.isArray(member.roles)){
+				member.roles = [member.roles];
 			}
+			
 			return member;
 		},
 		
 		/**
-		 *  Get the memberships instances from the form data
-		 * @memberOf module:user/form
+		 * Get the memberships instances from the form data
 		 * @param {Object} $form - the jQuery element of the form
 		 * @returns {Array} of memberships
 		 */
@@ -401,7 +394,6 @@ define(
 		/**
 		 * Get the id of the event currently selected
 		 * from either the store or the input field
-		 * @memberOf module:event/form
 		 * @returns {Number} the id or undefined if not found
 		 */
 		getMemberId : function(){
@@ -419,7 +411,6 @@ define(
 		 * Clear the membership form mannually
 		 * @see module:multiform#clear
 		 * @private
-		 * @memberOf module:event/form
 		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_clearMembershipForm : function($form){
@@ -434,5 +425,5 @@ define(
 	 * @callback formCallback
 	 */
 	
-	return UserForm;
+	return MemberForm;
 });
