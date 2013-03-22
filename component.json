@@ -7,9 +7,9 @@
 	    "jquery-ui" 		: "~1.8.23",
 	    "jquery-tmpl" 		: "*",
 	    "modernizr"			: "*",
-	    "gridy"				: "git://github.com/wbotelhos/gridy.git",
-	    "noty"				: "git://github.com/needim/noty.git",
-		"jhtmlarea"			: "git://github.com/krampstudio/jhtmlarea.git",
-		"javascript-debug"	: "git://github.com/cowboy/javascript-debug.git"
+	    "gridy"				: "git+https://github.com/wbotelhos/gridy.git",
+	    "noty"				: "git+https://github.com/needim/noty.git",
+		"jhtmlarea"			: "git+https://github.com/krampstudio/jhtmlarea.git",
+		"javascript-debug"	: "git+https://github.com/cowboy/javascript-debug.git"
 	  }
 }
