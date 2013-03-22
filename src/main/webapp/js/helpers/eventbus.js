@@ -1,4 +1,4 @@
-define( ['jquery'], function($){
+define( ['jquery', 'debug'], function($){
 	
 	'use strict';
 	
@@ -23,7 +23,7 @@ define( ['jquery'], function($){
 		 * @param {EventSubscriptionCallback} callback - to be executed once triggered
 		 */
 		subscribe : function(type, callback){
-			console.log("subscribe " + type);
+			debug.debug("subscribe " + type);
 			this._$elt.on(type, callback);
 		},
 		
@@ -32,7 +32,7 @@ define( ['jquery'], function($){
 		 * @param t{String} type - the event type
 		 */
 		unsubscribe : function(type){
-			console.log("unsuscribe " + type);
+			debug.debug("unsuscribe " + type);
 			this._$elt.off(type);
 		},
 		
@@ -42,7 +42,7 @@ define( ['jquery'], function($){
 		 * @param [Array] data - the additionnal parameter values for the callback
 		 */
 		publish : function(type, data){
-			console.log("publish " + type);
+			debug.debug("publish " + type);
 			this._$elt.trigger(type, data);
 		}
 	};

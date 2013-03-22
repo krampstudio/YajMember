@@ -3,10 +3,23 @@ require(['config/app'], function(){
 	
 	'use strict';
 
-	require(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store', 'eventbus'],  
+	require(['jquery', 'jquery-ui', 'jquery-tmpl', 'notify', 'store', 'eventbus', 'debug'],  
 		function($, ui, tmpl, notify, store, EventBus){
 	
 		$(function(){
+			
+			var level = {
+				'none' : 0, 
+				'error' : 1,
+				'warn' : 2,
+				'info' : 3,
+				'debug' : 4,
+				'log' : 5,
+				'all' : 9
+			}
+			
+			//initialize logging: 0 disabled, 1 error, 2 warn
+			debug.setLevel(level.all);
 			
 			//one module by tab. The array index match the tab index!
 			var modules = ['member/list', 'member/form', 'event/list', 'event/form'];
@@ -31,10 +44,10 @@ require(['config/app'], function(){
 						//and call the setUp method
 						if(module !== undefined && typeof module === 'object'){
 							if(module.setUp && typeof module.setUp === 'function'){
+								debug.debug('Set up module ', modules[ui.index], module);
 								module.setUp();
 							}
 						}
-						
 					});
 				},
 			

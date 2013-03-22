@@ -27,10 +27,10 @@ define( ['jquery', 'modernizr'], function($){
 		 * @returns the value or undefined
 		 */
 		get : function(key){
-			if(ls){
-				return localStorage.getItem(ns + '.' + key);
+			if(this._ls){
+				return localStorage.getItem(this._ns + '.' + key);
 			}
-			return $('body').data(ns + '.' + key);
+			return $('body').data(this._ns + '.' + key);
 		},
 				
 		/**
@@ -39,11 +39,11 @@ define( ['jquery', 'modernizr'], function($){
 		 * @param {String} value - the value bound to the key
 		 */
 		set : function(key, value){
-		//	console.log("set " + key  + " with " + value);
-			if(ls){
-				localStorage.setItem(ns + '.' + key, value);
+			debug.debug("set " + key  + " with " + value);
+			if(this._ls){
+				localStorage.setItem(this._ns + '.' + key, value);
 			} else {
-				$('body').data(ns + '.' + key, value);
+				$('body').data(this._ns + '.' + key, value);
 			}
 		},
 				
@@ -52,11 +52,11 @@ define( ['jquery', 'modernizr'], function($){
 		 * @param {String} key - the entry key
 		 */
 		rm : function(key){
-		//	console.log("removes " + key );
-			if(ls){
-				localStorage.removeItem(ns + '.' + key);
+			debug.debug("removes " + key );
+			if(this._ls){
+				localStorage.removeItem(this._ns + '.' + key);
 			} else {
-				$('body').removeData(ns + '.' + key);
+				$('body').removeData(this._ns + '.' + key);
 			}
 		},
 		
@@ -65,10 +65,10 @@ define( ['jquery', 'modernizr'], function($){
 		 * @param {String} key - the entry key
 		 */
 		isset : function(key){
-			if(ls){
-				return localStorage[ns + '.' + key] !== undefined;
+			if(this._ls){
+				return localStorage[this._ns + '.' + key] !== undefined;
 			}
-			return $('body').data(ns + '.' + key) !== undefined;
+			return $('body').data(this._ns + '.' + key) !== undefined;
 		}
 	};
 

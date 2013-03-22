@@ -17,6 +17,7 @@
             "require",
             "requirejs",
             "Modernizr",
-            "noty"
+            "noty",
+            "debug"
         ]
 }
