@@ -9,7 +9,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 	var FlyerController = {
 
 		/** the base path for the server calls*/
-		_apiBase : 'api/event/',
+		_apiBase : 'api/flyer/',
 		
 		/**
 		 * Call the API to removes a flyer
@@ -17,13 +17,14 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		 * @param {Function} callback - called if there was no errors
 		 */
 		remove : function(key, callback){
+			var self = this;
 			if(!key){
 				$.error('Invalid event key : ' + key);
 			} else {
 				notify('confirm', 'You really want to remove this flyer ?', function(){
 					$.ajax({
 						type		: 'DELETE',
-						url			: this._apiBase + 'removeFlyer/' + key,
+						url			: self._apiBase + 'remove/' + key,
 						dataType	: 'json'
 					}).done(function(data) {	
 						if(!data.removed  || data.error){
@@ -39,7 +40,6 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 			}
 		}
 	};
-	
 	
 	return FlyerController;
 });

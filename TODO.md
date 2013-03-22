@@ -21,7 +21,7 @@
  - [ ] Do a bunch of testNg's integration tests
  - [x] Replace the custom cache by a cache lib (guava? ehcache? - none yet)
  - [x] Split the member/membership services and controllers
- - [ ] Split the event/flyer services and controllers
+ - [x] Split the event/flyer services and controllers
  - [ ] Refactor app.js and form/lists to use an event bus instead of the overriding model
- - [ ] Refactor form/lists to use a js crud layer that communicate with the server
+ - [x] Refactor form/lists to use a js crud layer that communicate with the server
  - [x] Remove key and use _id instead (see `mongoId` branch)

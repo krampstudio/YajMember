@@ -35,7 +35,7 @@ define( ['jquery'], function($){
 			if(!$form || !$form.is('form')){
 				$.error('This plugin can only be called on a FORM element');
 			}
-			if(!$form.attr('action') || !opts.url || opts.url.trim().length == 0){
+			if(!$form.attr('action') && (!opts.url || opts.url.trim().length == 0)){
 				$.error('An url is required in the options or at least an action ');
 			}
 			if($form.find("input[type='file']").length == 0){
@@ -68,9 +68,7 @@ define( ['jquery'], function($){
 				})
 				.append($postFrame);
 			
-			$('#' + opts.frame, $form).on('load', function(e){
-				$(this).off('load');
-				
+			$('#' + id, $form).on('load', function(e){
 				//we get the response in the frame
 				var result = $.parseJSON($(this).contents().text());
 				
@@ -78,6 +76,7 @@ define( ['jquery'], function($){
 					 opts.loaded(result);
 				}
 				
+				$(this).off('load');
 				$(this).remove();
 			});
 				

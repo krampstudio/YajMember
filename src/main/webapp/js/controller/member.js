@@ -75,13 +75,14 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		 * @param {Function} callback - called if there was no errors
 		 */
 		remove : function(key, callback){
+			var self = this;
 			if(!key){
 				$.error("Invalid member's key : " + key);
 			} else {
 				notify('confirm', 'You really want to remove this member?', function(){
 					$.ajax({
 						type		: 'DELETE',
-						url			: this._apiBase + 'remove/' + key,
+						url			: self._apiBase + 'remove/' + key,
 						dataType	: 'json'
 					}).done(function(data) {	
 						if(!data.removed  || data.error){

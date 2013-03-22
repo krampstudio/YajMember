@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.yajug.users.api.EventController;
+import org.yajug.users.api.FlyerController;
 import org.yajug.users.api.MemberController;
 import org.yajug.users.api.MembershipController;
 import org.yajug.users.persistence.dao.EventDao;
@@ -15,6 +16,8 @@ import org.yajug.users.persistence.dao.MembershipDao;
 import org.yajug.users.persistence.dao.MembershipMongoDao;
 import org.yajug.users.service.EventService;
 import org.yajug.users.service.EventServiceImpl;
+import org.yajug.users.service.FlyerService;
+import org.yajug.users.service.FlyerServiceImpl;
 import org.yajug.users.service.MemberService;
 import org.yajug.users.service.MemberServiceImpl;
 import org.yajug.users.service.MembershipService;
@@ -56,11 +59,13 @@ public class ModuleHelper {
 		binder.bind(MemberController.class);
 		binder.bind(MembershipController.class);
 		binder.bind(EventController.class);
+		binder.bind(FlyerController.class);
         
 		//biond services
 		binder.bind(MembershipService.class).to(MembershipServiceImpl.class);
 		binder.bind(MemberService.class).to(MemberServiceImpl.class);
 		binder.bind(EventService.class).to(EventServiceImpl.class);
+		binder.bind(FlyerService.class).to(FlyerServiceImpl.class);
         
 		//bind daos
 		binder.bind(MemberDao.class).to(MemberMongoDao.class);

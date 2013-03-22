@@ -163,7 +163,7 @@ define(
 				
 				//we post the file
 				$form.sendfile({
-					url : 'api/event/flyer/'+self.getEventId(),
+					url : 'api/flyer/save/'+self.getEventId(),
 					loaded : function(result){
 						if(result && result.saved === true){
 							addThumb(result.thumb, true);
