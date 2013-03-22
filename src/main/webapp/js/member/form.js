@@ -5,22 +5,24 @@ define(
 	'use strict';
 
 	/**
-	 *  Manage user's Form UI and IO
+	 * Manage user's Form UI and IO
 	 * The UserForm is a MultiForm that manages widgets for the user's forms
-	 * @see module:multiform 
+	 * @see module:multiform
 	 * @exports member/form
 	 */
-	var MemberForm = $.extend({}, MultiForm, {
+	var MemberForm = {
 			
 		/**
+		 * The form id prefix
+		 * @see module:multiform._id
 		 * @private 
-		 * @see module:form#_id
 		 */
 		_id : 'member',
 		
 		/**
+		 * The sub-forms names
+		 * @see module:multiform._formNames
 		 * @private 
-		 * @see module:form#_id
 		 */
 		_formNames : ['details', 'membership'],
 		
@@ -57,7 +59,7 @@ define(
 		
 		/**
 		 * Initialize the controls for the Details sub form.
-		 * @see module:multiform#initFormControls
+		 * @see module:multiform.initFormControls
 		 * @private
 		 * @param {Object} $form - the jQuery element of the form
 		 */
@@ -76,7 +78,7 @@ define(
 		
 		/**
 		 * Initialize the controls for the Membership sub form.
-		 * @see module:multiform#initFormControls
+		 * @see module:multiform.initFormControls
 		 * @private
 		 * @param {Object} $form - the jquery element the reference the form
 		 */
@@ -409,7 +411,7 @@ define(
 	
 		/**
 		 * Clear the membership form mannually
-		 * @see module:multiform#clear
+		 * @see module:multiform.clearForm
 		 * @private
 		 * @param {Object} $form - the jQuery element of the form
 		 */
@@ -418,12 +420,8 @@ define(
 			$('#memberships .membership-year', $form).remove();
 			$('#memberships .membership-form', $form).remove();
 		}
-	});
+	};
 	
-	/**
-	 * Global callback, do what you f** you want
-	 * @callback formCallback
-	 */
-	
-	return MemberForm;
+	//make MemberForm extends MultiForm
+	return $.extend({}, MultiForm, MemberForm);
 });

@@ -8,7 +8,10 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 	 */
 	var EventController = {
 
-		/** the base path for the server calls*/
+		/** 
+		 * The base path for the server calls
+		 * @private
+		 */
 		_apiBase : 'api/event/',
 		
 		
@@ -83,7 +86,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		/**
 		 * Call the API to save an event
 		 * @param {Object} event - the event to save, if it has no key attribute, it will be inserted
-		 * @param {Function} callback - called if there was no errors
+		 * @param {Function}ï¿½callback - called if there was no errors
 		 */
 		save : function(event, callback){
 			if(!event){

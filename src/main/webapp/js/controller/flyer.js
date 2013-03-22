@@ -8,7 +8,10 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 	 */
 	var FlyerController = {
 
-		/** the base path for the server calls*/
+		/** 
+		 * the base path for the server calls
+		 * @private
+		 */
 		_apiBase : 'api/flyer/',
 		
 		/**

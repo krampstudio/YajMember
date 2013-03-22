@@ -8,7 +8,10 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 	 */
 	var MembershipController = {
 
-		/** the base path for the server calls*/
+		/** 
+		 * The base path for the server calls
+		 * @private
+		 */
 		_apiBase : 'api/membership/',
 		
 		
@@ -41,7 +44,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		/**
 		 * Call the API to save memberships
 		 * @param {Array} memberships - the list of memberships to save
-		 * @param {Function} callback - called if there was no errors
+		 * @param {Function}ï¿½callback - called if there was no errors
 		 */
 		save : function(memberships, callback){
 			if(!memberships || !$.isArray(memberships) ){

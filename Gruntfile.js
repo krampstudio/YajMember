@@ -7,7 +7,8 @@ module.exports = function(grunt) {
 		sources = [
 			      basePath + 'js/app.js', 
 			      basePath + 'js/login.js',
-			      basePath + 'js/user/*.js',
+			      basePath + 'js/controller/*.js', 
+			      basePath + 'js/member/*.js',
 			      basePath + 'js/event/*.js',
 				  basePath + 'js/helpers/*.js'
 			];
@@ -24,7 +25,7 @@ module.exports = function(grunt) {
 			}
 		},
 		
-		clean: [staticPath],
+		clean: [staticPath, buildPath+ 'reports/jsdoc'],
 		
 		requirejs: {
 			login: {
@@ -58,8 +59,8 @@ module.exports = function(grunt) {
 	
 		jsdoc : {
 			dist: {
-				src: sources,
-				dest: buildPath+ 'reports/jsdoc'
+				src : sources,
+				dest : buildPath+ 'reports/jsdoc'
 			}
 		},
 		

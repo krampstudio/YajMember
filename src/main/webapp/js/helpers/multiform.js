@@ -76,8 +76,7 @@ define(['jquery'], function($){
 		},
 		
 		/**
-		 * Enable/Disable the form fields
-		 * @deprecated
+		 * Enable/Disable the forms fields
 		 */
 		toggleForm : function(){
 			var $submiter, isDisabled, i, 
@@ -92,6 +91,11 @@ define(['jquery'], function($){
 			}
 		},
 		
+		/**
+		 * Serialize the form data to an JSON object
+		 * @param {Object} $form - a jQuery element that represents the form
+		 * @returns {Object} the form data
+		 */
 		serialize : function($form){
 			var data	= {};
 			

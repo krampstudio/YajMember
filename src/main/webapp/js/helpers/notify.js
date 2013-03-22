@@ -1,7 +1,3 @@
-/**
- * Notification system based on Noty
- * @module notify
- */
 define(['jquery',
         'noty-base/layouts/topCenter', 
         'noty-base/layouts/center',
@@ -13,8 +9,8 @@ function($){
 	$.noty.defaults.timeout = 20000;
 	
 	/**
-	 * @constructor
-	 * @alias module:notify
+	 * Notification system based on Noty
+	 * @exports notify
 	 * @param {String} type the type of notification in alert, info, confirm, success, error or warning
 	 * @param {String} msg the message to display in the notification
 	 * @param {Function} [callback] a function executed after the notification closes (or when confirm is 'OK')

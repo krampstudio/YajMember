@@ -1,20 +1,15 @@
-/**
- * Manage event's list UI and IO
- * @module event/list
- */
 define(['jquery', 'controller/event', 'store'], function($, EventController, store){
 	
 	'use strict';
 	
 	/**
-	 * @constructor
-	 * @alias module:event/list
+	 * Manage event's list UI and IO
+	 * @exports event/list
 	 */
 	var EventList = {
 			
 		/**
 		 * Set up the list
-		 * @memberOf module:event/list
 		 */
 		setUp: function(){
 			var self = this;
@@ -61,7 +56,6 @@ define(['jquery', 'controller/event', 'store'], function($, EventController, sto
 		/**
 		 * set up the controls of an event list (the buttons associated to each event)
 		 * @private
-		 * @memberOf module:event/list
 		 * @param {Object} $container jQuery element of the events container (an ul element)
 		 */
 		_setUpEventsControls: function($container){

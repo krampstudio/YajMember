@@ -1,21 +1,16 @@
-/**
- * URI helper module
- * @module uri
- */
 define(function(){
 	
 	'use strict';
 	
 	/**
-	 * @constructor
-	 * @alias module:uri
+	 * URI helper module
+	 * @exports uri
 	 */
 	var URI = {
 			
 		/**
 		 * Extract query parameters from an URI
-		 * @memberOf uri
-		 * @params {String} uri the URL to extract the query parameters from
+		 * @param {String} uri - the URL to extract the query parameters from
 		 * @returns an object that represents the parameters
 		 */
 		getQueryParams : function(uri){

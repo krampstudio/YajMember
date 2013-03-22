@@ -8,7 +8,10 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 	 */
 	var MemberController = {
 
-		/** the base path for the server calls*/
+		/** 
+		 * The base path for the server calls
+		 * @private
+		 */
 		_apiBase : 'api/member/',
 		
 		
@@ -41,7 +44,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		/**
 		 * Call the API to save a member
 		 * @param {Object} member - the member to save, if it has no key attribute, it will be inserted
-		 * @param {Function} callback - called if there was no errors
+		 * @param {Function}ï¿½callback - called if there was no errors
 		 */
 		save : function(event, callback){
 			if(!event){

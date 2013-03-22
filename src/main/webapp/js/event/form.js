@@ -7,20 +7,20 @@ define(
 	/**
 	 * Manage event's Form UI and IO.
 	 * The EventForm extends from the Form object
-	 * @see module:multiform 
+	 * @see module:multiform
 	 * @exports event/form
 	 */
-	var EventForm = $.extend({}, MultiForm, {
+	var EventForm =  {
 		
 		/**
+		 * @see module:multiform._id
 		 * @private 
-		 * @see module:form#_id
 		 */
 		_id : 'event',
 		
 		/**
+		 * @see module:multiform._formNames
 		 * @private 
-		 * @see module:form#_id
 		 */
 		_formNames	: ['infos', 'flyer', 'participant'],
 		
@@ -54,7 +54,7 @@ define(
 		
 		/**
 		 * Initialize the controls for the Infos subform.
-		 * @see module:multiform#initFormControls
+		 * @see module:multiform.initFormControls
 		 * @private
 		 * @param {Object} $form - the jQuery element of the form
 		 */
@@ -101,7 +101,7 @@ define(
 		
 		/**
 		 * Initialize the controls for the Flyer form.
-		 * @see module:multiform#initFormControls
+		 * @see module:multiform.initFormControls
 		 * @private
 		 * @param {Object} $form - the jQuery element of the form
 		 */
@@ -179,7 +179,7 @@ define(
 		
 		/**
 		 * Initialize the controls for the Participant form.
-		 * @see module:multiform#initFormControls
+		 * @see module:multiform.initFormControls
 		 * @private
 		 * @param {Object} $form - the jQuery element of the form
 		 */
@@ -513,7 +513,7 @@ define(
 		
 		/**
 		 * Clear description field manually
-		 * @see module:multiform#clear
+		 * @see module:multiform.clearForm
 		 * @private
 		 * @param {String} $form - the jQuery element of the form
 		 */
@@ -523,14 +523,15 @@ define(
 		
 		/**
 		 * Clear the flyer field manually
-		 * @see module:multiform#clear
+		 * @see module:multiform.clearForm
 		 * @private
 		 * @param {String} $form - the jQuery element of the form
 		 */
 		_clearFlyerForm: function($form){
 			$('#current-flyer', $form).removeAttr('src');
 		}
-	});
+	};
 	
-	return EventForm;
+	//make EventForm extends MultiForm
+	return $.extend({}, MultiForm, EventForm);
 });

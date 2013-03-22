@@ -13,18 +13,20 @@ define( ['jquery', 'modernizr'], function($){
 			
 		/**
 		 * Is localStorage supported
+		 * @private
 		 */
 		_ls : (Modernizr.localstorage === true),
 		
 		/**
 		 * namespace the entries to prevent collisions from other sites
+		 * @private
 		 */
 		_ns : 'yajmember',
 		
 		/**
 		 * Get an entry from the store
 		 * @param {String} key - the entry key
-		 * @returns the value or undefined
+		 * @returns {String} the value or undefined
 		 */
 		get : function(key){
 			if(this._ls){
@@ -63,6 +65,7 @@ define( ['jquery', 'modernizr'], function($){
 		/**
 		 * Check if an entry exists in the store
 		 * @param {String} key - the entry key
+		 * @returns {Boolean} true if the entry exists
 		 */
 		isset : function(key){
 			if(this._ls){

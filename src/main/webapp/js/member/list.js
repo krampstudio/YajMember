@@ -76,5 +76,6 @@ define(
 		}
 	};
 	
+	
 	return MemberList;
 });
