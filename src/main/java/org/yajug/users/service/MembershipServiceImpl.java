@@ -1,10 +1,14 @@
 package org.yajug.users.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.yajug.users.domain.Member;
 import org.yajug.users.domain.Membership;
 import org.yajug.users.domain.utils.KeyValidator;
+import org.yajug.users.domain.utils.MembershipCompartor;
 import org.yajug.users.persistence.dao.MembershipDao;
 
 import com.google.inject.Inject;
@@ -29,10 +33,17 @@ public class MembershipServiceImpl implements MembershipService {
 	 */
 	@Override
 	public Collection<Membership> getAllByMember(Member member) throws DataException {
+		
+		List<Membership> memberships = new ArrayList<>();
+		
 		if(member == null || !KeyValidator.validate(member.getKey())){
 			throw new ValidationException("Unable to retrieve a membership from an empty or invalid member");
 		}
-		return  membershipDao.getAllByMember(member.getKey());
+		memberships = membershipDao.getAllByMember(member.getKey());
+		if(memberships != null && !memberships.isEmpty()){
+			Collections.sort(memberships, new MembershipCompartor());
+		}
+		return memberships;
 	}
 
 	/**

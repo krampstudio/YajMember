@@ -32,6 +32,11 @@ public class Membership  extends DomainObject {
 	public Membership(String key) {
 		super(key);
 	}
+	
+	public Membership(String key, int year) {
+		super(key);
+		this.year = year;
+	}
 
 	/**
 	 * @return the year
