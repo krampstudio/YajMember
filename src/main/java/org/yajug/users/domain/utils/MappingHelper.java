@@ -10,6 +10,11 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 
+/**
+ * Provides some misc mapping features.
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 @Singleton
 public class MappingHelper {
 

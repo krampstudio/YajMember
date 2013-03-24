@@ -115,4 +115,12 @@ public class Serializer {
 			return gson.fromJson(json, typeOfT);
 		}
 	}
+
+	/**
+	 * Assign the date serializer
+	 * @param dateSerializer the dateSerializer to set
+	 */
+	public void setDateSerializer(DateSerializer dateSerializer) {
+		this.dateSerializer = dateSerializer;
+	}
 }

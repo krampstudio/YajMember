@@ -3,14 +3,32 @@ package org.yajug.users.domain.utils;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yajug.users.domain.DomainObject;
 import org.yajug.users.domain.Member;
 
+/**
+ * Field based {@link Member}s comparator. 
+ * 
+ * @author Bertrand Chevrier <bertrand.chevrier@yajug.org>
+ */
 public class MemberComparator implements Comparator<Member>{
 
+	private final static Logger logger = LoggerFactory.getLogger(MemberComparator.class);
+	
+	/**
+	 * The field used for the comparison
+	 */
 	private Field field;
 	
+	/**
+	 * Creates the comparator for a field comparison.
+	 * @param fieldName the name of the member's field
+	 */
 	public MemberComparator(String fieldName) {
+		
+		//use reflection to validate the field
 		try {
 			if("key".equals(fieldName)){
 				this.field = DomainObject.class.getDeclaredField(fieldName);
@@ -18,10 +36,13 @@ public class MemberComparator implements Comparator<Member>{
 				this.field = Member.class.getDeclaredField(fieldName);
 			}
 		} catch (NoSuchFieldException | SecurityException e) {
-			e.printStackTrace();
+			logger.error("Unknown or invisible field " + fieldName, e);
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int compare(Member o1, Member o2) {
 		int comparison = 0;
