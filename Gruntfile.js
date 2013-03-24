@@ -25,7 +25,7 @@ module.exports = function(grunt) {
 			}
 		},
 		
-		clean: [staticPath, buildPath+ 'reports/jsdoc'],
+		clean: [staticPath, buildPath + 'bower/components', buildPath+ 'reports/jsdoc'],
 		
 		requirejs: {
 			login: {
