@@ -433,8 +433,15 @@ define(
 					}
 				});
 				if(event.date){
-					$('#current-flyer',  self.getForm('flyer')).attr('src', 'img/events/event-'+event.date.replace(/\-/g,'')+'-small.png');
-					$('.current-flyer-field',  self.getForm('flyer')).show();
+					$('#current-flyer',  self.getForm('flyer'))
+						.load(function(){
+							$('.current-flyer-field',  self.getForm('flyer')).show();
+						})
+						.error(function(){
+							$('.current-flyer-field',  self.getForm('flyer')).hide();
+						})
+						.attr('src', 'img/events/event-'+event.date.replace(/\-/g,'')+'-small.png');
+					
 				}
 				if(event.description){
 					$('#description', self.getForm('infos')).htmlarea('html', event.description.replace(/\\n/g, '<br />'));

@@ -5,6 +5,7 @@
 {{each years}}
 <h3><a href="#${$value}">${$value}</a></h3>
 <div id='event-list-${$index}'>
+	<span class="loader"><img src="img/loader.gif" alt="Please wait" /> Loading...</span>
 	<ul></ul>
 </div>
 {{/each}}

@@ -27,27 +27,33 @@ define(['jquery', 'controller/event', 'store'], function($, EventController, sto
 					active: false,
 					collapsible: true,
 					clearStyle : true,
-					
+					create: function( event, ui ) {
+						$(this).accordion('activate', 0);
+					},
 					//load the events list by activating a pad 
-					changestart: function(event, ui){
+					change: function(event, ui){
 						
-						var $container = ui.newContent.find('ul'),
-							year = ui.newHeader.find('a').attr('href').replace('#', '');
-						
-						$container.find('li').remove('li');
-						
-						//load events
-						EventController.getAll(year, function(events){
+						if(ui.newHeader){
+							var $container = ui.newContent,
+								$list = ui.newContent.find('ul'),
+								year = ui.newHeader.find('a').attr('href').replace('#', '');
 							
-							//build the event list
-							var template = $('#event-item-template');
-							$container.append($.tmpl(template, events));
+							$list.find('li').remove();
 							
-							//set up the widgets 
-							self._setUpEventsControls($container);
-						});
-						
-						return false;
+							//load events
+							EventController.getAll(year, function(events){
+								
+								$container.find('.loader').fadeOut();
+								
+								//build the event list
+								var template = $('#event-item-template');
+								$list.append($.tmpl(template, events));
+								
+								//set up the widgets 
+								self._setUpEventsControls($list);
+							});
+							return false;
+						}
 					}
 				});
 			});
