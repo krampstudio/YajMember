@@ -26,16 +26,17 @@ define(['jquery', 'controller/event', 'store'], function($, EventController, sto
 				$('#events').accordion({
 					active: false,
 					collapsible: true,
-					clearStyle : true,
-					create: function( event, ui ) {
-						$(this).accordion('activate', 0);
+					heightStyle : 'content',
+					create: function(event, ui) {
+						 $(this).accordion('option', 'active', 0);
 					},
+					
 					//load the events list by activating a pad 
-					change: function(event, ui){
+					activate: function(event, ui){
 						
 						if(ui.newHeader){
-							var $container = ui.newContent,
-								$list = ui.newContent.find('ul'),
+							var $container = ui.newPanel,
+								$list = $container.find('ul'),
 								year = ui.newHeader.find('a').attr('href').replace('#', '');
 							
 							$list.find('li').remove();
@@ -79,7 +80,7 @@ define(['jquery', 'controller/event', 'store'], function($, EventController, sto
 					store.set('event', getEventId($(this)));
 					
 					//opens the edit tab
-					$('#actions').tabs('select', 3);
+					$('#actions').tabs('option', 'active', 3);
 					
 					return false;
 				});

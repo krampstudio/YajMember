@@ -44,7 +44,7 @@ require(['config/app'], function(){
 				
 				load : function(event, ui) {
 					var module = ui.tab.find('a').attr('href').replace(/\.html$/, '');
-					console.log(module)
+				
 					//load the module that match the loaded content : member/list.html load module member/list
 					requirejs([module], function(component) {
 						

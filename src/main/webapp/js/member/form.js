@@ -89,14 +89,13 @@ define(
 			this._buildMembershipTabs();
 			
 			//Add year for membership form
-			//TODO upgrade jquery-ui
-			//			if(!Modernizr.inputtypes.number){
-			//				$('.membership-amount', $container).spinner({
-			//					min: 0,
-			//					max: 40,
-			//					step: 40
-			//				});
-			//			}
+			if(!Modernizr.inputtypes.number){
+				$('#membership-new-year', $form).spinner({
+					min: 2010,
+					max: 2050,
+					step: 1
+				});
+			}
 			
 			//The form to add a new membership starts with the definition of the year
 			$('#add-year', $form).button({
@@ -158,8 +157,9 @@ define(
 				
 				/**
 				 * switch the membership form elements based on the type
+				 * @param {Object} $container - a jQuery element that contains the views
 				 */
-				updateFormView = function(){
+				updateFormView = function($container){
 					var val = $(this).val();
 					if(val === 'sponsored'){
 						$('.sponsored-mb', $container).show();
@@ -189,7 +189,7 @@ define(
 				
 				//set up the membership type switch
 				$('.membership-type', $container).buttonset();
-				updateFormView.apply($('.membership-type input:checked', $container));
+				updateFormView.apply($('.membership-type input:checked', $container), [$container]);
 				$('.membership-type input', $container).change(updateFormView);
 				
 				//set up the membership removal
@@ -214,14 +214,13 @@ define(
 					});
 				}
 				
-				//TODO upgrade jquery-ui
-	//			if(!Modernizr.inputtypes.number){
-	//				$('.membership-amount', $container).spinner({
-	//					min: 0,
-	//					max: 40,
-	//					step: 40
-	//				});
-	//			}
+				if(!Modernizr.inputtypes.number){
+					$('.membership-amount', $container).spinner({
+						min: 0,
+						max: 40,
+						step: 40
+					});
+				}
 				
 				//and the company list autocompletion
 				$('.membership-company', $container).autocomplete({

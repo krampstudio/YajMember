@@ -45,7 +45,7 @@ define(
 						store.set('member',  $(this).attr('href').replace('#', ''));
 						
 						//opens the edit tab
-						$('#actions').tabs('select', 1);
+						$('#actions').tabs('option', 'active', 1);
 						
 						return false;
 					});
