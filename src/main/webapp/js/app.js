@@ -21,14 +21,20 @@ require(['config/app'], function(){
 			//initialize logging: 0 disabled, 1 error, 2 warn
 			debug.setLevel(level.all);
 			
-			//one module by tab. The array index match the tab index!
-			var modules = ['member/list', 'member/form', 'event/list', 'event/form'];
-			
 			//create the tabs
 			$('#actions').tabs({
-				//each tab is loaded once!
-				cache: true,		
 				
+				//each tab is loaded once!
+				beforeLoad: function( event, ui ) {
+					if (ui.tab.data( "loaded" )) {
+						event.preventDefault();
+						return;
+					}
+					ui.jqXHR.success(function() {
+						ui.tab.data("loaded", true );
+					});
+				},		
+
 				create: function() {
 					//unload splash and display screen
 					$('#splash').fadeOut(1000, function(){
@@ -37,22 +43,23 @@ require(['config/app'], function(){
 				},
 				
 				load : function(event, ui) {
-					
-					//load the module that match the tab
-					requirejs([modules[ui.index]], function(module) {
+					var module = ui.tab.find('a').attr('href').replace(/\.html$/, '');
+					console.log(module)
+					//load the module that match the loaded content : member/list.html load module member/list
+					requirejs([module], function(component) {
 						
 						//and call the setUp method
-						if(module !== undefined && typeof module === 'object'){
-							if(module.setUp && typeof module.setUp === 'function'){
-								debug.debug('Set up module ', modules[ui.index], module);
-								module.setUp();
+						if(component !== undefined && typeof component === 'object'){
+							if(component.setUp && typeof component.setUp === 'function'){
+								debug.debug('Set up module ', module, component);
+								component.setUp();
 							}
 						}
 					});
 				},
 			
 				//trigger some events at each opening 
-				show : function(event, ui) {
+				activate : function(event, ui) {
 					
 					if(ui.index === 0){
 						//trigger the member list reload
