@@ -24,6 +24,15 @@ define(
 		 */
 		_formNames	: ['infos', 'flyer', 'participant'],
 		
+		mdEditor : new EpicEditor({
+			container: 'description',
+			basePath : 'js/lib/epiceditor/epiceditor',
+			localStorageName : 'yajmember.event',
+			theme : {
+				editor: 'themes/editor/epic-light.css'
+			}
+		}),
+		
 		/**
 		 * Initialize the form and the events
 		 */
@@ -77,26 +86,9 @@ define(
 				}
 			});
 			
-			var editor = new EpicEditor({
-				container: 'description',
-				basePath : 'js/lib/epiceditor/epiceditor',
-				theme : {
-					editor: 'themes/editor/epic-light.css'
-				}
-			});
-			
-//			editor.load();
-		
-			
-//			$('textarea', $form).htmlarea({
-//				toolbar: [
-//                    'bold', 'italic', 'underline', '|',
-//                    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '|',
-//                    'link', 'unlink', '|',
-//                    'orderedList', 'unorderedList', 'indent', 'outdent'
-//                ],
-//                css : 'css/lib/jhtmlarea/jhtmlarea-editor.css'
-//			});
+			//start the markdown editor
+			self.mdEditor.remove('description');
+			self.mdEditor.load();
 			
 			//save the event's info
 			$form.bind('submit', function(e){
@@ -455,7 +447,7 @@ define(
 					
 				}
 				if(event.description){
-					$('#description', self.getForm('infos')).htmlarea('html', event.description.replace(/\\n/g, '<br />'));
+					self.mdEditor.importFile('description', event.description);
 				}
 				$('#date', self.getForm('infos')).trigger('change');
 				if(event.registrants){
@@ -508,7 +500,8 @@ define(
 		serializeEvent : function($form){
 			var event = this.serialize($form);
 			if(event){
-				event.description = $('#description', $form).htmlarea('toHtmlString');
+				event.description = self.mdEditor.exportFiles('description');
+				debug.debug('serialize', event.description);
 			}
 			return event;
 		},
