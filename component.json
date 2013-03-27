@@ -9,7 +9,7 @@
 	    "modernizr"			: "*",
 	    "gridy"				: "git+https://github.com/wbotelhos/gridy.git",
 	    "noty"				: "git+https://github.com/needim/noty.git",
-		"jhtmlarea"			: "git+https://github.com/krampstudio/jhtmlarea.git",
+		"epiceditor"		: "git+https://github.com/krampstudio/EpicEditor.git",
 		"javascript-debug"	: "git+https://github.com/cowboy/javascript-debug.git"
 	  }
 }

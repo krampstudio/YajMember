@@ -1,5 +1,5 @@
 define(
-	['jquery', 'controller/event', 'controller/flyer', 'multiform', 'notify', 'store', 'eventbus', 'jhtmlarea', 'modernizr', 'filesender'], 
+	['jquery', 'controller/event', 'controller/flyer', 'multiform', 'notify', 'store', 'eventbus', 'epiceditor', 'modernizr', 'filesender'], 
 	function($, EventController, FlyerController, MultiForm, notify, store, EventBus){
 	
 	'use strict';
@@ -77,15 +77,26 @@ define(
 				}
 			});
 			
-			$('textarea', $form).htmlarea({
-				toolbar: [
-                    'bold', 'italic', 'underline', '|',
-                    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '|',
-                    'link', 'unlink', '|',
-                    'orderedList', 'unorderedList', 'indent', 'outdent'
-                ],
-                css : 'css/lib/jhtmlarea/jhtmlarea-editor.css'
+			var editor = new EpicEditor({
+				container: 'description',
+				basePath : 'js/lib/epiceditor/epiceditor',
+				theme : {
+					editor: 'themes/editor/epic-light.css'
+				}
 			});
+			
+//			editor.load();
+		
+			
+//			$('textarea', $form).htmlarea({
+//				toolbar: [
+//                    'bold', 'italic', 'underline', '|',
+//                    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '|',
+//                    'link', 'unlink', '|',
+//                    'orderedList', 'unorderedList', 'indent', 'outdent'
+//                ],
+//                css : 'css/lib/jhtmlarea/jhtmlarea-editor.css'
+//			});
 			
 			//save the event's info
 			$form.bind('submit', function(e){
