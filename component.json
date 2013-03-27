@@ -4,12 +4,12 @@
 	"dependencies": {
 	    "requirejs"			: "~2.1.x",
 	    "jquery"			: "~1.9.1",
-	    "jquery-ui"	 		: "git+https://github.com/krampstudio/jquery-ui-custom.git",
+	    "jquery-ui"	 		: "git+https://github.com/krampstudio/jquery-ui-custom.git#1.10.2",
 	    "jquery-tmpl" 		: "*",
 	    "modernizr"			: "*",
-	    "gridy"				: "git+https://github.com/wbotelhos/gridy.git",
-	    "noty"				: "git+https://github.com/needim/noty.git",
-		"epiceditor"		: "git+https://github.com/krampstudio/EpicEditor.git",
-		"javascript-debug"	: "git+https://github.com/cowboy/javascript-debug.git"
+	    "gridy"				: "git+https://github.com/krampstudio/gridy.git#1.0.0",
+	    "noty"				: "git+https://github.com/needim/noty.git#2.0.3",
+		"epiceditor"		: "git+https://github.com/krampstudio/EpicEditor.git#0.2.0",
+		"javascript-debug"	: "git+https://github.com/krampstudio/javascript-debug.git#0.4.0"
 	  }
 }

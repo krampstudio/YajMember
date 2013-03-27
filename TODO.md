@@ -25,4 +25,4 @@
  - [ ] Refactor app.js and form/lists to use an event bus instead of the overriding model
  - [x] Refactor form/lists to use a js crud layer that communicate with the server
  - [x] Remove key and use _id instead (see `mongoId` branch)
- - [ ] Tag/versions to bowers components
+ - [x] Tag/versions to bowers components
