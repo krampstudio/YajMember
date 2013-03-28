@@ -26,10 +26,11 @@ define(
 		
 		mdEditor : new EpicEditor({
 			container: 'description',
-			basePath : 'js/lib/epiceditor/epiceditor',
-			localStorageName : 'yajmember.event',
+			basePath : 'js/lib/epiceditor/epiceditor/',
+			localStorageName : 'yajmember.event.desc',
 			theme : {
-				editor: 'themes/editor/epic-light.css'
+				editor: 'themes/editor/epic-light.css',
+				preview: 'themes/preview/preview-dark.css'
 			}
 		}),
 		
@@ -87,8 +88,8 @@ define(
 			});
 			
 			//start the markdown editor
-			self.mdEditor.remove('description');
 			self.mdEditor.load();
+			self.mdEditor.open('event.desc.new');
 			
 			//save the event's info
 			$form.bind('submit', function(e){
@@ -447,7 +448,8 @@ define(
 					
 				}
 				if(event.description){
-					self.mdEditor.importFile('description', event.description);
+					self.mdEditor.importFile('event.desc.'+event.key, event.description);
+					self.mdEditor.open('event.desc.'+event.key);
 				}
 				$('#date', self.getForm('infos')).trigger('change');
 				if(event.registrants){
@@ -500,7 +502,8 @@ define(
 		serializeEvent : function($form){
 			var event = this.serialize($form);
 			if(event){
-				event.description = self.mdEditor.exportFiles('description');
+				
+				event.description = this.mdEditor.exportFile('event.desc.' + (event.key) ? key : 'new');
 				debug.debug('serialize', event.description);
 			}
 			return event;
@@ -529,7 +532,10 @@ define(
 		 * @param {String} $form - the jQuery element of the form
 		 */
 		_clearInfosForm : function($form){
-			$('#description', $form).htmlarea('updateHtmlArea');
+			for(var file in this.mdEditor.getFiles()){
+				this.mdEditor.remove(file);
+			}
+			this.mdEditor.open('event.desc.new');
 		},
 		
 		/**

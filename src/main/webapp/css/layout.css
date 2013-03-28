@@ -280,6 +280,16 @@ li.event > img {
 li.event .event-ctrl{
 	margin:.5em;
 }
+#event-infos-editor #description{
+	background-color:#FEFEFE;
+	border:solid 1px #EEE;
+	-moz-box-shadow: 3px 3px 2px #888;
+	-webkit-box-shadow: 3px 3px 2px #888;
+	box-shadow: 3px 3px 2px #888;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+}
 .current-flyer-field{
 	position:relative;
 }

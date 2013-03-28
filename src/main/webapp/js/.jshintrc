@@ -18,6 +18,8 @@
             "requirejs",
             "Modernizr",
             "noty",
-            "debug"
+            "debug",
+            "EpicEditor",
+            "marked"
         ]
 }

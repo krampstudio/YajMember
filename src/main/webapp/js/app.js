@@ -60,13 +60,14 @@ require(['config/app'], function(){
 			
 				//trigger some events at each opening 
 				activate : function(event, ui) {
+					var module = ui.newTab.find('a').attr('href').replace(/\.html$/, '');
 					
-					if(ui.index === 0){
+					if(module === 'member/list'){
 						//trigger the member list reload
 						EventBus.publish('memberlist.reload');
 					} 
 					
-					if(ui.index === 1){
+					if(module === 'member/form'){
 						//load a member into the form if one is selected
 						EventBus.publish('memberform.load');
 					} else {
@@ -74,7 +75,7 @@ require(['config/app'], function(){
 						EventBus.publish('memberform.cleanup');
 					}
 					
-					if(ui.index === 3){
+					if(module === 'event/form'){
 						//load an event into the form if one is selected
 						EventBus.publish('eventform.load');
 					} else {
@@ -82,14 +83,12 @@ require(['config/app'], function(){
 						EventBus.publish('eventform.cleanup');
 					}
 					
-					//rename the tab if we are add or editing
+					//rename the tabs regarding if we are in add or editing mode
 					$('#actions ul:first li:nth-child(2) a').text(
-						(ui.index === 1 && store.isset('member')) ? 'Edit member' : 'Add a member'
+						(module === 'member/form' && store.isset('member')) ? 'Edit member' : 'Add a member'
 					);
-					
-					//rename the tab if we are add or editing
 					$('#actions ul:first li:nth-child(4) a').text(
-						(ui.index === 3 && store.isset('event')) ? 'Edit event' : 'Add an event'
+						(module === 'event/form' && store.isset('event')) ? 'Edit event' : 'Add an event'
 					);
 				}
 			});

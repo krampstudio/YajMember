@@ -1,4 +1,4 @@
-define(['jquery', 'controller/event', 'store'], function($, EventController, store){
+define(['jquery', 'controller/event', 'store', 'epiceditor'], function($, EventController, store){
 	
 	'use strict';
 	
@@ -44,11 +44,17 @@ define(['jquery', 'controller/event', 'store'], function($, EventController, sto
 							//load events
 							EventController.getAll(year, function(events){
 								
+								//parse markdown
+								for(var i in events){
+									if(events[i].description){
+										events[i].description = marked(events[i].description);
+									}
+								}
+								
 								$container.find('.loader').fadeOut();
 								
 								//build the event list
-								var template = $('#event-item-template');
-								$list.append($.tmpl(template, events));
+								$list.append($.tmpl($('#event-item-template'), events));
 								
 								//set up the widgets 
 								self._setUpEventsControls($list);

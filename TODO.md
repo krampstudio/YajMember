@@ -15,7 +15,7 @@
  - [x] Update model to include company sponsor memberships
  - [x] Extract serializer to be shared for mongo and rest (especially for the timezone handling)
  - [ ] Change jquery.tmpl is it is not maintained anymore (see `template` branch)
- - [ ] Update jquery and jquery ui to the last version (the use of spinners would be cool)
+ - [x] Update jquery and jquery ui to the last version (the use of spinners would be cool)
  - [ ] Try to find a way to exclude files from the war into gradle
  - [ ] Optimize also CSS in the grunt optimize task
  - [ ] Do a bunch of testNg's integration tests
