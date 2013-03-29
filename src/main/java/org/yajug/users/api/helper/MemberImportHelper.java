@@ -1,5 +1,6 @@
 package org.yajug.users.api.helper;
 
+import java.beans.Statement;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,7 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.supercsv.cellprocessor.constraint.NotNull;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvMapReader;
 import org.supercsv.io.ICsvMapReader;
@@ -31,6 +35,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class MemberImportHelper {
+	
+	private final static Logger logger = LoggerFactory.getLogger(MemberImportHelper.class);
 	
 	private final static List<String> AVAILABLE_FIELDS = Lists.newArrayList(
 		"firstName", "lastName", "name", "company", "email"
@@ -83,29 +89,43 @@ public class MemberImportHelper {
 					if(!AVAILABLE_FIELDS.contains(fields[i])){
 						processors[i] = null; //ignore
 					} else {
-						processors[i] = new NotNull();
+						processors[i] = new Optional();
 					}
 				}
 				
 				Map<String, Object> row;
 	            while( (row = mapReader.read(fields, processors)) != null ) {
+	            	
+	                boolean atLeastOne = false;
 	                Member member = new Member();
-	                if(row.containsKey("firstName")){
-	                	member.setFirstName(row.get("firstName").toString());
+	                
+	                //assign the values to the member
+	                for(String field : AVAILABLE_FIELDS){
+	                	if(row.containsKey(field) && row.get(field) != null){
+	                		String value = row.get(field).toString();
+	                		if(StringUtils.isNotBlank(value)){
+		                		if("name".equals(field)){
+		                			//special case for the name
+		                			parseMemberName(value, member);
+		                			atLeastOne = true;
+		                		} else {
+		                			//call the setter
+			                		try {
+										new Statement(member, 
+												"set" + field.substring(0, 1).toUpperCase() + field.substring(1), 
+												new Object[]{value}
+											).execute();
+									} catch (Exception e) {
+										logger.error(e.getMessage(), e);
+									}
+			                		atLeastOne = true;
+			                	}
+	                		}
+		                }
 	                }
-	                if(row.containsKey("lastName")){
-	                	member.setLastName(row.get("lastName").toString());
+	                if(atLeastOne){
+	                	members.add(member);
 	                }
-	                if(row.containsKey("name")){
-	                	parseMemberName(row.get("name").toString(), member);
-	                }
-	                if(row.containsKey("company")){
-	                	member.setCompany(row.get("company").toString());
-	                }
-	                if(row.containsKey("email")){
-	                	member.setEmail(row.get("email").toString());
-	                }
-	                members.add(member);
 	            }
 	            
 			} catch (IOException e) {
@@ -117,8 +137,9 @@ public class MemberImportHelper {
 	
 	/**
 	 * Parse a string composed by first name and last name and assign them to the Member
-	 * @param name
-	 * @param member 
+	 * TODO the split is not satisfying and could be improved (ie. case with a space in the lastName)
+	 * @param name the string to parse and split
+	 * @param member the member instance to assign the name
 	 */
 	private void parseMemberName(String name, Member member){
 

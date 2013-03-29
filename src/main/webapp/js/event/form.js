@@ -209,7 +209,7 @@ define(
 				 * @param {String} name - the required member's name
 				 */
 				addRegistrant = function(key, name){
-					if(key && name){
+					if(key && name && $registrantList.find('li#registrant-' + key).length === 0){
 						var $item = $('<li></li>')
 							.addClass('ui-state-default')
 							.attr('id', 'registrant-' + key)
@@ -289,8 +289,13 @@ define(
 				$form.sendfile({
 					url : 'api/event/importRegistrants/'+self.getEventId(),
 					loaded : function(result){
+						
 						if(result && result.members){
-							var stats = {}, infos = 'Event registration :';
+							var stats = {}, 
+								ambiguousMembers = [],
+								$infoTmpl = $('#import-infos-template'),
+								$warnTmpl = $('#import-warn-template');
+							
 							notify('success', 'File uploaded');
 							
 							//TODO improve an test this
@@ -309,20 +314,15 @@ define(
 										addRegistrant(elt.member.key, elt.member.name);
 										break;
 									case 'ambiguous':	
+										ambiguousMembers.push(elt.given);
+										break;
 								}
 							});
-							if(stats.exists){
-								infos += stats.exists + ' existing members.\n';
-							}
-							if(stats.added){
-								infos += stats.added + ' new members.\n';
-							}
-							notify('info', infos);
+							notify('info', $.tmpl($infoTmpl, stats));
 							
-							if(stats.ambiguous){
-								notify('warning', "Ambiguous state : Some members of the file cannot " +
-										"be imported because we found more than one member for their data.");
-							}
+							if(stats.ambiguous && stats.ambiguous > 0){
+								notify('warning', $.tmpl($warnTmpl, { 'ambigous' : stats.ambiguous, 'members': ambiguousMembers}));
+							} 
 						} else {
 							//TODO catch error
 							notify('error', 'File upload error');
@@ -449,8 +449,9 @@ define(
 				}
 				if(event.description){
 					self.mdEditor.importFile('event.desc.'+event.key, event.description);
-					self.mdEditor.open('event.desc.'+event.key);
 				}
+				self.mdEditor.open('event.desc.'+event.key);
+				
 				$('#date', self.getForm('infos')).trigger('change');
 				if(event.registrants){
 					self.addParticipant(event.registrants, 'registrant');
@@ -502,9 +503,8 @@ define(
 		serializeEvent : function($form){
 			var event = this.serialize($form);
 			if(event){
-				
-				event.description = this.mdEditor.exportFile('event.desc.' + (event.key) ? key : 'new');
-				debug.debug('serialize', event.description);
+				event.description = this.mdEditor.exportFile(event.key ? 'event.desc.'+event.key : 'event.desc.new');
+				debug.debug('serialized desc', event.description);
 			}
 			return event;
 		},

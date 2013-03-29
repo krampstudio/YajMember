@@ -5,7 +5,7 @@
  - [x] Add filtering/searching to member table
  - [x] Flyers removal
  - [x] Save event participants
- - [ ] Participants matching list from RSVP or full text list
+ - [ ] Participants matching list from RSVP
  - [x] Manage authentication error messages (ie. when user is already logged to google but with another account)
  - [x] Add slf4j and logback!
  - [x] Add grunt to build the client side (to manage the require.js optimizer) and link it to gradle
@@ -26,3 +26,4 @@
  - [x] Refactor form/lists to use a js crud layer that communicate with the server
  - [x] Remove key and use _id instead (see `mongoId` branch)
  - [x] Tag/versions to bowers components
+ - [ ] Add event paiement to the model

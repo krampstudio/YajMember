@@ -44,13 +44,13 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		/**
 		 * Call the API to save a member
 		 * @param {Object} member - the member to save, if it has no key attribute, it will be inserted
-		 * @param {Function}�callback - called if there was no errors
+		 * @param {Function} callback - called if there was no errors
 		 */
-		save : function(event, callback){
-			if(!event){
+		save : function(member, callback){
+			if(!member){
 				$.error('Invalid member : ' + member);
 			} else {
-				var update = event.key !== undefined;
+				var update = member.key !== undefined;
 				$.ajax({
 					type		: update ? 'POST' : 'PUT',
 					url			: this._apiBase + (update ? 'update' : 'add'),

@@ -107,3 +107,29 @@
 <script id="participant-item-template" type="text/x-jquery-tmpl">
 <li id="${pkey}" class="ui-state-default">${pname}</li>
 </script>
+<script id="import-infos-template" type="text/x-jquery-tmpl">
+Event registration :
+<ul>
+{{if exists && exists > 0 }}
+	<li>${exists} known member{{if exists > 1 }}s{{/if}} registered to the event.</li> 
+{{/if}}
+{{if added && added > 0 }}
+	<li>${added} new member{{if added > 1 }}s{{/if}} added and registered.</li> 
+{{/if}}
+</ul>
+</script>
+<script id="import-warn-template" type="text/x-jquery-tmpl">
+<strong>Ambiguous state</strong><br />
+${ambiguous} member{{if ambiguous > 1 }}s{{/if}} of the file cannot be imported because we found more than one member for their data:
+<ul>
+{{each(i, memberGroup) members}}
+	<li>
+		<ul>
+		{{each(j, member) memberGroup}}
+			<li>${member.firstname}, ${member.lastname}, ${member.company}, ${member.email}</li>
+		{{/each}}
+		</ul>
+	</li>
+{{/each}}
+</ul>
+</script>
