@@ -18,11 +18,11 @@ public class GridVo {
 	 * Build it from a list of members
 	 * @param members the members' list
 	 */
-	public GridVo(List<Member> members) {
+	public GridVo(List<Member> members, int total) {
 		if(members != null){
 			this.list = members;
 		}
-		this.total = list.size();
+		this.total = total;
 	}
 	
 	/**

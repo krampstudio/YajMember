@@ -3,6 +3,7 @@ package org.yajug.users.persistence.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -121,7 +122,7 @@ public class MemberMongoDao extends MongoDao<Member> implements MemberDao{
 	public List<Member> search(String expression){
 		List<Member> members = new ArrayList<>();
 		
-		BasicDBObject searchExpression = new BasicDBObject("$regex", expression).append("$options", "-i");
+		BasicDBObject searchExpression = new BasicDBObject("$regex", Pattern.quote(expression)).append("$options", "-i");
 		BasicDBList search = new BasicDBList();
 		search.add(new BasicDBObject("firstName", searchExpression));
 		search.add(new BasicDBObject("lastName", searchExpression));

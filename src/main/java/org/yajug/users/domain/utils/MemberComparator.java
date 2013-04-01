@@ -51,6 +51,8 @@ public class MemberComparator implements Comparator<Member>{
 				case "company":	
 					if(o1.getCompany() == null){
 						comparison = (o2.getCompany() != null) ?  -1 : 1;
+					} else if(o2.getCompany() == null) {
+						comparison = 1;
 					} else {
 						comparison = o1.getCompany().compareTo(o2.getCompany());
 					}
@@ -58,6 +60,8 @@ public class MemberComparator implements Comparator<Member>{
 				case "email":
 					if(o1.getEmail() == null){
 						comparison = (o2.getEmail() != null) ?  -1 : 1;
+					} else if(o2.getEmail() == null) {
+						comparison = 1;
 					} else {
 						comparison = o1.getEmail().compareTo(o2.getEmail());
 					}
@@ -65,6 +69,8 @@ public class MemberComparator implements Comparator<Member>{
 				case "firstName":
 					if(o1.getFirstName() == null){
 						comparison = (o2.getFirstName() != null) ?  -1 : 1;
+					} else if(o2.getFirstName() == null) {
+						comparison = 1;
 					} else {
 						comparison = o1.getFirstName().compareTo(o2.getFirstName());
 					}
@@ -72,6 +78,8 @@ public class MemberComparator implements Comparator<Member>{
 				case "lastName":
 					if(o1.getLastName() == null){
 						comparison = (o2.getLastName() != null) ?  -1 : 1;
+					} else if(o2.getLastName() == null) {
+						comparison = 1;
 					} else {
 						comparison = o1.getLastName().compareTo(o2.getLastName());
 					}

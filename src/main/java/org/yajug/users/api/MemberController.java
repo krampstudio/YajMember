@@ -40,6 +40,8 @@ public class MemberController extends RestController {
 	
 	private final static Logger logger = LoggerFactory.getLogger(MemberController.class);
 
+	private final static List<String> sortableFields = Lists.newArrayList("firstName", "lastName", "email", "company");
+	
 	@Inject private MemberService memberService;
 	@Inject private MembershipService membershipService;
 	
@@ -75,12 +77,13 @@ public class MemberController extends RestController {
 			}
 			
 			//ordering
-			if(StringUtils.isNotBlank(sortName)){
-				if("desc".equalsIgnoreCase(sortOrder)){
-					Collections.sort(membersList, Collections.reverseOrder(new MemberComparator(sortName)));
-				} else {
-					Collections.sort(membersList, new MemberComparator(sortName));
-				}
+			if(StringUtils.isBlank(sortName) || !sortableFields.contains(sortName)){
+				sortName = "lastNname";
+			}
+			if("desc".equalsIgnoreCase(sortOrder)){
+				Collections.sort(membersList, Collections.reverseOrder(new MemberComparator(sortName)));
+			} else {
+				Collections.sort(membersList, new MemberComparator(sortName));
 			}
 			
 			//pagination
@@ -90,16 +93,24 @@ public class MemberController extends RestController {
 			if(page <= 0){
 				page = 1;
 			}
-			int start = Math.min(0, Math.abs(page * rows));
-			int end = Math.min(membersList.size(), Math.abs(page * rows) + rows);
+			int start = Math.abs((page-1) * rows);
+			int end = Math.min(membersList.size(), start + rows);
+			int total = membersList.size();
 			
-			if(start > 0 && end != membersList.size()){
-				membersList.subList(0, start).clear();
-				membersList.subList(end, membersList.size()).clear();
+			logger.debug("rows " + rows);
+			logger.debug("page " + page);
+			logger.debug("start " + start);
+			logger.debug("end " + end);
+			logger.debug("size " + membersList.size());
+			
+			if(start >= 0 && end > start){
+				membersList = membersList.subList(start, end);
 			}
 			
+			logger.debug("final size " + membersList.size());
+			
 			//jsonize
-			response = serializeJsonp(new GridVo(membersList), callback);
+			response = serializeJsonp(new GridVo(membersList, total), callback);
 			
 		} catch (DataException e) {
 			logger.error(e.getLocalizedMessage(), e);

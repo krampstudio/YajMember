@@ -117,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
 			
 			//expression validated against a pattern
 			if(!validateSearchExpression(expression)){
-				throw new ValidationException("Invalid search pattern");
+				throw new ValidationException("Invalid search pattern : " + expression);
 			}
 			members = memberDao.search(expression);
 			if(members != null){
@@ -233,6 +233,6 @@ public class MemberServiceImpl implements MemberService {
 	 * @return
 	 */
 	private boolean validateSearchExpression(String expression){
-		return Pattern.compile("^[\\p{Alnum}.@]*$").matcher(expression).find();
+		return Pattern.compile("^[\\p{Alnum}.@+\\-_]*$").matcher(expression).find();
 	}
 }

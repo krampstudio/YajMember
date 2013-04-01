@@ -64,13 +64,13 @@ define(
 				 * the column list must match the template defined in index.html! 
 				 */
 				columns	: [
-					{ name: 'Valid',value: 'valid', width: 50 },
+					{ name: 'Valid', width: 50 },
 					{ name: 'First Name', value: 'firstName', width: 125 },
 					{ name: 'Last Name', value: 'lastName', width: 125 },
-					{ name: 'Email', value: 'email', width: 225 },
+					{ name: 'Email', value: 'email', width: 250 },
 					{ name: 'Company', value: 'company', width: 100 },
 					{ name: 'Roles', width: 80 },
-					{ name: 'Actions', width: 200 }
+					{ name: 'Actions', width: 180 }
 				]
 			});
 		}

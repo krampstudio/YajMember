@@ -8,8 +8,6 @@ import org.yajug.users.bulkimport.reader.processor.DomainCellProcessor;
 import org.yajug.users.bulkimport.reader.processor.MemberCellProcessor;
 import org.yajug.users.config.ModuleHelper;
 import org.yajug.users.domain.Member;
-import org.yajug.users.service.MemberService;
-import org.yajug.users.service.MemberServiceImpl;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -25,13 +23,12 @@ public class MemberModule extends AbstractModule {
 	protected void configure() {
 		
 		ModuleHelper.bindProperties(binder());
+		ModuleHelper.bindApis(binder());
 		
 		//bind importer, readers and processors
 		bind(DomainImporter.class).to(MemberImporter.class);
 		bind(new TypeLiteral<DomainReader<Member>>(){}).to(CsvMemberReader.class);
 		bind(DomainCellProcessor.class).to(MemberCellProcessor.class);
 		
-		//bind services
-		bind(MemberService.class).to(MemberServiceImpl.class);
 	}
 }
