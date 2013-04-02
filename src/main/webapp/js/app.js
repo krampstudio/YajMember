@@ -53,6 +53,7 @@ require(['config/app'], function(){
 							if(component.setUp && typeof component.setUp === 'function'){
 								debug.debug('Set up module ', module, component);
 								component.setUp();
+								console.log(ui.panel.html());
 							}
 						}
 					});
@@ -84,10 +85,10 @@ require(['config/app'], function(){
 					}
 					
 					//rename the tabs regarding if we are in add or editing mode
-					$('#actions ul:first li:nth-child(2) a').text(
+					$('#actions ul:first li:nth-child(3) a').text(
 						(module === 'member/form' && store.isset('member')) ? 'Edit member' : 'Add a member'
 					);
-					$('#actions ul:first li:nth-child(4) a').text(
+					$('#actions ul:first li:nth-child(5) a').text(
 						(module === 'event/form' && store.isset('event')) ? 'Edit event' : 'Add an event'
 					);
 				}
