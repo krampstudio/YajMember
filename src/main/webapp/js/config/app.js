@@ -12,6 +12,7 @@ requirejs.config({
 		'noty-base'		: 'lib/noty/js/noty',
 		'noty'			: 'lib/noty/js/noty/jquery.noty',
 		'debug'			: 'lib/javascript-debug/ba-debug',
+		'chart'			: 'lib/Chart.js/Chart.min'
 		'multiform'		: 'helpers/multiform',
 		'notify'		: 'helpers/notify',
 		'store'			: 'helpers/store',
