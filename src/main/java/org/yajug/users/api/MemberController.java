@@ -78,7 +78,7 @@ public class MemberController extends RestController {
 			
 			//ordering
 			if(StringUtils.isBlank(sortName) || !sortableFields.contains(sortName)){
-				sortName = "lastNname";
+				sortName = "lastName";
 			}
 			if("desc".equalsIgnoreCase(sortOrder)){
 				Collections.sort(membersList, Collections.reverseOrder(new MemberComparator(sortName)));
