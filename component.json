@@ -7,7 +7,7 @@
 	    "jquery-ui"	 		: "git+https://github.com/krampstudio/jquery-ui-custom.git#1.10.2",
 	    "jquery-tmpl" 		: "*",
 	    "modernizr"			: "*",
-	    "Chart.js"			: "*",
+	    "Chart.js"			: "git+https://github.com/krampstudio/Chart.js#0.1.1",
 	    "gridy"				: "git+https://github.com/krampstudio/gridy.git#1.0.0",
 	    "noty"				: "git+https://github.com/needim/noty.git#2.0.3",
 		"epiceditor"		: "git+https://github.com/krampstudio/EpicEditor.git#0.2.0",
