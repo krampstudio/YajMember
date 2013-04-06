@@ -23,13 +23,13 @@ Then set up the project:
 * Update the file `gradle.properties` (the _binaries_ and _proxy_ section) 
 * Install Grunt: 
 
-``̀ bash
+```bash
 $> npm install -g grunt-cli
-`̀``
+```
 
 * Run the command to fetch the javascript dependencies:
 
-`̀`̀`bash
+```bash
 $> gradle install
 ```
 
@@ -58,6 +58,7 @@ $> gradle jettyRun
 
 * [Gradle](http://www.gradle.org/) : the best java build tool (from far!)
 * [Grunt](http://gruntjs.org) : the best javascript build tool (too)
+* [Bower](http://twitter.github.com/bower/) : client side dependency management
 
 ###Server side smells
 
@@ -71,6 +72,7 @@ $> gradle jettyRun
 * [SuperCSV](http://supercsv.sourceforge.net/) : everything may not be in XML
 * [Sclar](http://www.thebuzzmedia.com/software/imgscalr-java-image-scaling-library/) : I don't want to screw up images
 * [Google Web APIs](http://code.google.com/p/google-api-java-client/) : OAuth from Google App to Yajug board members 
+* [Test NG](http://testng.org/) : The best java unit and integration tests framework
 
 ###Client side flavours
 
@@ -79,7 +81,9 @@ $> gradle jettyRun
 * [jQueryUi](http://jqueryui.com/) : simple components, cool theming, everything to build an UI 
 * [Gridy](https://github.com/wbotelhos/gridy) : but I'm too lazy to build my own _listgrid_
 * [Noty](http://needim.github.com/noty/) : because communication is the key
-* [Bower](http://twitter.github.com/bower/) : client side dependency management
+* [Chart.js](http://www.chartjs.org/) : a canvas based chart library, that rocks with a few hacks
+* {Epiceditor](http://oscargodson.github.io/EpicEditor/) : markdown instead of wysiwig, because we are harckers
+
 
 ## There is still a lot to do
 
