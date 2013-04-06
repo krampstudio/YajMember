@@ -111,6 +111,9 @@ public class Member extends DomainObject implements Comparable<Member>{
 	 * @return the role
 	 */
 	public List<Role> getRoles() {
+		if(roles == null){
+			roles = new ArrayList<>();
+		}
 		return roles;
 	}
 	

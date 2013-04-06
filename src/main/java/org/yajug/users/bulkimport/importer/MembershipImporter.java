@@ -38,6 +38,7 @@ public class MembershipImporter implements DomainImporter {
 		int imported = 0;
 		
 		Collection<Membership> memberships = new ArrayList<>();
+		Collection<Member> members = new ArrayList<>();
 		try {
 			
 			Collection<Event> events = eventService.getAll();
@@ -57,6 +58,7 @@ public class MembershipImporter implements DomainImporter {
 							logger.warn("Invalid key " + member.getKey() + " for member " + membership.getMember().getEmail() + ", skipped.");
 						} else {
 							membership.setMember(member);
+							members.add(member);
 						}
 					}
 					//get event if paiementDate match
@@ -71,6 +73,9 @@ public class MembershipImporter implements DomainImporter {
 			}
 			
 			if(membershipService.save(memberships)){
+				
+				//update the members regarding their new memberships
+				memberService.checkValidity(members, true);
 				imported = memberships.size();
 			}
 			
