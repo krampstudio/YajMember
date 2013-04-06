@@ -97,17 +97,17 @@ public class MemberController extends RestController {
 			int end = Math.min(membersList.size(), start + rows);
 			int total = membersList.size();
 			
-			logger.debug("rows " + rows);
-			logger.debug("page " + page);
-			logger.debug("start " + start);
-			logger.debug("end " + end);
-			logger.debug("size " + membersList.size());
+//			logger.debug("rows " + rows);
+//			logger.debug("page " + page);
+//			logger.debug("start " + start);
+//			logger.debug("end " + end);
+//			logger.debug("size " + membersList.size());
 			
 			if(start >= 0 && end > start){
 				membersList = membersList.subList(start, end);
 			}
 			
-			logger.debug("final size " + membersList.size());
+//			logger.debug("final size " + membersList.size());
 			
 			//jsonize
 			response = serializeJsonp(new GridVo(membersList, total), callback);

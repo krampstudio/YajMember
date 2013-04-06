@@ -35,12 +35,21 @@ public class BulkImport {
 		}
 		
 		if(module != null){
+			long start = System.currentTimeMillis();
+			long end = 0; 
+			String what = args[0];
+			logger.info("Starting import of {}s", what);
+			
 			Injector injector = Guice.createInjector(module);
 			DomainImporter importer = injector.getInstance(DomainImporter.class);
 		
 			int imported = importer.doImport(args[1]);
+			end = System.currentTimeMillis();
 			
-			logger.info(imported + " " + args[0] + " imported");
+			if(imported > 1){
+				what = what.concat("s");
+			} 
+			logger.info("{} {} imported in {}ms", imported, what, (end - start));
 		}
 	}
 

@@ -54,7 +54,7 @@ public class MongoConnector {
 		
 		if(mongoClient == null){
 			
-			logger.debug("Connecting to {}:{}", host, port);
+			logger.debug("Connecting to mongo instance at {}:{}", host, port);
 			
 			try {
 				mongoClient = new MongoClient(host, port);
@@ -62,7 +62,7 @@ public class MongoConnector {
 				e.printStackTrace();
 			}
 		}
-		logger.debug("Using to {}", name);
+		logger.debug("Using database: {}", name);
 		database = mongoClient.getDB(name);
 	}
 	
