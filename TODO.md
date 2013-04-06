@@ -1,4 +1,4 @@
-﻿ - [x] Sort events list in add member</s>
+ - [x] Sort events list in add member</s>
  - [x] Check why roles are not loaded with members</s>
  - [x] Use icons to represents roles
  - [x] Add a splash screen
