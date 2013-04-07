@@ -260,6 +260,10 @@ ul.sortable li span {
 	padding: 0;
 }
 
+.gridy-table td{
+	text-indent: 0;
+}
+
 /* events */
 ul#events{
 	list-style-type: none;
