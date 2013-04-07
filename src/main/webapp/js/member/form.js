@@ -415,7 +415,9 @@ define(
 		 * @param {Object} $form - the jQuery element of the form
 		 */
 		_clearMembershipForm : function($form){
-			$('#memberships', $form).tabs('destroy').removeClass('ui-tabs-vertical  ui-helper-clearfix');
+			if($('#memberships', $form).data('uiTabs')){
+				$('#memberships', $form).tabs('destroy').removeClass('ui-tabs-vertical  ui-helper-clearfix');
+			}
 			$('#memberships .membership-year', $form).remove();
 			$('#memberships .membership-form', $form).remove();
 		}

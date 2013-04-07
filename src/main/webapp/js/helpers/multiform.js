@@ -164,11 +164,13 @@ define(['jquery'], function($){
 				name = this._formNames[i];
 				$form = this.getForm(name);
 				if($form.length){
-					$form.each(resetForm);
 					clearForm = '_clear' + name[0].toUpperCase() + name.slice(1) + 'Form';
 					if(this[clearForm] !== undefined && typeof this[clearForm] === 'function'){
 						this[clearForm].call(this, $form);
 					}
+					
+					//reset is called after to fix the bug http://bugs.jqueryui.com/ticket/9213
+					$form.each(resetForm);
 				}
 			}
 			if(typeof callback === 'function'){

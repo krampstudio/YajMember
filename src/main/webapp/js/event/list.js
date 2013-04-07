@@ -86,7 +86,7 @@ define(['jquery', 'controller/event', 'store', 'epiceditor'], function($, EventC
 					store.set('event', getEventId($(this)));
 					
 					//opens the edit tab
-					$('#actions').tabs('option', 'active', 3);
+					$('#actions').tabs('option', 'active', 4);
 					
 					return false;
 				});

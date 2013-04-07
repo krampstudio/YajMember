@@ -21,11 +21,13 @@ define(
 			
 			//listen for reload event to reload the grid
 			EventBus.subscribe('memberlist.reload',function(){
-				self._$container.gridy('reload');
+				if(self._$container.data('settings')){
+					self._$container.gridy('reload');
+				}
 			});
 			
 			//build the grid
-			this._$container.gridy({
+			self._$container.gridy({
 				url		: 'api/member/list',
 				dataType	: 'jsonp',
 				evenOdd		: true,
@@ -37,7 +39,6 @@ define(
 					$('.gridy-search :button').button({disabled : false});
 				},
 				done		: function(){
-				
 					$('.member-edit').click(function(event){
 						event.preventDefault();
 						
@@ -45,7 +46,7 @@ define(
 						store.set('member',  $(this).attr('href').replace('#', ''));
 						
 						//opens the edit tab
-						$('#actions').tabs('option', 'active', 1);
+						$('#actions').tabs('option', 'active', 2);
 						
 						return false;
 					});
@@ -54,7 +55,7 @@ define(
 						event.preventDefault();
 						
 						MemberController.remove($(this).attr('href').replace('#', ''), function(){
-							self.reload();
+							EventBus.publish('memberlist.reload');
 						});
 						return false;
 					});
@@ -64,13 +65,13 @@ define(
 				 * the column list must match the template defined in index.html! 
 				 */
 				columns	: [
-					{ name: 'Valid', width: 50 },
+					{ name: 'Valid', width: 45 },
 					{ name: 'First Name', value: 'firstName', width: 125 },
 					{ name: 'Last Name', value: 'lastName', width: 125 },
-					{ name: 'Email', value: 'email', width: 250 },
-					{ name: 'Company', value: 'company', width: 100 },
+					{ name: 'Email', value: 'email', width: 255 },
+					{ name: 'Company', value: 'company', width: 145 },
 					{ name: 'Roles', width: 80 },
-					{ name: 'Actions', width: 180 }
+					{ name: 'Actions', width: 150 }
 				]
 			});
 		}

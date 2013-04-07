@@ -53,7 +53,6 @@ require(['config/app'], function(){
 							if(component.setUp && typeof component.setUp === 'function'){
 								debug.debug('Set up module ', module, component);
 								component.setUp();
-								console.log(ui.panel.html());
 							}
 						}
 					});
