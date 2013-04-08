@@ -268,6 +268,7 @@ ul.sortable li span {
 ul#events{
 	list-style-type: none;
 }
+
 li.event{
 	clear:both;
 	border-top: solid 1px #ddd;
