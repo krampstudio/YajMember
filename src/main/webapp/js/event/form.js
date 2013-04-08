@@ -203,6 +203,14 @@ define(
 				$trash					= $('.list-box-ctrl a.rml', $form),
 				$listBoxes				= $('.list-box ul', $form),
 				
+				sortList = function($list){
+					$list.children('li').sort(function(current, next){
+						var currentValue = $(current).text().toLowercase();
+						var nextValue = $(next).text().toLowercase()
+						return (currentValue < nextValue) ? - 1 : (currentValue > nextValue) ? 1 : 0;
+					}).appendTo($list);
+				},
+				
 				/**
 				 * Add registrant to his list
 				 * @param {String} key - the required member's identifier
@@ -215,6 +223,7 @@ define(
 							.attr('id', 'registrant-' + key)
 							.text(name);
 						$registrantList.append($item);
+						sortList($registrantList);
 					}
 				};
 			
@@ -346,6 +355,7 @@ define(
 							.text($(elt).text());
 						
 						$participantList.append($item);
+						sortList($participantList);
 					}
 					$(elt).removeClass('ui-selected ui-state-highlight');
 				});
@@ -486,12 +496,12 @@ define(
 			$.each(data, function(index, elt){
 				participants.push({
 					'pkey' : type + '-' + elt.key,
-					'pname' : elt.firstName + elt.lastName
+					'pname' : elt.firstName + ' ' +  elt.lastName
 				});
 			});
 			
 			if(participants.length > 0){
-				$container.append($.tmpl(tmpl, participants));
+				$container.append($.tmpl(tmpl, participants.sort()));
 			}
 		},
 		
@@ -504,7 +514,6 @@ define(
 			var event = this.serialize($form);
 			if(event){
 				event.description = this.mdEditor.exportFile(event.key ? 'event.desc.'+event.key : 'event.desc.new');
-				debug.debug('serialized desc', event.description);
 			}
 			return event;
 		},

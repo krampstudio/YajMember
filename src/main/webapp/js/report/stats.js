@@ -13,23 +13,21 @@ define(['jquery', 'controller/event', 'eventbus', 'chart'], function($, EventCon
 					var registrants = [];
 					
 					for(var i in events){
-						labels.push(events[i].date.replace("2012-", '')+ " ");
+						labels.push(events[i].date + " ");
 						if(events[i].participants && $.isArray(events[i].participants)){
 							participants.push(events[i].participants.length);
 						} else {
 							participants.push(0);
 						}
-						//participants.push(10 * i);
 						if(events[i].registrants && $.isArray(events[i].registrants)){
 							registrants.push(events[i].registrants.length);
 						} else {
 							registrants.push(0);
 						}
-						//registrants.push(15 * i);
 					}
-					var width = labels.length * 75
-					$canvas.attr('width', (width < 150) ? 150 : width);
-					$canvas.attr('height', '300')
+					var width = labels.length * 125;
+					$canvas.attr('width', (width < 250) ? 250 : width);
+					$canvas.attr('height', '300');
 					
 					chart1 = new Chart($canvas.get(0).getContext("2d"));
 					chart1.Bar({
