@@ -55,7 +55,7 @@ public class MemberImportHelper {
 	 */
 	public Collection<Member> readFromCsv(
 			InputStream input, 
-			String[] fields, 
+			List<String> fields, 
 			boolean ignoreHeader, 
 			char delimiter,
 			char wrapper) throws DataException {
@@ -82,19 +82,29 @@ public class MemberImportHelper {
 				)){
 				
 				if(ignoreHeader){
-					mapReader.getHeader(true);
+					int columnSize =  mapReader.getHeader(true).length;
+					if(columnSize > fields.size()){
+						for(int i = fields.size(); i < columnSize; i++){
+							fields.add(i, null);
+						}
+					}
 				}
-				CellProcessor[] processors = new CellProcessor[fields.length];
-				for(int i = 0; i < fields.length ; i++){
-					if(!AVAILABLE_FIELDS.contains(fields[i])){
-						processors[i] = null; //ignore
+				List<CellProcessor> processors = new ArrayList<>(fields.size());
+				for(String field : fields){
+					if(!AVAILABLE_FIELDS.contains(field)){
+						processors.add(null); //ignore
 					} else {
-						processors[i] = new Optional();
+						processors.add(new Optional());
 					}
 				}
 				
+				
 				Map<String, Object> row;
-	            while( (row = mapReader.read(fields, processors)) != null ) {
+	            while( (row = mapReader.read(
+	            				fields.toArray(new String[fields.size()]), 
+	            				processors.toArray(new CellProcessor[processors.size()])
+	            			)
+	            		) != null ) {
 	            	
 	                boolean atLeastOne = false;
 	                Member member = new Member();

@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -363,9 +362,10 @@ public class EventController extends RestController {
 			} 
 
 			//get the CSV columns in the right order
-			String[] fields = serializer.get().fromJson(order, String[].class);
+			Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+			List<String> fields = serializer.get().fromJson(order, listType);
 			
-			if(fields.length == 0 || !Arrays.asList(fields).contains("email")){
+			if(fields == null || fields.isEmpty() || !fields.contains("email")){
 				throw new DataException("CSV fields must contains at least the email.");
 			}
 			
