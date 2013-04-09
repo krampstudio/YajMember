@@ -160,6 +160,53 @@ form .help{
 	font-style: italic;
 }
 
+/* charts */
+#stats .chart{
+	display:none;
+}
+#stats .legend{
+	display:inline-block;
+	border: solid 1px #c0c0c0;
+	background-color: #efefef;
+	padding:.5em .5em .5em 2em;
+}
+#stats .legend ul {
+	padding:0;
+	margin:0;
+	list-style-type: none;
+}
+#stats .legend li{
+	position:relative;
+}
+#stats .legend li.color1{
+	color: #88A9BD;
+}
+#stats .legend li.color1:before{
+     content:'';
+     display: block;
+     position: absolute;
+     width: 7px;
+     height:7px;
+     left: -1.2em;
+     top: .3em;
+     background-color: #C8DAE3;
+     border:solid 2px #88A9BD;
+}
+#stats .legend li.color2{
+	color: #E77124;
+}
+#stats .legend li.color2:before{
+     content:'';
+     display: block;
+     position: absolute;
+     width: 7px;
+     height:7px;
+     left: -1.2em;
+     top: .3em;
+     background-color: #F3B891;
+     border:solid 2px #E77124;
+}
+
 /* membership */
 form fieldset > div#memberships:hover{
 	background-color: inherit;

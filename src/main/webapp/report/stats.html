@@ -1,7 +1,19 @@
 <div id="stats">
-	<div class="chart">
-		<h2>Registrants and participants by event </h2>
-		Select a year <select id="stat-participants-year"></select><br />
-		<canvas id="stat-participants"></canvas>
+	<div id="participants-chart">
+		<span class="loader">
+			<img src="img/loader.gif" alt="Please wait" /> Loading...
+		</span>
+		<div class="chart">
+			<h2>Registrants and participants by event </h2>
+			<label for="stat-participants-year">For year</label><select name="stat-participants-year"></select><br />
+			<canvas id="stat-participants"></canvas>
+			<br />
+			<div class="legend">
+				<ul>
+					<li class="color1">Registrants</li>
+					<li class="color2">Participants</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
