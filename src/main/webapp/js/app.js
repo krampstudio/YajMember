@@ -8,6 +8,7 @@ require(['config/app'], function(){
 	
 		$(function(){
 			
+			//initialize logging
 			var level = {
 				'none' : 0, 
 				'error' : 1,
@@ -17,9 +18,13 @@ require(['config/app'], function(){
 				'log' : 5,
 				'all' : 9
 			};
-			
-			//initialize logging: 0 disabled, 1 error, 2 warn
 			debug.setLevel(level.all);
+			
+			//initialize the error management
+			$(document).ajaxError(function(event, xhr, settings, error){
+				debug.error(settings.url + " code " + xhr.statusCode + " " + error);
+				notify('error', error);
+			});
 			
 			//create the tabs
 			$('#actions').tabs({

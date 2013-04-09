@@ -31,7 +31,8 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 					data		: { id : key }
 				}).done(function(data) {	
 					if(!data || data.error){
-						$.error("Error : " + (data.error ? data.error : "unknown"));
+						debug.warn((data.error ? data.error : "unknown"));
+						notify('warn', (data.error ? data.error : "unknown"));
 					} else {
 						if(typeof callback === 'function'){
 							callback(data);
@@ -61,7 +62,8 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 					}
 				}).done(function(data) {
 					if(!data.saved || data.error){
-						$.error("Error : " + data.error ? data.error : "unknown");
+						debug.warn((data.error ? data.error : "unknown"));
+						notify('warn', (data.error ? data.error : "unknown"));
 					} else {
 						notify('success', 'The member has been saved');
 						if(typeof callback === 'function'){
@@ -89,7 +91,8 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 						dataType	: 'json'
 					}).done(function(data) {	
 						if(!data.removed  || data.error){
-							$.error("Error : " + data.error ? data.error : "unknown");
+							debug.warn((data.error ? data.error : "unknown"));
+							notify('warn', (data.error ? data.error : "unknown"));
 						} else {
 							if(store.get('member') === key){
 								store.rm('member');

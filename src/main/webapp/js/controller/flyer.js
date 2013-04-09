@@ -31,7 +31,8 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 						dataType	: 'json'
 					}).done(function(data) {	
 						if(!data.removed  || data.error){
-							$.error("Error : " + data.error ? data.error : "unknown");
+							debug.warn((data.error ? data.error : "unknown"));
+							notify('warn', (data.error ? data.error : "unknown"));
 						} else {
 							notify('success', 'Flyer removed');
 							if(typeof callback === 'function'){
