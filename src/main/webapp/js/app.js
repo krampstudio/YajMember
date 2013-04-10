@@ -22,8 +22,12 @@ require(['config/app'], function(){
 			
 			//initialize the error management
 			$(document).ajaxError(function(event, xhr, settings, error){
-				debug.error(settings.url + " code " + xhr.statusCode + " " + error);
-				notify('error', error);
+				//prevent to raise an error when ajax calls are prevented using event.preventDefault()
+				if(xhr.statusText !== 'canceled'){
+					var message = settings.url + " status code " + xhr.status + " : " + error;
+					debug.error(message);
+					notify('error', message);
+				}
 			});
 			
 			//create the tabs
@@ -38,7 +42,7 @@ require(['config/app'], function(){
 					ui.jqXHR.success(function() {
 						ui.tab.data("loaded", true );
 					});
-				},		
+				},
 
 				create: function() {
 					//unload splash and display screen
