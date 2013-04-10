@@ -52,6 +52,22 @@ public class MembershipController extends RestController {
 	 */
 	@Inject private MembershipService membershipService;
 	
+	@GET
+	@Path("all")
+	@Produces({MediaType.APPLICATION_JSON})
+	public String getAll(){
+		String response = "";
+		try {
+			
+			response = serializer.get().toJson(membershipService.getAll());
+			
+		} catch (DataException e) {
+			logger.error(e.getLocalizedMessage(), e);
+			response = serializeException(e);
+		} 
+		return response;
+	}
+	
 	/**
 	 * Get the {@link Membership}s of a {@link Member} from it's identifier.
 	 * 

@@ -14,6 +14,26 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		 */
 		_apiBase : 'api/membership/',
 		
+		/**
+		 * Call the API to get all the memberships
+		 * @param {MembershipsCallback} callback - called once retrieved, with the memberships in parameter
+		 */
+		getAll : function(callback){
+			$.ajax({
+				type		: 'GET',
+				url			: this._apiBase + 'all',
+				dataType	: 'json'
+			}).done(function(data) {	
+				if(!data || data.error){
+					debug.warn((data.error ? data.error : "unknown"));
+					notify('warn', (data.error ? data.error : "unknown"));
+				} else {
+					if(typeof callback === 'function'){
+						callback(data);
+					}
+				}
+			});
+		},
 		
 		/**
 		 * Call the API to get the memberships that belongs to a member
@@ -22,7 +42,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		 */
 		getByMember : function(key, callback){
 			if(!key){
-				$.error('Invalid member key : ' + key);
+				debug.error('Invalid member key : ' + key);
 			} else {
 				$.ajax({
 					type		: 'GET',
@@ -49,7 +69,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		 */
 		save : function(memberships, callback){
 			if(!memberships || !$.isArray(memberships) ){
-				$.error('Invalid memberships : ' + memberships);
+				debug.error('Invalid memberships : ' + memberships);
 			} else {
 			
 				$.ajax({
@@ -82,7 +102,7 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 		remove : function(key, callback){
 			var self = this;
 			if(!key){
-				$.error("Invalid membership's key : " + key);
+				debug.error("Invalid membership's key : " + key);
 			} else {
 				notify('confirm', 'You really want to remove this membership?', function(){
 					$.ajax({

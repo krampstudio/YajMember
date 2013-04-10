@@ -164,6 +164,13 @@ form .help{
 #stats .chart{
 	display:none;
 }
+#stats > div{
+	display: inline-block;
+	vertical-align: top;
+	margin-left:2em;
+	padding:5em;
+	height:450px;
+}
 #stats .legend{
 	display:inline-block;
 	border: solid 1px #c0c0c0;

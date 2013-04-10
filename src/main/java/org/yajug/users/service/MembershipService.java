@@ -8,9 +8,16 @@ import org.yajug.users.domain.Membership;
 public interface MembershipService {
 
 	/**
-	 * Get the member's {@link Membership}
+	 * Get all the {@link Membership}s
+	 * @return  all the available {@link Membership}s
+	 * @throws DataException
+	 */
+	Collection<Membership> getAll() throws DataException;
+	
+	/**
+	 * Get the {@link Member}'s {@link Membership}s
 	 * @param member the member to get the membership from
-	 * @return
+	 * @return the {@link Member}'s {@link Membership}s
 	 * @throws DataException
 	 */
 	Collection<Membership> getAllByMember(Member member) throws DataException;

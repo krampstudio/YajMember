@@ -32,6 +32,20 @@ public class MembershipServiceImpl implements MembershipService {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public Collection<Membership> getAll() throws DataException {
+		
+		List<Membership> memberships = membershipDao.getAll();
+		if(memberships != null && !memberships.isEmpty()){
+			Collections.sort(memberships, new MembershipCompartor());
+		}
+		return memberships;
+	}
+
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Collection<Membership> getAllByMember(Member member) throws DataException {
 		
 		List<Membership> memberships = new ArrayList<>();
@@ -107,5 +121,4 @@ public class MembershipServiceImpl implements MembershipService {
 		}
 		return  membershipDao.remove(membership);
 	}
-
 }
