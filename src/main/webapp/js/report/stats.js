@@ -29,9 +29,15 @@ define(
 				
 				//get the event for the given year
 				EventController.getAll(year, function(events){
-					var i = 0, width = 0,
+					var i = 0, 
 						$canvas = $('#stat-participants'),
 						chart, 
+						size = {
+							width : 0,
+							minW : 250,
+							maxW : $('#stats').width(),
+							height: 275
+						},
 						data = {
 							labels : [],
 							participants : [],
@@ -55,9 +61,14 @@ define(
 						}
 
 						//resize the canvas regarding the data
-						width = data.labels.length * 100;
-						$canvas.attr('width', (width < 250) ? 250 : width);
-						$canvas.attr('height', '300');
+						size.width = data.labels.length * 100;
+						if(size.width < size.minW){
+							size.width = size.minW;
+						} else if (size.width > size.maxW){
+							size.width = size.maxW;
+						} 
+						$canvas.attr('width', size.width);
+						$canvas.attr('height', size.height);
 						
 						//build the Bar Chart
 						chart = new Chart($canvas.get(0).getContext("2d"));

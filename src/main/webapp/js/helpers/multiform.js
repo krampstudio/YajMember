@@ -68,7 +68,7 @@ define(['jquery'], function($){
 		 * @returns {Array} of jQuery elements that match each form
 		 */
 		getForms : function(){
-			var i, forms = [];
+			var i = 0, forms = [];
 			for(i in this._formNames){
 				forms.push(this.getForm(this._formNames[i]));
 			}
@@ -79,7 +79,7 @@ define(['jquery'], function($){
 		 * Enable/Disable the forms fields
 		 */
 		toggleForm : function(){
-			var $submiter, isDisabled, i, 
+			var $submiter, isDisabled, i = 0, 
 				forms = this.getForms();
 			
 			for(i in forms){
@@ -127,14 +127,15 @@ define(['jquery'], function($){
 		 * @param {Function} a callback executed once the controls are initialized
 		 */
 		initFormControls : function(callback){
-			var i, $submiter, name, init;
+			var i = 0, name, init;
 			
 			for(i in this._formNames){
 				name = this._formNames[i];
 				
 				//setup forms submit buttons
-				$submiter  = $('.submiter', this.getForm(name));
-				$submiter.button({label : $submiter.val(), disabled : false});
+				$('.submiter', this.getForm(name)).each(function(idx, elt){
+					$(elt).button({label : $(elt).val(), disabled : false});
+				});
 				
 				//setup form controls based on method name
 				init = '_init' + name[0].toUpperCase() + name.slice(1) + 'Controls';
@@ -155,7 +156,7 @@ define(['jquery'], function($){
 		 * @param {Function} a callback executed once the forms are cleared
 		 */
 		clearForms : function(callback){
-			var i, $form, name, clearForm, 
+			var i = 0, $form, name, clearForm, 
 				resetForm = function(){
 					this.reset();
 				};

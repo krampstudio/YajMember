@@ -162,15 +162,25 @@ form .help{
 }
 
 /* charts */
+#stats{
+	min-height:450px;
+}
 #stats .chart{
 	display:none;
+	border:solid 1px #C8DAE3;
+	border-radius:3px;
+	padding:.3em;
+	margin:.1em;
+}
+#stats h1{
+	color:#40688D;
+	font-size:1.2em;
 }
 #stats > div{
 	display: inline-block;
 	vertical-align: top;
-	margin-left:2em;
-	padding:5em;
-	height:450px;
+	margin-left:.5em;
+	height:min-375px;
 }
 #stats .legend{
 	display:inline-block;
@@ -189,7 +199,7 @@ form .help{
 #stats .legend li.color1{
 	color: #88A9BD;
 }
-#stats .legend li.color1:before{
+#stats .legend li.color1.square:before{
      content:'';
      display: block;
      position: absolute;
@@ -200,10 +210,21 @@ form .help{
      background-color: #C8DAE3;
      border:solid 2px #88A9BD;
 }
+#stats .legend li.color1.circle:before{
+	 content:'';
+     display: block;
+     position: absolute;
+     width: 8px;
+     height:8px;
+     left: -1.2em;
+     top: .3em;
+     background-color: #88A9BD;
+     border-radius: 4px; 
+}
 #stats .legend li.color2{
 	color: #E77124;
 }
-#stats .legend li.color2:before{
+#stats .legend li.color2.square:before{
      content:'';
      display: block;
      position: absolute;
