@@ -12,9 +12,8 @@
 </script>
 <script id="event-item-template" type="text/x-jquery-tmpl">
 <li class='event' id="event-${key}">
-	<h1>${title}</h1>
+	<h1>${date} ${title}</h1>
 	<img src='img/events/event-${date.replace(/-/g, '')}-small.png' alt='Flyer ${date}' title="Flyer of ${date} event" />
-	<h2>${date}</h2>
 	<div>{{html description}}</div>
 	<div class="event-ctrl">
 		<button class="event-editor">Edit</button>
