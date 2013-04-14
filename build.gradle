@@ -44,15 +44,19 @@ dependencies {
 	compile "com.sun.jersey.contribs:jersey-multipart:$jerseyVersion"
 	compile("com.google.api-client:google-api-client:$googleApiClientVersion"){
 		exclude group: 'com.google.guava'
+		exclude group: 'commons-logging'
 	}
 	compile("com.google.oauth-client:google-oauth-client:$googleApiClientVersion"){
 		exclude group: 'com.google.guava'
+		exclude group: 'commons-logging'
 	}
 	compile("com.google.oauth-client:google-oauth-client-servlet:$googleApiClientVersion"){
 		exclude group: 'com.google.guava'
+		exclude group: 'commons-logging'
 	}
 	compile("com.google.http-client:google-http-client-gson:$googleApiClientVersion"){
 		exclude group: 'com.google.guava'
+		exclude group: 'commons-logging'
 	}
 	compile "com.google.guava:guava:$guavaVersion"
 	compile "net.sf.supercsv:super-csv:$superCsvVersion"
