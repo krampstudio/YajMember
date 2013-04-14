@@ -203,14 +203,6 @@ define(
 				$trash					= $('.list-box-ctrl a.rml', $form),
 				$listBoxes				= $('.list-box ul', $form),
 				
-				sortList = function($list){
-					$list.children('li').sort(function(current, next){
-						var currentValue = $(current).text().toLowercase();
-						var nextValue = $(next).text().toLowercase()
-						return (currentValue < nextValue) ? - 1 : (currentValue > nextValue) ? 1 : 0;
-					}).appendTo($list);
-				},
-				
 				/**
 				 * Add registrant to his list
 				 * @param {String} key - the required member's identifier
@@ -223,7 +215,6 @@ define(
 							.attr('id', 'registrant-' + key)
 							.text(name);
 						$registrantList.append($item);
-						sortList($registrantList);
 					}
 				};
 			
@@ -355,7 +346,6 @@ define(
 							.text($(elt).text());
 						
 						$participantList.append($item);
-						sortList($participantList);
 					}
 					$(elt).removeClass('ui-selected ui-state-highlight');
 				});
@@ -493,7 +483,7 @@ define(
 				participants = [];
 			
 			//remap data to avoid issue with duplicate ids in jquery-tmpl
-			$.each(data, function(index, elt){
+			$.each(this._sortParticipants(data, 'lastName'), function(index, elt){
 				participants.push({
 					'pkey' : type + '-' + elt.key,
 					'pname' : elt.firstName + ' ' +  elt.lastName
@@ -501,7 +491,7 @@ define(
 			});
 			
 			if(participants.length > 0){
-				$container.append($.tmpl(tmpl, participants.sort()));
+				$container.append($.tmpl(tmpl, participants));
 			}
 		},
 		
@@ -532,6 +522,34 @@ define(
 			if($keyField.length > 0 && $keyField.val().trim().length > 0){
 				return $keyField.val();
 			}
+		},
+		
+		/**
+		 * Sort a list of participants by their name
+		 * @private
+		 * @param {Array} participants - an array of participants objects
+		 * @param {String} field - the name of the participant field to compare
+		 * @param {Boolean} [isName] - if the field represent the name (first + last) we extract the last
+		 * @returns {Array} the sorted array
+		 */
+		_sortParticipants: function(participants, field, isName){
+			if(field && $.isArray(participants) && participants.length > 0){
+				var getLastName = function(name){
+					if(name && name.length > 3 && name.indexOf(' ') > 0){
+						return name.trim().split(' ')[1].toLowercase();
+					}
+					return name;
+				};
+				if(isName === undefined){
+					isName = false;
+				}
+				return participants.sort(function(current, next){
+					var currentValue = isName ? getLastName(current[field]) : current[field];
+					var nextValue = isName ? getLastName(next[field]) : next[field];
+					return (currentValue < nextValue) ? - 1 : (currentValue > nextValue) ? 1 : 0;
+				});
+			}
+			return [];
 		},
 		
 		/**
