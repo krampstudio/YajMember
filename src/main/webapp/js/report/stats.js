@@ -77,11 +77,11 @@ define(
 								datasets : [{
 									fillColor : "rgba(151,187,205,0.5)",
 									strokeColor : "rgba(151,187,205,1)",
-									data : data.participants
+									data : data.registrants
 								},{
 									fillColor : "rgba(231,113,36,0.5)",
 									strokeColor : "rgba(231,113,36,1)",
-									data : data.registrants
+									data : data.participants
 									
 								}]
 							}, {
@@ -150,8 +150,6 @@ define(
 				width = data.labels.length * 150;
 				$canvas.attr('width', (width < 250) ? 250 : width);
 				$canvas.attr('height', '300');
-				
-				debug.info(data)
 				
 				//build the Bar Chart
 				chart = new Chart($canvas.get(0).getContext("2d"));
