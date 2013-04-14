@@ -2,6 +2,8 @@ package org.yajug.users.servlets;
 
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yajug.users.config.ModuleHelper;
 import org.yajug.users.servlets.auth.AuthenticationFilter;
 import org.yajug.users.servlets.auth.GoogleOauthCallbackServlet;
@@ -27,6 +29,8 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
  */
 public class GuiceConfig extends GuiceServletContextListener {
 	
+	private final static Logger logger = LoggerFactory.getLogger(GuiceConfig.class);
+	
 	@Override
 	protected Injector getInjector() {
 		
@@ -45,6 +49,8 @@ public class GuiceConfig extends GuiceServletContextListener {
 				ModuleHelper.bindApis(binder());
 	            
 	            if(authEnabled){
+	            	
+	            	logger.debug("authentication enabled");
 	            
 		            bind(CredentialStore.class).to(LoggedCredentialStore.class);
 					bind(HttpTransport.class).to(NetHttpTransport.class);
@@ -55,6 +61,8 @@ public class GuiceConfig extends GuiceServletContextListener {
 					serve("/auth").with(GoogleOauthServlet.class);
 					serve("/authCallback").with(GoogleOauthCallbackServlet.class);
 					serve("/logout").with(LogoutServlet.class);
+	            } else {
+	            	 logger.info("authentication disabled (update the config file to enable)");
 	            }
 				serve("/api/*").with(GuiceContainer.class);
 	         }

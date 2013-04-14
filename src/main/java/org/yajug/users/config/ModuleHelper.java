@@ -55,22 +55,22 @@ public class ModuleHelper {
 	 */
 	public static void bindApis(Binder binder){
 		
-		//bind controllers
-		binder.bind(MemberController.class);
-		binder.bind(MembershipController.class);
-		binder.bind(EventController.class);
-		binder.bind(FlyerController.class);
-        
+		//bind daos
+		binder.bind(MemberDao.class).to(MemberMongoDao.class);
+		binder.bind(MembershipDao.class).to(MembershipMongoDao.class);
+		binder.bind(EventDao.class).to(EventMongoDao.class);
+		
 		//biond services
 		binder.bind(MembershipService.class).to(MembershipServiceImpl.class);
 		binder.bind(MemberService.class).to(MemberServiceImpl.class);
 		binder.bind(EventService.class).to(EventServiceImpl.class);
 		binder.bind(FlyerService.class).to(FlyerServiceImpl.class);
         
-		//bind daos
-		binder.bind(MemberDao.class).to(MemberMongoDao.class);
-		binder.bind(MembershipDao.class).to(MembershipMongoDao.class);
-		binder.bind(EventDao.class).to(EventMongoDao.class);
+		//bind controllers
+		binder.bind(MemberController.class);
+		binder.bind(MembershipController.class);
+		binder.bind(EventController.class);
+		binder.bind(FlyerController.class);
 	}
 	
 	/**
