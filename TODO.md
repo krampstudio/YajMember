@@ -5,12 +5,12 @@
  - [x] Add filtering/searching to member table
  - [x] Flyers removal
  - [x] Save event participants
- - [ ] Participants matching list from RSVP
+ - [x] Participants matching list from RSVP
  - [x] Manage authentication error messages (ie. when user is already logged to google but with another account)
  - [x] Add slf4j and logback!
  - [x] Add grunt to build the client side (to manage the require.js optimizer) and link it to gradle
  - [ ] Persist the logged users to mongo 
- - [ ] Events/years stats would be great
+ - [x] Events/years stats would be great
  - [ ] Generate the participants list for an event (with QR codes to mark registered as participants)
  - [x] Update model to include company sponsor memberships
  - [x] Extract serializer to be shared for mongo and rest (especially for the timezone handling)
@@ -18,12 +18,18 @@
  - [x] Update jquery and jquery ui to the last version (the use of spinners would be cool)
  - [ ] Try to find a way to exclude files from the war into gradle
  - [ ] Optimize also CSS in the grunt optimize task
- - [ ] Do a bunch of testNg's integration tests
+ - [ ] Do a bunch of testNg integration tests
  - [x] Replace the custom cache by a cache lib (guava? ehcache? - none yet)
  - [x] Split the member/membership services and controllers
  - [x] Split the event/flyer services and controllers
- - [ ] Refactor app.js and form/lists to use an event bus instead of the overriding model
+ - [x] Refactor app.js and form/lists to use an event bus instead of the overriding model
  - [x] Refactor form/lists to use a js crud layer that communicate with the server
  - [x] Remove key and use _id instead (see `mongoId` branch)
  - [x] Tag/versions to bowers components
  - [ ] Add event paiement to the model
+ - [ ] Extract participants/registrants boxes to a widget and improve usability (auto height, participants identified in registrants, etc.)
+ - [ ] Use less or sass for the stylesheets
+ - [ ] Fix the jQuery UI bug on focused/visited button
+ - [ ] Move the import section of events/participants to its own section (subform)
+ - [ ] Check the optimized version (either add requirejs or a smaller loader)
+ - [ ] Add other charts (sponsored/member/10€ by event or by year)
