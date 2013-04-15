@@ -111,7 +111,6 @@ define(
 					if(dateValue && typeof dateValue === 'object'){
 						year = dateValue.getFullYear();
 					}
-					debug.log(year);
 					
 					if(year !== undefined && year > 0){
 						//reload the events list for that year
@@ -564,8 +563,8 @@ define(
 					isName = false;
 				}
 				return participants.sort(function(current, next){
-					var currentValue = isName ? getLastName(current[field]) : current[field];
-					var nextValue = isName ? getLastName(next[field]) : next[field];
+					var currentValue = isName ? getLastName(current[field]) : current[field].trim();
+					var nextValue = isName ? getLastName(next[field]) : next[field].trim();
 					return (currentValue < nextValue) ? - 1 : (currentValue > nextValue) ? 1 : 0;
 				});
 			}

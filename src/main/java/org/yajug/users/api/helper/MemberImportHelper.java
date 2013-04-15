@@ -112,7 +112,7 @@ public class MemberImportHelper {
 	                //assign the values to the member
 	                for(String field : AVAILABLE_FIELDS){
 	                	if(row.containsKey(field) && row.get(field) != null){
-	                		String value = row.get(field).toString();
+	                		String value = row.get(field).toString().trim();
 	                		if(StringUtils.isNotBlank(value)){
 		                		if("name".equals(field)){
 		                			//special case for the name
