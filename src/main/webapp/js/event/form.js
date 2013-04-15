@@ -78,6 +78,8 @@ define(
 				});
 			}
 			
+			debug.log($date.data())
+			
 			$date.on('change', function(){
 				if(self.getEventId() !== undefined && 
 						this.value && this.value.length === 10){
@@ -96,7 +98,25 @@ define(
 				e.preventDefault();
 				
 				EventController.save(self.serializeEvent($(this)), function(){
+					var year, dateValue;
+					
+					//show the flyer subform 
 					self.getForm('flyer').show();
+					
+					if($date.data('datepicker')){
+						dateValue = $date.datepicker('getDate');
+					} else {
+						dateValue = $date.get(0).valueAsDate;
+					}
+					if(dateValue && typeof dateValue === 'object'){
+						year = dateValue.getFullYear();
+					}
+					debug.log(year);
+					
+					if(year !== undefined && year > 0){
+						//reload the events list for that year
+						EventBus.publish('eventlist.loadevents', year);
+					}
 				});
 						
 				return false;

@@ -1,4 +1,4 @@
-define(['jquery', 'controller/event', 'store', 'epiceditor'], function($, EventController, store){
+define(['jquery', 'controller/event', 'store', 'eventbus', 'epiceditor'], function($, EventController, store, EventBus){
 	
 	'use strict';
 	
@@ -12,7 +12,19 @@ define(['jquery', 'controller/event', 'store', 'epiceditor'], function($, EventC
 		 * Set up the list
 		 */
 		setUp: function(){
+			this._buildComponents();
+		},
+		
+		/**
+		 * Build the UI components (the accordion)
+		 * @private
+		 */
+		_buildComponents : function(){
 			var self = this;
+			
+			EventBus.subscribe('eventlist.loadevents', function(event, $container, year){
+				self._loadEvents($container, year);
+			});
 			
 			//load the years list
 			EventController.getYears(function(years){
@@ -33,37 +45,48 @@ define(['jquery', 'controller/event', 'store', 'epiceditor'], function($, EventC
 					
 					//load the events list by activating a pad 
 					activate: function(event, ui){
-						
-						if(ui.newHeader){
-							var $container = ui.newPanel,
-								$list = $container.find('ul'),
-								year = ui.newHeader.find('a').attr('href').replace('#', '');
-							
-							$list.find('li').remove();
-							
-							//load events
-							EventController.getAll(year, function(events){
-								
-								//parse markdown
-								for(var i in events){
-									if(events[i].description){
-										events[i].description = marked(events[i].description);
-									}
-								}
-								
-								$container.find('.loader').fadeOut();
-								
-								//build the event list
-								$list.append($.tmpl($('#event-item-template'), events));
-								
-								//set up the widgets 
-								self._setUpEventsControls($list);
-							});
-							return false;
+						var year = ui.newHeader.find('a').attr('href').replace('#', '');
+						if(ui.newPanel){
+							EventBus.publish("eventlist.loadevents", [year]);
 						}
+						return false;
 					}
 				});
 			});
+		},
+		
+		/**
+		 * Load the events list for a year
+		 * @private
+		 * @param {Number} year - the year
+		 */
+		_loadEvents : function(year){
+			var self = this,
+				$container = $('#event-list-'+year),
+				$list = $container.find('ul.event-list');
+		
+			if(year && $container){
+				$list.find('li').remove();
+			
+				//load events
+				EventController.getAll(year, function(events){
+					
+					//parse markdown
+					for(var i in events){
+						if(events[i].description){
+							events[i].description = marked(events[i].description);
+						}
+					}
+					
+					$container.find('.loader').fadeOut();
+					
+					//build the event list
+					$list.append($.tmpl($('#event-item-template'), events));
+					
+					//set up the widgets 
+					self._setUpEventsControls($list);
+				});
+			}
 		},
 		
 		/**

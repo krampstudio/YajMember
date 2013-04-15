@@ -4,9 +4,9 @@
 <script id="events-acc-template" type="text/x-jquery-tmpl">
 {{each years}}
 <h3><a href="#${$value}">${$value}</a></h3>
-<div id='event-list-${$index}'>
+<div id='event-list-${$value}'>
 	<span class="loader"><img src="img/loader.gif" alt="Please wait" /> Loading...</span>
-	<ul></ul>
+	<ul class="event-list"></ul>
 </div>
 {{/each}}
 </script>

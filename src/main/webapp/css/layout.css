@@ -344,7 +344,7 @@ ul.sortable li span {
 }
 
 /* events */
-#events ul{
+#events ul.event-list{
 	list-style-type: none;
 }
 
