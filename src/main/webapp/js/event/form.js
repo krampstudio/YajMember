@@ -310,31 +310,23 @@ define(
 					loaded : function(result){
 						
 						if(result && result.members){
-							var stats = {}, 
+							var stats = {
+									ambigous : 0,
+									exists : 0,
+									added : 0
+								}, 
 								ambiguousMembers = [],
 								$infoTmpl = $('#import-infos-template'),
 								$warnTmpl = $('#import-warn-template');
 							
 							notify('success', 'File uploaded');
 							
-							//TODO improve an test this
 							$.each(result.members, function(index, elt){
-								
-								if(!stats[elt.state]){
-									stats[elt.state] = 0;
-								}
 								stats[elt.state]++;
-								
-								switch(elt.state){
-									case 'exists' :
-										addRegistrant(elt.member.key, elt.member.name);
-										break;
-									case 'added':
-										addRegistrant(elt.member.key, elt.member.name);
-										break;
-									case 'ambiguous':	
-										ambiguousMembers.push(elt.given);
-										break;
+								if(elt.state === 'ambiguous'){
+									ambiguousMembers.push(elt.given);
+								} else {
+									addRegistrant(elt.member.key, elt.member.name);
 								}
 							});
 							notify('info', $.tmpl($infoTmpl, stats));

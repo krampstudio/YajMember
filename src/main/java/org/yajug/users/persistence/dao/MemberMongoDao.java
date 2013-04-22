@@ -122,26 +122,29 @@ public class MemberMongoDao extends MongoDao<Member> implements MemberDao{
 	public List<Member> search(String expression){
 		List<Member> members = new ArrayList<>();
 		
-		BasicDBObject searchExpression = new BasicDBObject("$regex", Pattern.quote(expression)).append("$options", "-i");
-		BasicDBList search = new BasicDBList();
-		search.add(new BasicDBObject("firstName", searchExpression));
-		search.add(new BasicDBObject("lastName", searchExpression));
-		search.add(new BasicDBObject("email", searchExpression));
-		search.add(new BasicDBObject("company", searchExpression));
+		if(StringUtils.isNotBlank(expression)){
 		
-		//create a mongo search query document
-		BasicDBObject query = new BasicDBObject("$or", search);
-		DBCursor cursor = members().find(query);
-		try {
-            while(cursor.hasNext()) {
-            	Member member = map(Member.class, (BasicDBObject)cursor.next());
-                if(member != null){
-                	members.add(member);
-                }
-            }
-        } finally {
-            cursor.close();
-        }
+			BasicDBObject searchExpression = new BasicDBObject("$regex", Pattern.quote(expression)).append("$options", "-i");
+			BasicDBList search = new BasicDBList();
+			search.add(new BasicDBObject("firstName", searchExpression));
+			search.add(new BasicDBObject("lastName", searchExpression));
+			search.add(new BasicDBObject("email", searchExpression));
+			search.add(new BasicDBObject("company", searchExpression));
+			
+			//create a mongo search query document
+			BasicDBObject query = new BasicDBObject("$or", search);
+			DBCursor cursor = members().find(query);
+			try {
+	            while(cursor.hasNext()) {
+	            	Member member = map(Member.class, (BasicDBObject)cursor.next());
+	                if(member != null){
+	                	members.add(member);
+	                }
+	            }
+	        } finally {
+	            cursor.close();
+	        }
+		}
 		return members;
 	}
 	

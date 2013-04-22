@@ -157,8 +157,8 @@ public class MemberImportHelper {
 		
 		int spaceIndex = name.indexOf(' ');
 		if(spaceIndex > 0){
-			String seq1 = name.substring(0,spaceIndex);
-			String seq2 = name.substring(spaceIndex);
+			String seq1 = name.substring(0,spaceIndex).trim();
+			String seq2 = name.substring(spaceIndex).trim();
 			//upper case is lastName
 			if(upperCase.matcher(seq1).find() && !upperCase.matcher(seq1).find()){
 				member.setLastName(seq1);
