@@ -105,6 +105,42 @@ define(['jquery', 'notify', 'store'], function($, notify, store){
 					});
 				});
 			}
+		},
+		
+		/**
+		 * Call the API to removes a member
+		 * @param {String} key - the key of the member to remove
+		 * @param {Function} callback - called if there was no errors
+		 */
+		removeThem : function(keys, callback){
+			var self = this;
+			if(!keys || !$.isArray(keys)){
+				$.error("Invalid member's key : " + key);
+			} else {
+				notify('confirm', 'You really want to remove those '+keys.length+' members?', function(){
+					
+					//TODO finisg
+					$.ajax({
+						type		: 'DELETE',
+						url			: self._apiBase + 'removeAll',
+						data		: keys,
+						dataType	: 'json'
+					}).done(function(data) {	
+						if(!data.removed  || data.error){
+							debug.warn((data.error ? data.error : "unknown"));
+							notify('warn', (data.error ? data.error : "unknown"));
+						} else {
+							if(store.get('member') === key){
+								store.rm('member');
+							}
+							notify('success', 'Member removed');
+							if(typeof callback === 'function'){
+								callback();
+							}
+						}
+					});
+				});
+			}
 		}
 	};
 	

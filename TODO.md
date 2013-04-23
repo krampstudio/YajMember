@@ -26,10 +26,11 @@
  - [x] Refactor form/lists to use a js crud layer that communicate with the server
  - [x] Remove key and use _id instead (see `mongoId` branch)
  - [x] Tag/versions to bowers components
- - [ ] Add event paiement to the model
+ - [ ] Add event payment to the model
  - [ ] Extract participants/registrants boxes to a widget and improve usability (auto height, participants identified in registrants, etc.)
  - [ ] Use less or sass for the stylesheets
  - [ ] Fix the jQuery UI bug on focused/visited button
  - [ ] Move the import section of events/participants to its own section (subform)
  - [ ] Check the optimized version (either add requirejs or a smaller loader)
  - [ ] Add other charts (sponsored/member/10€ by event or by year)
+ - [ ] multiple users delete
