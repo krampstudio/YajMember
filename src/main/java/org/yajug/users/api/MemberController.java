@@ -97,17 +97,9 @@ public class MemberController extends RestController {
 			int end = Math.min(membersList.size(), start + rows);
 			int total = membersList.size();
 			
-//			logger.debug("rows " + rows);
-//			logger.debug("page " + page);
-//			logger.debug("start " + start);
-//			logger.debug("end " + end);
-//			logger.debug("size " + membersList.size());
-			
 			if(start >= 0 && end > start){
 				membersList = membersList.subList(start, end);
 			}
-			
-//			logger.debug("final size " + membersList.size());
 			
 			//jsonize
 			response = serializeJsonp(new GridVo(membersList, total), callback);
@@ -122,7 +114,7 @@ public class MemberController extends RestController {
 	/**
 	 * Search {@link Member}s from a string, used to get autocompleted field
 	 * 
-	 * @param term the string 
+	 * @param term  the characters used to search
 	 * @return a JSON string that contains an array of matching members 
 	 * 			in a particular format : {@code [{label: name, value : key}, ...]
 	 */
@@ -151,6 +143,13 @@ public class MemberController extends RestController {
 		return response;
 	}
 	
+	/**
+	 * Search {@link Member}'s company from a string, used to get autocompleted field
+	 * 
+	 * @param term the characters used to search
+	 * @return a JSON string that contains an array of matching members 
+	 * 			in a particular format : {@code [{label: name, value : key}, ...]
+	 */
 	@GET
 	@Path("acCompaniesSearch")
 	@Produces({MediaType.APPLICATION_JSON})

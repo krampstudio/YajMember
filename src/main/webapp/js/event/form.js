@@ -78,8 +78,6 @@ define(
 				});
 			}
 			
-			debug.log($date.data())
-			
 			$date.on('change', function(){
 				if(self.getEventId() !== undefined && 
 						this.value && this.value.length === 10){
@@ -306,7 +304,7 @@ define(
 				
 				//send the file
 				$form.sendfile({
-					url : 'api/event/importRegistrants/'+self.getEventId(),
+					url : 'api/participant/import/'+self.getEventId(),
 					loaded : function(result){
 						
 						if(result && result.members){
@@ -414,7 +412,7 @@ define(
 				
 				$.ajax({
 					type		: 'POST',
-					url			: 'api/event/updateParticipant/'+self.getEventId(),
+					url			: 'api/participant/save/'+self.getEventId(),
 					contentType	: 'application/x-www-form-urlencoded',
 					dataType	: 'json',
 					data		: {

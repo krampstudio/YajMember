@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,10 @@ public class MemberImportHelper {
 	private final static List<String> AVAILABLE_FIELDS = Lists.newArrayList(
 		"firstName", "lastName", "name", "company", "email"
 	);
+	
+	private final static char[] ALLOWED_DELIMITERS = {',',';','|'};
+	
+	private final static char[] ALLOWED_WRAPPERS = {'"', '\''};
 
 	/**
 	 * Parse a CSV stream to read {@link Member}s 
@@ -60,6 +65,15 @@ public class MemberImportHelper {
 			char delimiter,
 			char wrapper) throws DataException {
 		
+		//preferences checks
+		
+		if(Arrays.binarySearch(ALLOWED_DELIMITERS, delimiter) < 0){
+			throw new DataException("Invalid CSV delimiter, please use one of " + Arrays.toString(ALLOWED_DELIMITERS));
+		}
+		
+		if(wrapper != 0 && Arrays.binarySearch(ALLOWED_WRAPPERS, wrapper) < 0){
+			throw new DataException("Invalid CSV wrapper, please use one of " + Arrays.toString(ALLOWED_WRAPPERS));
+		}
 		
 		final CsvPreference preferences = new CsvPreference.Builder(
 				wrapper, 
@@ -97,7 +111,6 @@ public class MemberImportHelper {
 						processors.add(new Optional());
 					}
 				}
-				
 				
 				Map<String, Object> row;
 	            while( (row = mapReader.read(
